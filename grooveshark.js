@@ -4,6 +4,8 @@
 
     Gs.version = '0.1';
     Gs.listeners = {};
+
+    // Events
     
     Gs.ready = function(callback, waitForDOM) { 
         var wait = function() { 
@@ -89,14 +91,25 @@
                 delete Gs.listeners[methodName];
             }
         }
+    } 
+
+    Gs.createModal = function(name, html) {
+         
     }
+    
+    Gs.closeModal = function(name) {}
+
+    Gs.createPlayerBtn = function(uid, label, onlick) {}
+
+    Gs.removePlayerBtn = function(uid) {}
 
     window.Gs = Gs;
 })();
 
+/*
 console.log('--> Beginning test');
-// Gs.ready(function() { console.log('Ready!', GS); });
-// Gs.ready(function() { console.log('DOM Ready!', GS); }, true);
+Gs.ready(function() { console.log('Ready!', GS); });
+Gs.ready(function() { console.log('DOM Ready!', GS); }, true);
 Gs.ready(runEvents, true);
 
 function runEvents() {
@@ -114,3 +127,4 @@ function removeEvents() {
 function testEvent() {
     console.log('Callback for an event with args: ', arguments);
 }
+*/

@@ -8,6 +8,7 @@
     // Events
     
     Gs.ready = function(callback, waitForDOM) { 
+        waitForDOM == undefined || (waitForDOM = true);
         var wait = function() { 
             setTimeout(function() { 
                 Gs.ready.call(null, callback, waitForDOM); 
@@ -92,12 +93,27 @@
             }
         }
     } 
-
-    Gs.createModal = function(name, html) {
-         
-    }
     
-    Gs.closeModal = function(name) {}
+    GS.Controllers.BaseController.extend('GS.Controllers.Lightbox.Generic',
+    /* @Static */
+    {
+        onDocument: false
+    },
+    /* @Prototype */
+    {
+        init: function() {
+            console.log("CONTROLLLLLER");
+            this.update();
+        },
+
+        update: function() {
+            this.element.html('<strong>Some lame html</strong>');
+        },
+    });
+
+    Gs.createModal = function(uid, html) {}
+    
+    Gs.closeModal = function(uid) {}
 
     Gs.createPlayerBtn = function(uid, label, onlick) {}
 
@@ -106,25 +122,6 @@
     window.Gs = Gs;
 })();
 
-/*
-console.log('--> Beginning test');
-Gs.ready(function() { console.log('Ready!', GS); });
-Gs.ready(function() { console.log('DOM Ready!', GS); }, true);
-Gs.ready(runEvents, true);
-
-function runEvents() {
-    console.log('--> Testing events');
-    Gs.before('addSongsToQueueAt', function(songIDs) { console.log('Before Addition', songIDs); });
-    Gs.after('addSongsToQueueAt', function(songIDs) { console.log('After Addition', songIDs); });
-    Gs.after('addSongsToQueueAt', testEvent);
-}
-
-function removeEvents() {
-    Gs.removeBefore('addSongsToQueueAt');
-    Gs.removeAfter('addSongsToQueueAt', testEvent);
-}
-
-function testEvent() {
-    console.log('Callback for an event with args: ', arguments);
-}
-*/
+Gs.ready(function() {
+    console.log('-> running test');
+});

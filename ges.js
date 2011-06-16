@@ -1,8 +1,19 @@
 ;(function() {
-    // create UI and set listeners
-    // parse modules (add to modules UI list, call construct enabled ones)
 
     Gs.ready(function() {
+        loadModules();
+    });
+
+    function loadModules() {
+        /*
         ges.modules.doConstruct('dupeDelete');
-    }, true);
+        ges.modules.doConstruct('bieberFever');
+        */
+        _.forEach(
+              ges.modules.modules 
+            , function(value, key, list) {
+                  ges.modules.doConstruct(key);
+            });
+    }
+
 })();

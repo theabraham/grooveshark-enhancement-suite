@@ -1,4 +1,4 @@
-(function(modules) {
+;(function(modules) {
 
     modules['dupeDelete'] = {
           'version': '0.1'
@@ -10,11 +10,12 @@
     };
 
     function construct(instance) { 
-        Gs.on('addSongsToQueueAt', function() { setTimeout(function() { removeDuplicates(); }, 3e3); });
+        console.log('constructing dupeDelete');
+        // place dupe delete button on player
     }
 
     function destruct(instance) {
-        Gs.removeAfter('addSongsToQueueAt', removeDuplicates);
+        // remove button
     }
 
     function removeDuplicates() {

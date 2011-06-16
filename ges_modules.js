@@ -1,4 +1,5 @@
 ;(function() {
+
     var modules = {
           'moduleDir': 'modules/'
         , 'count': getModuleCount
@@ -23,4 +24,5 @@
 
     window.ges || (window.ges = {});
     window.ges.modules = modules;
+
 })();

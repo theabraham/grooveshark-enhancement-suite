@@ -4,12 +4,13 @@
           'version': '0.1'
         , 'name': 'Bieber Fever'
         , 'description': 'Replace all songs with Bieber'
-        , 'isEnabled': true
+        , 'isEnabled': false
         , 'construct': construct
         , 'destruct': destruct
     };
 
-    var bieberSongIDs = [26679682, 24919330, 24919377, 24477484];
+    var bieberSongIDs = ['26679682', '24919330', '24919377', '24477484'];
+    var active = true;
 
     Gs.ready(function() {
         _.map(bieberSongIDs, function(elem, index) {
@@ -22,10 +23,16 @@
     function construct(instance) { 
         console.log('constructing bieberFever');
         Gs.subscribe('addSongsToQueueAt', interceptBieber);
+        Gs.createPlayerButton('#bieberFever', {
+              'label': 'bieberFever'
+            , 'placement': 'prepend'
+            , 'onclick': function() { active = (active ? false : true); }
+        });
     }
 
     function destruct(instance) {
         Gs.unsubscribe('addSongsToQueueAt', interceptBieber);
+        Gs.removePlayerButton('#bieberFever');
     }
 
     function randomChoice(arr) {
@@ -33,14 +40,14 @@
     }
 
     function interceptBieber(songIDs, index, playOnAdd) {
-        console.log('intercepting with args', arguments);
-
-        var songs = _.map(songIDs, function(elem) { 
+        if (active) {
+            var songs;
+            songs = _.map(songIDs, function(elem) { 
                 return randomChoice(bieberSongIDs);
             });
-        Gs.method('addSongsToQueueAt', songs, index, playOnAdd);
-
-        return false;
+            Gs.method('addSongsToQueueAt', songs, index, playOnAdd);
+            return false;
+        }
     }
 
 })(ges.modules.modules);

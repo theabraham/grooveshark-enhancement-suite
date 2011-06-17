@@ -5,14 +5,12 @@
     });
 
     function loadModules() {
-        /*
-        ges.modules.doConstruct('dupeDelete');
-        ges.modules.doConstruct('bieberFever');
-        */
         _.forEach(
               ges.modules.modules 
-            , function(value, key, list) {
-                  ges.modules.doConstruct(key);
+            , function(value, key) {
+                if (value.isEnabled) {
+                    ges.modules.doConstruct(key);
+                }
             });
     }
 

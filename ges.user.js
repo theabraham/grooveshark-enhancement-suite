@@ -8,15 +8,22 @@
 
 var RESOURCE_URL = 'http://localhost:4000/';
 
-function appendScript(filename, content) {
-    setTimeout(function() { 
+function appendScript(filename, async) {
+        async != undefined || (async = true);
+        filename = RESOURCE_URL + filename;
         var script = document.createElement('script');
-        filename ? script.src = RESOURCE_URL + filename
-                 : script.textContent = content;
+        
+        if (async) {
+            script.type = 'text/cjs';
+            script.setAttribute('data-cjssrc', filename);
+        } else {
+            script.src = filename;
+        }
+
         document.body.appendChild(script);
-    }, 750);
 }
 
+appendScript('control.js', false);
 appendScript('grooveshark.js');
 appendScript('ges_modules.js');
 appendScript('modules/dupe_delete.js');

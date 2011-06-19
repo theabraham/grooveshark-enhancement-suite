@@ -170,7 +170,7 @@
         delay || (delay = 2500);
         var container = growlContainer();
         var template = growlTemplate(sender, message);
-        $(container).prepend(template);
+        $(container).append(template);
         $(template).slideDown('fast').delay(delay).fadeOut('slow');
         setTimeout(function() { $(template).remove(); }, delay + 1000);
     }

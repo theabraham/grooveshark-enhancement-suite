@@ -9,14 +9,14 @@
 var RESOURCE_URL = 'http://localhost:4000/';
 
 function appendScript(filename, async) {
-        async != undefined || (async = true);
-        filename = RESOURCE_URL + filename;
         var script = document.createElement('script');
+        filename = RESOURCE_URL + filename;
         
-        if (async) {
+        if (async == null || async) {
             script.type = 'text/cjs';
             script.setAttribute('data-cjssrc', filename);
-        } else {
+        } 
+        else {
             script.src = filename;
         }
 

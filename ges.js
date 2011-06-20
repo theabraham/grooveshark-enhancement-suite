@@ -9,17 +9,18 @@
         var iconURL = $('#sidebar_footer_new .icon').css('background-image');
         var style = '';
         style += '#lightbox .mod_link { display:block; margin-bottom:10px; padding:10px; border:1px solid #b2b2b2; -moz-border-radius:3px; -webkit-border-radius:3px; }';
-        style += '#lightbox .mod_link:hover { background:#dedede; padding:9px; border-width:2px; }';
-        style += '#lightbox .mod_link:active { background:none; border-color:#1785cd; }';
-        style += '#lightbox .mod_link.active { background:#1785cd; }';
-        style += '#lightbox .mod_link .mod_icon { background:' + iconURL + '; background-position:-4px -308px; float:right; display:inline-block; margin:12px 4px 0 0; height:8px; width:8px; }';
+        style += '#lightbox .mod_link:hover { background-color:#dedede; padding:9px; border-width:2px; }';
+        style += '#lightbox .mod_link:active { background:none !important; border-color:#1785cd !important; border-width:2px !important; }';
+        style += '#lightbox .mod_link.enabled { background-color:#d8ebf8; border:1px solid #1785cd; padding:10px; }';
+        style += '#lightbox .mod_link.enabled:hover { border-width:2px; padding:9px; }';
+        style += '#lightbox .mod_link .mod_icon { background-image:' + iconURL + '; background-position:-4px -308px; float:right; display:inline-block; margin:12px 4px 0 0; height:8px; width:8px; }';
+        style += '#lightbox .mod_link.enabled .mod_icon { background-position:-36px 268px !important; }';
         style += '#lightbox .mod_link:hover .mod_icon { background-position:-20px -308px; }';
         style += '#lightbox .mod_link:active .mod_icon { background-position:12px -308px; }';
         style += '#lightbox .mod_content { display:inline-block; width:520px; }';
         style += '#lightbox .mod_name { display:block; color:#333; margin-bottom:8px; }';
         style += '#lightbox .mod_desc { color:#666; }';
         style += '#lightbox .mod_last { margin-bottom:0; }';
-
         exportStyle(style);
         buildMenuButton(openMenuModal);
         buildMenuModal('Grooveshark Enhancement Suite', MenuModalContent());
@@ -49,17 +50,24 @@
         $('#lightbox_content .lightbox_content_block', modal).html(content);
         $('#lightbox').prepend('<div class="lbcontainer ges"></div>');
 
-        // $('.mod_link:last-child', '#lightbox_content').addClass('mod_last');
-        $('.mod_link', modal).click(function() { console.log('trollin'); });
-
-
+        var button = $('.close', modal).clone().removeClass('close').addClass('contribute').replaceWith('<a href="http://github.com/" target="blank" class="' + $('.close', modal).attr('class') + '">' + $('.close', modal).html() + '</a>');
+        var buttonCont = $('<ul class="right"><li class="last"></li></ul>');
+        $('span', button).html('Contribute Code');
+        $('li', buttonCont).append(button);
+        $('#lightbox_footer .left', modal).before(buttonCont);
+    
         GS.Controllers.BaseController.extend(
               'GS.Controllers.Lightbox.GESController'
             , { onDocument: false }
             , {
                 init: function() {
                     this.element.html(modal.html());
-                },
+                    $('.mod_link:last-child', '#lightbox_content').addClass('mod_last');
+                }
+                , '.mod_link click': function(elem, evt) {
+                    var self = $(elem); 
+                    toggleModule.apply(self);
+                }
             });
     }
 
@@ -70,7 +78,7 @@
         
         ges.modules.mapModules(function(module, key, modules) {
             moduleBlock = $(moduleTemplate).clone();
-            // if (module.isEnabled) { $('.mod_link', moduleBlock).addClass('active'); }
+            if (module.isEnabled) { $('.mod_link', moduleBlock).addClass('enabled'); }
             $('.mod_name', moduleBlock).html(module.name);
             $('.mod_desc', moduleBlock).html(module.description);
             $('input', moduleBlock).val(key);
@@ -84,6 +92,8 @@
         GS.lightbox.open('ges'); 
     }
 
-    function toggleModule() { console.log('this is', this, 'args are', arguments); }
+    function toggleModule() { 
+        $(this).toggleClass('enabled'); 
+    }
 
 })();

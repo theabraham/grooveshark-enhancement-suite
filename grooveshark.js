@@ -20,7 +20,7 @@
 
     //
     // Events
-    // -> refactor, make cleaner, simpler, less buggy
+    // 
 
     function ready(callback, waitForDOM) { 
         (waitForDOM != null) || (waitForDOM = true);
@@ -110,7 +110,6 @@
     //
     // Interface 
     // -> for buttons, have a change options thing -- changePlayerButton(id, options) -- so you can change things like the class (toggle style)
-    // -> duplicate modal box
 
     var PLAYER_DETAILS_DIV = '#playerDetails_queue';
     $.subscribe('gs.player.queue.change', restorePlayerButtons);

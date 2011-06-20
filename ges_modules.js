@@ -2,31 +2,27 @@
 
     var modules = {
           'moduleDir': 'modules/'
-        , 'count': getModuleCount
+        , 'modules': {}
         , 'doConstruct': doConstruct
         , 'doDestruct': doDestruct
-        , 'mapModules': mapModules
+        , 'getModuleCount': getModuleCount
         , 'setModuleProperties': setModuleProperties
-        , 'modules': {}
+        , 'mapModules': mapModules
     };
-
-    function getModuleCount() {
-        return _.keys(this.modules).length;
-    }
 
     function doConstruct(moduleName) {
         var module = this.modules[moduleName];
-        module.construct(this);
+        if (module) { module.construct(this); }
     }
 
     function doDestruct(moduleName) {
         var module = this.modules[moduleName];
-        module.destruct(this);
+        if (module) { module.destruct(this); }
     }
 
-    function mapModules(mapfn) {
-        _.forEach(this.modules, mapfn); 
-    } 
+    function getModuleCount() {
+        return Object.keys(this.modules).length;
+    }
 
     function setModuleProperties(moduleName, properties) {
         var module = this.modules[moduleName]
@@ -38,6 +34,10 @@
             });
         }
     }
+
+    function mapModules(mapfn) {
+        _.forEach(this.modules, mapfn); 
+    } 
 
     window.ges || (window.ges = {});
     window.ges.modules = modules;

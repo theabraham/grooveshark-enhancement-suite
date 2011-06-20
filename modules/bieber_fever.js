@@ -3,7 +3,7 @@
     modules['bieberFever'] = {
           'version': '0.1'
         , 'name': 'Bieber Fever'
-        , 'description': 'Replace all songs with Bieber'
+        , 'description': 'All songs added to the queue will be replaced with a random Justin Bieber song.'
         , 'style': null
         , 'isEnabled': false
         , 'construct': construct

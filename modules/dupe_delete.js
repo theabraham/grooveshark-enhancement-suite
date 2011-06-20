@@ -4,6 +4,7 @@
           'version': '0.1'
         , 'name': 'Duplicate Song Remover'
         , 'description': 'Removes duplicate songs from your current queue.'
+        , 'style': null
         , 'isEnabled': true
         , 'construct': construct
         , 'destruct': destruct

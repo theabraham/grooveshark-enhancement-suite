@@ -4,6 +4,7 @@
           'version': '0.1'
         , 'name': 'Bieber Fever'
         , 'description': 'Replace all songs with Bieber'
+        , 'style': null
         , 'isEnabled': false
         , 'construct': construct
         , 'destruct': destruct

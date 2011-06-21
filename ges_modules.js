@@ -3,6 +3,7 @@
     var modules = {
           'moduleDir': 'modules/'
         , 'modules': {}
+        , 'toggleModule': toggleModule
         , 'doConstruct': doConstruct
         , 'doDestruct': doDestruct
         , 'getModuleCount': getModuleCount
@@ -10,14 +11,22 @@
         , 'mapModules': mapModules
     };
 
+    function toggleModule(moduleName) {
+        var module = this.modules[moduleName];
+        module.isEnabled ? doDestruct(moduleName)
+                         : doConstruct(moduleName);
+    }
+
     function doConstruct(moduleName) {
         var module = this.modules[moduleName];
-        if (module) { module.construct(this); }
+        module.isEnabled = true;
+        module.construct(this);
     }
 
     function doDestruct(moduleName) {
         var module = this.modules[moduleName];
-        if (module) { module.destruct(this); }
+        module.isEnabled = false;
+        module.destruct(this);
     }
 
     function getModuleCount() {
@@ -26,13 +35,11 @@
 
     function setModuleProperties(moduleName, properties) {
         var module = this.modules[moduleName]
-        if (module) {
-            _.forEach(properties, function(property, name) {
-                if (module.hasOwnProperty(name)) {
-                    module[name] = property;
-                }
-            });
-        }
+        _.forEach(properties, function(property, name) {
+            if (module.hasOwnProperty(name)) {
+                module[name] = property;
+            }
+        });
     }
 
     function mapModules(mapfn) {

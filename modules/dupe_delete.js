@@ -20,7 +20,8 @@
     }
 
     function destruct(instance) {
-        Gs.removePlayerButton('#dupeDelete');
+        console.log('destructing dupeDelete');
+        // Gs.removePlayerButton('#dupeDelete');
     }
 
     function removeDuplicates() {

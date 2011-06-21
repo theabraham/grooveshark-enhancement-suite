@@ -12,9 +12,8 @@
         , 'subscribe': subscribe
         , 'unsubscribe': unsubscribe
         , 'method': method
-        , 'createPlayerButton': createPlayerButton
-        , 'removePlayerButton': removePlayerButton
-        , 'pluralize': pluralize
+        , 'addButton': addButton
+        , 'removeButton': removeButton
         , 'growl': growl
     };
 
@@ -109,61 +108,48 @@
 
     //
     // Interface 
-    // -> for buttons, have a change options thing -- changePlayerButton(id, options) -- so you can change things like the class (toggle style)
+    // 
 
     var PLAYER_DETAILS_DIV = '#playerDetails_queue';
-    $.subscribe('gs.player.queue.change', restorePlayerButtons);
 
-    function createPlayerButton(id, options) {
-        if (Gs.buttons[id] || id.substr(0, 1) != '#') {
+    function addButton(id, options) {
+        if (this.buttons[id] || id.substr(0, 1) != '#') {
             console.error('Button "' + id + '" already exists or is an invalid identifier');
             return;
         }
 
-        var label = options.label || '';
-        var prepend = options.placement = options.placement === 'prepend';
-        var onclick = options.onclick = options.onclick || function() {};
-        var button = $('#queue_songs_button').clone();
-        var span = $('span', button);
+        var button, span;
+        options.label = options.label || '';
+        options.placement = (options.placement === 'prepend');
+        options.onclick = (options.onclick || function() {});
+        button = $('#queue_songs_button').clone().attr('id', id.slice(1)).click(options.onclick);
+        span = $('span', button).removeAttr('id').removeAttr('data-translate-text').html(options.label);
 
-        button.attr('id', id.slice(1));
-        span.removeAttr('id');
-        span.removeAttr('data-translate-text');
-        span.html(label);
-
-        Gs.buttons[id] = {
-              'button': button
-            , 'options': options
-        };
-
-        placePlayerButton(id, prepend);
+        this.buttons[id] = { 'button': button, 'options': options };
+        placeButton(id, prepend);
     }
 
-    function restorePlayerButtons() {
-        _.forEach(Gs.buttons, function(value, key) { 
-            if (!$(key, PLAYER_DETAILS_DIV).length) {
-                placePlayerButton(key, value.options.placement); 
-            }
-        });
+    function removeButton(id) { 
+        if (this.buttons[id]) {
+            $(id, PLAYER_DETAILS_DIV).remove();
+            delete this.buttons[id];
+        }
     }
-    
-    function placePlayerButton(id, prepend) { 
+
+    function placeButton(id, prepend) { 
         var button = Gs.buttons[id].button;
-        button.click(Gs.buttons[id].options.onclick);
         prepend ? $('.queueType', PLAYER_DETAILS_DIV).after(button)
                 : $(PLAYER_DETAILS_DIV).append(button);
     }
 
-    function removePlayerButton(id) { 
-        if (Gs.buttons[id]) {
-            $(id, PLAYER_DETAILS_DIV).remove();
-            delete Gs.buttons[id];
-        }
-    }
-
-    function pluralize(count, single, plural) {
-        return count === 1 ? single : plural;
-    }
+    $.subscribe('gs.player.queue.change', restoreButtons);
+    function restoreButtons() {
+        _.forEach(Gs.buttons, function(button, key) { 
+            if (!$(key, PLAYER_DETAILS_DIV).length) {
+                placeButton(key, value.options.placement); 
+            }
+        });
+    }    
 
     function growl(sender, message, delay) {
         delay || (delay = 2500);

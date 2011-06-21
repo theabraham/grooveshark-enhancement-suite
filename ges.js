@@ -1,5 +1,23 @@
 ;(function() {
 
+    var GES = {
+          'version': '0.1'
+        , 'listeners': {}
+        , 'buttons': {}
+        , 'ready': ready 
+        , 'subscribe': subscribe
+        , 'unsubscribe': unsubscribe
+        , 'method': method
+        , 'addButton': addButton
+        , 'removeButton': removeButton
+        , 'growl': growl
+    };
+
+
+    function pluralize(count, single, plural) {
+        return count === 1 ? single : plural;
+    }
+
     Gs.ready(function() { 
         ges.modules.mapModules(function(module, key) { 
             if (module.isEnabled) { ges.modules.doConstruct(key); }
@@ -93,7 +111,9 @@
     }
 
     function toggleModule() { 
+        var moduleName = $('input', this).val();
         $(this).toggleClass('enabled'); 
+        ges.modules.toggleModule(moduleName);
     }
 
 })();

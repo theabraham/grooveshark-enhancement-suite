@@ -1,6 +1,6 @@
 ;(function() {
 
-    var ges = {
+    var main = {
           'version': '0.1'
         , 'pluralize': pluralize
         , 'loadCSS': loadCSS
@@ -12,7 +12,7 @@
 
     function loadCSS (filename, values) {
         $.get('http://localhost:4000/public/' + filename, function (text) {
-            // mustache-like style css templating
+            // mustache style css templating
             text = text.replace(/\{\{.*\}\}/gi, function (match) { 
                 match = match.slice(2, -2);
                 match = match.trim();  
@@ -24,20 +24,14 @@
     }
 
     window.ges || (window.ges = {});
-    _.forEach(ges, function (value, key) {
-        window.ges[key] = value;
-    });
+    for (var key in main) { window.ges[key] = main[key]; }
 
 })();
 
-//
-// Implementation
-//
-
 ges.events.ready(function () { 
     ges.loadCSS('ges.css', { 'iconURL': $('#sidebar_footer_new .icon').css('background-image') });
-    placeMenuButton(openMenuModal);
-    buildMenuModal('Grooveshark Enhancement Suite', MenuModalContent());
+    placeMenuButton(function() { ges.ui.openLightbox('ges'); });
+    createMenuModal('Grooveshark Enhancement Suite', MenuModalContent());
 
     // construct enabled modules
     ges.modules.mapModules(function (module, key) { 
@@ -56,37 +50,29 @@ function placeMenuButton (onclick) {
     $('a', '#header_nav_ges').click(onclick);
 }
 
-function buildMenuModal (title, content) {
-    GS.lightbox.open('locale');
-    var modal = $('#lightbox .locale').clone();
-    GS.lightbox.close();
-
-    $('#lightbox_header h3', modal).html(title);
-    $('#lightbox_content .lightbox_content_block', modal).html(content);
-    $('#lightbox').prepend('<div class="lbcontainer ges"></div>');
-
-    var button = $('.close', modal).clone().removeClass('close').addClass('contribute').replaceWith('<a href="http://github.com/" target="blank" class="' + $('.close', modal).attr('class') + '">' + $('.close', modal).html() + '</a>');
-    var buttonCont = $('<ul class="right"><li class="last"></li></ul>');
-    $('span', button).html('Contribute Code');
-    $('li', buttonCont).append(button);
-    $('#lightbox_footer .left', modal).before(buttonCont);
-
-    GS.Controllers.BaseController.extend(
-          'GS.Controllers.Lightbox.GESController'
-        , { onDocument: false }
-        , {
-            init: function() {
-                this.element.html(modal.html());
-                $('.mod_link:last-child', '#lightbox_content').addClass('mod_last');
+function createMenuModal (title, content) {
+    var options = {
+          'title': title
+        , 'content': content
+        , 'buttons': [
+            { 
+                  'label': 'Contribute Code'
+                , 'link': 'http://github.com/'
+                , 'pos': 'right'
             }
-            , '.mod_link click': function(elem, evt) {
-                var self = $(elem); 
-                toggleModule.apply(self);
-            }
-        });
+        ]
+        , 'onpopup': function() {
+            $('.mod_link:last-child', '#lightbox_content').addClass('mod_last');
+            $('.mod_link', '#lightbox_content').click(function() {  
+                toggleModule.call(this);
+            });
+        }
+    };
+
+    ges.ui.createLightbox('ges', options);              
 }
 
-function MenuModalContent() {
+function MenuModalContent () {
     var content = '';
     var moduleBlock;
     var moduleTemplate = $('<div><a class="mod_link"><div class="mod_content"><span class="mod_name"></span><span class="mod_desc"></span></div><span class="mod_icon"></span><input type="hidden" /></a></div>');
@@ -101,10 +87,6 @@ function MenuModalContent() {
     }); 
 
     return content;
-}
-
-function openMenuModal() {
-    GS.lightbox.open('ges'); 
 }
 
 function toggleModule() { 

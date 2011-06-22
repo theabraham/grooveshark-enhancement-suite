@@ -3,7 +3,7 @@
 // @author          Ibrahim Al-Rajhi
 // @namespace       http://ibrahimalrajhi.com/
 // @name            Grooveshark Enhancement Suite
-// @include         http://grooveshark.com/#/*
+// @include         http://grooveshark.com/*
 // ==/UserScript==
 
 var RESOURCE_URL = 'http://localhost:4000/';

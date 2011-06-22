@@ -43,7 +43,7 @@
 
         length = duplicateIds.length;
         var message = length + ' duplicate' + ges.pluralize(length, '', 's') + ' ' + ges.pluralize(length, 'has', 'have') + ' been removed';
-        ges.ui.growl(modules['dupeDelete'].name, message);
+        ges.ui.notice({ 'message': message });
     }
 
 })(ges.modules.modules);

@@ -5,9 +5,9 @@
         , 'createLightbox': createLightbox
         , 'openLightbox': openLightbox
         , 'closeLightbox': closeLightbox
+        , 'notice': notice
         , 'addButton': addButton
-        , 'removeButton': removeButton
-        , 'growl': growl
+        , 'removeButton': removeButton 
     };
 
     function createLightbox(uid, options) { 
@@ -71,13 +71,14 @@
         GS.lightbox.close(); 
     }
 
+    function notice(options) {
+        options.type = (options.type || '');
+        options.message = (options.message || '');
+        options.displayDuration = (options.displayDuration || 2500);
+        options.manualClose = (options.manualClose || false);
 
-
-
-
-
-
-
+        GS.notice.displayMessage(options);
+    }
 
 
 
@@ -128,32 +129,6 @@
             }
         });
     }    
-
-    function growl(sender, message, delay) {
-        delay || (delay = 2500);
-        var container = growlContainer();
-        var template = growlTemplate(sender, message);
-        $(container).append(template);
-        $(template).slideDown('fast').delay(delay).fadeOut('slow');
-        setTimeout(function() { $(template).remove(); }, delay + 1000);
-    }
-
-    function growlTemplate(sender, message) {
-        var style = 'display:none; background:rgba(0,0,0,0.7); z-index:1000; padding:10px; color:#ddd; -moz-border-radius:3px; -webkit-border-radius:3px; font-size:11px; margin-top:6px;';
-        var template = $('<li style="' + style + '"><span class="sender">' + sender + '</span><span class="message">' + message + '</span></li>');
-        $('.sender', template).css({ 'display': 'block', 'margin-bottom': '6px', 'color': '#fff' });  
-        return $(template);
-    }
-
-    function growlContainer() {
-        var container = $('#growl_container');
-        if (container.length === 0) {
-            container = $('<ul id="growl_container"></ul>');
-            $(container).css({ 'position': 'absolute', 'width': '200px', 'bottom': 10, 'right': 10, 'z-index': '1000' });
-            $('#page_wrapper').append(container);
-        }
-        return $(container);
-    }
 
     window.ges || (window.ges = {});
     window.ges.ui = ui;

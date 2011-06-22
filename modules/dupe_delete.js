@@ -12,7 +12,7 @@
 
     function construct(instance) { 
         console.log('constructing dupeDelete');
-        Gs.createPlayerButton('#dupeDelete', {
+        ges.ui.addButton('#dupeDelete', {
               'label': 'dupeDelete'
             , 'placement': 'prepend'
             , 'onclick': removeDuplicates
@@ -21,7 +21,7 @@
 
     function destruct(instance) {
         console.log('destructing dupeDelete');
-        // Gs.removePlayerButton('#dupeDelete');
+        // ges.ui.removeButton('#dupeDelete');
     }
 
     function removeDuplicates() {
@@ -42,8 +42,8 @@
         player.removeSongs(duplicateIds);
 
         length = duplicateIds.length;
-        var message = length + ' duplicate' + Gs.pluralize(length, '', 's') + ' ' + Gs.pluralize(length, 'has', 'have') + ' been removed';
-        Gs.growl(modules['dupeDelete'].name, message);
+        var message = length + ' duplicate' + ges.pluralize(length, '', 's') + ' ' + ges.pluralize(length, 'has', 'have') + ' been removed';
+        ges.ui.growl(modules['dupeDelete'].name, message);
     }
 
 })(ges.modules.modules);

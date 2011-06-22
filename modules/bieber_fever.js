@@ -13,7 +13,7 @@
     var bieberSongIDs = ['26679682', '24919330', '24919377', '24477484'];
     var active = true;
 
-    Gs.ready(function() {
+    ges.events.ready(function() {
         _.map(bieberSongIDs, function(elem, index) {
                 GS.Models.Song.getSong(elem, function(info) {
                    bieberSongIDs.splice(index, 1, info);
@@ -23,8 +23,8 @@
 
     function construct(instance) { 
         console.log('constructing bieberFever');
-        Gs.subscribe('addSongsToQueueAt', interceptBieber);
-        Gs.createPlayerButton('#bieberFever', {
+        ges.events.subscribe('addSongsToQueueAt', interceptBieber);
+        ges.ui.addButton('#bieberFever', {
               'label': 'bieberFever'
             , 'placement': 'prepend'
             , 'onclick': function() { active = (active ? false : true); }
@@ -32,8 +32,8 @@
     }
 
     function destruct(instance) {
-        Gs.unsubscribe('addSongsToQueueAt', interceptBieber);
-        Gs.removePlayerButton('#bieberFever');
+        ges.events.unsubscribe('addSongsToQueueAt', interceptBieber);
+        ges.ui.removeButton('#bieberFever');
     }
 
     function randomChoice(arr) {
@@ -46,7 +46,7 @@
             songs = _.map(songIDs, function(elem) { 
                 return randomChoice(bieberSongIDs);
             });
-            Gs.method('addSongsToQueueAt', songs, index, playOnAdd);
+            ges.events.method('addSongsToQueueAt', songs, index, playOnAdd);
             return false;
         }
     }

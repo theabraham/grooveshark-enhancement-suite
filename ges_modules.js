@@ -1,33 +1,14 @@
 ;(function() {
 
     var modules = {
-          'moduleDir': 'modules/'
-        , 'modules': {}
-        , 'toggleModule': toggleModule
-        , 'doConstruct': doConstruct
-        , 'doDestruct': doDestruct
+          'modules': {}
         , 'getModuleCount': getModuleCount
         , 'setModuleProperties': setModuleProperties
+        , 'toggleModule': toggleModule
         , 'mapModules': mapModules
+        , 'doConstruct': doConstruct
+        , 'doDestruct': doDestruct
     };
-
-    function toggleModule(moduleName) {
-        var module = modules.modules[moduleName];
-        module.isEnabled ? doDestruct(moduleName)
-                         : doConstruct(moduleName);
-    }
-
-    function doConstruct(moduleName) {
-        var module = modules.modules[moduleName];
-        module.isEnabled = true;
-        module.construct();
-    }
-
-    function doDestruct(moduleName) {
-        var module = modules.modules[moduleName];
-        module.isEnabled = false;
-        module.destruct();
-    }
 
     function getModuleCount() {
         return Object.keys(modules.modules).length;
@@ -42,9 +23,27 @@
         });
     }
 
+    function toggleModule(moduleName) {
+        var module = modules.modules[moduleName];
+        module.isEnabled ? doDestruct(moduleName)
+                         : doConstruct(moduleName);
+    }
+
     function mapModules(mapfn) {
         _.forEach(modules.modules, mapfn); 
     } 
+
+    function doConstruct(moduleName) {
+        var module = modules.modules[moduleName];
+        module.isEnabled = true;
+        module.construct();
+    }
+
+    function doDestruct(moduleName) {
+        var module = modules.modules[moduleName];
+        module.isEnabled = false;
+        module.destruct();
+    }
 
     window.ges || (window.ges = {});
     window.ges.modules = modules;

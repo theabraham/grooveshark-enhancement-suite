@@ -2,16 +2,16 @@
 
     modules['bieberFever'] = {
           'version': '0.1'
+        , 'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Bieber Fever'
         , 'description': 'All songs added to the queue will be replaced with a random Justin Bieber song.'
-        , 'style': null
         , 'isEnabled': false
         , 'construct': construct
         , 'destruct': destruct
+        , 'style': null
     };
 
-    var bieberSongIDs = ['26679682', '24919330', '24919377', '24477484'];
-    var active = true;
+    var bieberSongIDs = ['26679682', '24919330', '24919377', '24477484', '29735743', '28490274'];
 
     ges.events.ready(function() {
         _.map(bieberSongIDs, function(elem, index) {
@@ -22,7 +22,6 @@
     });
 
     function construct() { 
-        console.log('constructing bieberFever');
         ges.events.subscribe('addSongsToQueueAt', interceptBieber);
     }
 
@@ -30,19 +29,14 @@
         ges.events.unsubscribe('addSongsToQueueAt', interceptBieber);
     }
 
-    function randomChoice(arr) {
-        return arr[Math.floor(Math.random() * arr.length)];
+    function randomChoice(list) {
+        return list[Math.floor(Math.random() * list.length)];
     }
 
-    function interceptBieber(songIDs, index, playOnAdd) {
-        if (active) {
-            var songs;
-            songs = _.map(songIDs, function(elem) { 
-                return randomChoice(bieberSongIDs);
-            });
-            ges.events.method('addSongsToQueueAt', songs, index, playOnAdd);
-            return false;
-        }
+    function interceptBieber() {
+        this[0] = _.map(this[0], function(elem) { 
+            return randomChoice(bieberSongIDs);
+        });
     }
 
 })(ges.modules.modules);

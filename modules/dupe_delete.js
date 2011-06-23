@@ -2,18 +2,19 @@
 
     modules['dupeDelete'] = {
           'version': '0.1'
+        , 'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Duplicate Song Remover'
         , 'description': 'Removes duplicate songs from your current queue.'
-        , 'style': null
         , 'isEnabled': true
         , 'construct': construct
         , 'destruct': destruct
+        , 'style': null
     };
 
     function construct() { 
         ges.ui.addPlayerButton('#dupeDelete', {
               'label': 'remove duplicates'
-            , 'pos': 'left'
+            , 'pos': 'right'
             , 'onclick': removeDuplicates
         });
     }
@@ -27,20 +28,17 @@
         var queue = player.getCurrentQueue().songs;
         var uniqueNames = {};
         var duplicateIds = [];
-        var cursong, sanitizedName, length;
+        var cleanName, length, message;
 
-        for (var i = 0; i < queue.length; i++) {
-            cursong = queue[i];
-            sanitizedName = cursong.SongName.toLowerCase();
-
-            (uniqueNames[sanitizedName] ? duplicateIds.push(cursong.queueSongID)
-                                        : uniqueNames[sanitizedName] = true);
-        }
-
+        _.forEach(queue, function(song, index) {
+            cleanName = song.SongName.toLowerCase();
+            uniqueNames[cleanName] ? duplicateIds.push(song.queueSongID)
+                                   : uniqueNames[cleanName] = true;
+        });
         player.removeSongs(duplicateIds);
 
         length = duplicateIds.length;
-        var message = length + ' duplicate' + ges.pluralize(length, '', 's') + ' ' + ges.pluralize(length, 'has', 'have') + ' been removed';
+        message = length + ' duplicate' + ges.pluralize(length, '', 's') + ' ' + ges.pluralize(length, 'has', 'have') + ' been removed';
         ges.ui.notice(message);
     }
 

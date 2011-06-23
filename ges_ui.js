@@ -13,7 +13,7 @@
 
     var PLAYER_DIV = '#playerDetails_queue';
 
-    function addPlayerButton(uid, options) {
+    function addPlayerButton (uid, options) {
         var buttonTag;
         options.label = (options.label || '');
         options.pos = (options.pos === 'left');
@@ -23,27 +23,30 @@
             return false; 
         } else {
             buttonTag = $('#queue_songs_button', PLAYER_DIV).clone().attr('id', uid.slice(1)).html('<span>' + options.label + '</span>');
-            $(buttonTag).click(options.onclick);
             this.playerButtons[uid] = { 'buttonTag': buttonTag, 'options': options };
             placePlayerButton(uid);
         }
     }
 
-    function placePlayerButton(uid) { 
-        var buttonTag = $(ui.playerButtons[uid].buttonTag);
-        var left = ui.playerButtons[uid].options.pos;
+    function placePlayerButton (uid) { 
+        var playerButton = ui.playerButtons[uid];
+        var buttonTag = $(playerButton.buttonTag);
+        var onclick = playerButton.options.onclick;
+        var left = playerButton.options.pos;
+
+        $(buttonTag).click(onclick);
         left ? $('.queueType', PLAYER_DIV).after(buttonTag)
-             : $(PLAYER_DIV).append(buttonTag);
+             : $('#queue_radio_button', PLAYER_DIV).after(buttonTag);
     }
 
-    function removePlayerButton(uid) { 
+    function removePlayerButton (uid) { 
         if (this.playerButtons[uid]) {
             $(uid, PLAYER_DIV).remove();
             delete this.playerButtons[uid];
         }
     }
 
-    function restorePlayerButtons() {
+    function restorePlayerButtons () {
         _.forEach(ui.playerButtons, function(button, key) { 
             if (!$(key, PLAYER_DIV).length) {
                 placePlayerButton(key);
@@ -51,7 +54,7 @@
         });
     }    
 
-    function createLightbox(uid, options) { 
+    function createLightbox (uid, options) { 
         var clone, button, controller = {};
         options.title = (options.title || '');
         options.content = (options.content || '');
@@ -81,7 +84,7 @@
         $('#lightbox').prepend('<div class="lbcontainer ' + uid + '"></div>');
     }
 
-    function addLightboxButton(lightbox, button) {
+    function addLightboxButton (lightbox, button) {
         var buttonTag, containerTag, linkText;
         button.label = (button.label || '');
         button.uid = (button.uid || button.label.trim().toLowerCase().replace(" ", "_"));
@@ -104,15 +107,15 @@
     }
 
 
-    function openLightbox(uid) {
+    function openLightbox (uid) {
         GS.lightbox.open(uid); 
     }
 
-    function closeLightbox() {
+    function closeLightbox () {
         GS.lightbox.close(); 
     }
 
-    function notice(message, options) {
+    function notice (message, options) {
         options || (options = {});
         options.message = message;
         options.type = (options.type || '');

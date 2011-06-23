@@ -106,7 +106,6 @@
         $('#lightbox_footer .left', lightbox).before(containerTag);
     }
 
-
     function openLightbox (uid) {
         GS.lightbox.open(uid); 
     }

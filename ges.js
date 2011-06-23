@@ -29,10 +29,11 @@
 })();
 
 ges.events.ready(function () { 
+    // setup interface
     ges.loadCSS('ges.css', { 'iconURL': $('#sidebar_footer_new .icon').css('background-image') });
+    createMenu('Grooveshark Enhancement Suite', menuContent());
     placeMenuButton(function() { ges.ui.openLightbox('ges'); });
     $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
-    createMenuModal('Grooveshark Enhancement Suite', MenuModalContent());
 
     // construct enabled modules
     ges.modules.mapModules(function (module, key) { 
@@ -51,7 +52,7 @@ function placeMenuButton (onclick) {
     $('a', '#header_nav_ges').click(onclick);
 }
 
-function createMenuModal (title, content) {
+function createMenu (title, content) {
     var options = {
           'title': title
         , 'content': content
@@ -78,7 +79,7 @@ function createMenuModal (title, content) {
     ges.ui.createLightbox('ges', options);              
 }
 
-function MenuModalContent () {
+function menuContent () {
     var content = '';
     var moduleBlock;
     var moduleTemplate = $('<div><a class="mod_link"><div class="mod_content"><span class="mod_name"></span><span class="mod_desc"></span></div><span class="mod_icon"></span></a></div>');

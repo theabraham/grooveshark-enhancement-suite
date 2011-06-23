@@ -13,7 +13,7 @@
 
     function construct() { 
         ges.ui.addPlayerButton('#dupeDelete', {
-              'label': 'remove duplicates'
+              'label': 'Remove Duplicates'
             , 'pos': 'right'
             , 'onclick': removeDuplicates
         });

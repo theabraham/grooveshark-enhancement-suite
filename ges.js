@@ -31,6 +31,7 @@
 ges.events.ready(function () { 
     ges.loadCSS('ges.css', { 'iconURL': $('#sidebar_footer_new .icon').css('background-image') });
     placeMenuButton(function() { ges.ui.openLightbox('ges'); });
+    $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
     createMenuModal('Grooveshark Enhancement Suite', MenuModalContent());
 
     // construct enabled modules
@@ -61,9 +62,14 @@ function createMenuModal (title, content) {
                 , 'pos': 'right'
             }
         ]
-        , 'onpopup': function() {
-            $('.mod_link:last-child', '#lightbox_content').addClass('mod_last');
-            $('.mod_link', '#lightbox_content').click(function() {  
+        , 'onpopup': function() { 
+            var container = '#lightbox_content';
+            ges.modules.mapModules(function(module, key, modules) {
+                if (!module.isEnabled) { return; }
+                $('#mod_' + key, container).addClass('enabled'); 
+            });
+            $('.mod_link:last-child', container).addClass('mod_last');
+            $('.mod_link', container).click(function() {  
                 toggleModule.call(this);
             });
         }
@@ -75,11 +81,11 @@ function createMenuModal (title, content) {
 function MenuModalContent () {
     var content = '';
     var moduleBlock;
-    var moduleTemplate = $('<div><a class="mod_link"><div class="mod_content"><span class="mod_name"></span><span class="mod_desc"></span></div><span class="mod_icon"></span><input type="hidden" /></a></div>');
+    var moduleTemplate = $('<div><a class="mod_link"><div class="mod_content"><span class="mod_name"></span><span class="mod_desc"></span></div><span class="mod_icon"></span></a></div>');
     
     ges.modules.mapModules(function(module, key, modules) {
         moduleBlock = $(moduleTemplate).clone();
-        if (module.isEnabled) { $('.mod_link', moduleBlock).addClass('enabled'); }
+        $('.mod_link', moduleBlock).attr('id', 'mod_' + key);
         $('.mod_name', moduleBlock).html(module.name);
         $('.mod_desc', moduleBlock).html(module.description);
         $('input', moduleBlock).val(key);
@@ -90,7 +96,7 @@ function MenuModalContent () {
 }
 
 function toggleModule() { 
-    var moduleName = $('input', this).val();
+    var moduleName = $(this).attr('id').slice(4);
     $(this).toggleClass('enabled'); 
     ges.modules.toggleModule(moduleName);
 }

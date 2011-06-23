@@ -10,18 +10,16 @@
         , 'destruct': destruct
     };
 
-    function construct(instance) { 
-        console.log('constructing dupeDelete');
-        ges.ui.addButton('#dupeDelete', {
-              'label': 'dupeDelete'
-            , 'placement': 'prepend'
+    function construct() { 
+        ges.ui.addPlayerButton('#dupeDelete', {
+              'label': 'remove duplicates'
+            , 'pos': 'left'
             , 'onclick': removeDuplicates
         });
     }
 
-    function destruct(instance) {
-        console.log('destructing dupeDelete');
-        // ges.ui.removeButton('#dupeDelete');
+    function destruct() {
+        ges.ui.removePlayerButton('#dupeDelete');
     }
 
     function removeDuplicates() {
@@ -43,7 +41,7 @@
 
         length = duplicateIds.length;
         var message = length + ' duplicate' + ges.pluralize(length, '', 's') + ' ' + ges.pluralize(length, 'has', 'have') + ' been removed';
-        ges.ui.notice({ 'message': message });
+        ges.ui.notice(message);
     }
 
 })(ges.modules.modules);

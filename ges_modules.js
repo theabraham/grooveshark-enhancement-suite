@@ -12,29 +12,29 @@
     };
 
     function toggleModule(moduleName) {
-        var module = this.modules[moduleName];
+        var module = modules.modules[moduleName];
         module.isEnabled ? doDestruct(moduleName)
                          : doConstruct(moduleName);
     }
 
     function doConstruct(moduleName) {
-        var module = this.modules[moduleName];
+        var module = modules.modules[moduleName];
         module.isEnabled = true;
-        module.construct(this);
+        module.construct();
     }
 
     function doDestruct(moduleName) {
-        var module = this.modules[moduleName];
+        var module = modules.modules[moduleName];
         module.isEnabled = false;
-        module.destruct(this);
+        module.destruct();
     }
 
     function getModuleCount() {
-        return Object.keys(this.modules).length;
+        return Object.keys(modules.modules).length;
     }
 
     function setModuleProperties(moduleName, properties) {
-        var module = this.modules[moduleName]
+        var module = modules.modules[moduleName]
         _.forEach(properties, function(property, name) {
             if (module.hasOwnProperty(name)) {
                 module[name] = property;
@@ -43,7 +43,7 @@
     }
 
     function mapModules(mapfn) {
-        _.forEach(this.modules, mapfn); 
+        _.forEach(modules.modules, mapfn); 
     } 
 
     window.ges || (window.ges = {});

@@ -21,19 +21,13 @@
             });
     });
 
-    function construct(instance) { 
+    function construct() { 
         console.log('constructing bieberFever');
         ges.events.subscribe('addSongsToQueueAt', interceptBieber);
-        ges.ui.addButton('#bieberFever', {
-              'label': 'bieberFever'
-            , 'placement': 'prepend'
-            , 'onclick': function() { active = (active ? false : true); }
-        });
     }
 
-    function destruct(instance) {
+    function destruct() {
         ges.events.unsubscribe('addSongsToQueueAt', interceptBieber);
-        ges.ui.removeButton('#bieberFever');
     }
 
     function randomChoice(arr) {

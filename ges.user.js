@@ -24,9 +24,11 @@ function appendScript(filename, async) {
 }
 
 appendScript('control.js', false);
+appendScript('ges_styles.js');
 appendScript('ges_events.js');
 appendScript('ges_ui.js');
 appendScript('ges_modules.js');
 appendScript('modules/dupe_delete.js');
 appendScript('modules/bieber_fever.js');
+appendScript('modules/lyrics.js');
 appendScript('ges.js');

@@ -13,7 +13,7 @@
 
     var PLAYER_DIV = '#playerDetails_queue';
 
-    function addPlayerButton (uid, options) {
+    function addPlayerButton(uid, options) {
         var buttonTag;
         options.label = (options.label || '');
         options.pos = (options.pos === 'left');
@@ -28,7 +28,7 @@
         }
     }
 
-    function placePlayerButton (uid) { 
+    function placePlayerButton(uid) { 
         var playerButton = ui.playerButtons[uid];
         var buttonTag = $(playerButton.buttonTag);
         var onclick = playerButton.options.onclick;
@@ -39,14 +39,14 @@
              : $('#queue_radio_button', PLAYER_DIV).after(buttonTag);
     }
 
-    function removePlayerButton (uid) { 
+    function removePlayerButton(uid) { 
         if (this.playerButtons[uid]) {
             $(uid, PLAYER_DIV).remove();
             delete this.playerButtons[uid];
         }
     }
 
-    function restorePlayerButtons () {
+    function restorePlayerButtons() {
         _.forEach(ui.playerButtons, function(button, key) { 
             if (!$(key, PLAYER_DIV).length) {
                 placePlayerButton(key);
@@ -54,7 +54,7 @@
         });
     }    
 
-    function createLightbox (uid, options) { 
+    function createLightbox(uid, options) { 
         var clone, button, controller = {};
         options.title = (options.title || '');
         options.content = (options.content || '');
@@ -84,7 +84,7 @@
         $('#lightbox').prepend('<div class="lbcontainer ' + uid + '"></div>');
     }
 
-    function addLightboxButton (lightbox, button) {
+    function addLightboxButton(lightbox, button) {
         var buttonTag, containerTag, linkText;
         button.label = (button.label || '');
         button.uid = (button.uid || button.label.trim().toLowerCase().replace(" ", "_"));
@@ -106,15 +106,15 @@
         $('#lightbox_footer .left', lightbox).before(containerTag);
     }
 
-    function openLightbox (uid) {
+    function openLightbox(uid) {
         GS.lightbox.open(uid); 
     }
 
-    function closeLightbox () {
+    function closeLightbox() {
         GS.lightbox.close(); 
     }
 
-    function notice (message, options) {
+    function notice(message, options) {
         options || (options = {});
         options.message = message;
         options.type = (options.type || '');

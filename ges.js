@@ -1,36 +1,6 @@
-;(function() {
-
-    var main = {
-          'version': '0.1'
-        , 'pluralize': pluralize
-        , 'loadCSS': loadCSS
-    };
-
-    function pluralize (count, single, plural) {
-        return count === 1 ? single : plural;
-    }
-
-    function loadCSS (filename, values) {
-        $.get('http://localhost:4000/public/' + filename, function (text) {
-            // mustache style css templating
-            text = text.replace(/\{\{.*\}\}/gi, function (match) { 
-                match = match.slice(2, -2);
-                match = match.trim();  
-                return values[match];
-            });
-
-            $('<style/>').text(text).appendTo('body');
-        });
-    }
-
-    window.ges || (window.ges = {});
-    for (var key in main) { window.ges[key] = main[key]; }
-
-})();
-
 ges.events.ready(function () { 
     // setup interface
-    ges.loadCSS('ges.css', { 'iconURL': $('#sidebar_footer_new .icon').css('background-image') });
+    ges.styles.load(ges.styles.menu, { 'iconURL': $('#sidebar_footer_new .icon').css('background-image') });
     createMenu('Grooveshark Enhancement Suite', menuContent());
     placeMenuButton(function() { ges.ui.openLightbox('ges'); });
     $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
@@ -38,7 +8,6 @@ ges.events.ready(function () {
     // construct enabled modules
     ges.modules.mapModules(function (module, key) { 
         if (module.isEnabled) { ges.modules.doConstruct(key); }
-        if (module.style) { loadCSS(module.style); }
     });
 });
 
@@ -59,7 +28,7 @@ function createMenu (title, content) {
         , 'buttons': [
             { 
                   'label': 'Contribute Code'
-                , 'link': 'http://github.com/'
+                , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
                 , 'pos': 'right'
             }
         ]

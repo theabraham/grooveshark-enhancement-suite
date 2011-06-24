@@ -1,8 +1,7 @@
 ;(function(modules) {
 
     modules['bieberFever'] = {
-          'version': '0.1'
-        , 'author': 'Ibrahim Al-Rajhi'
+          'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Bieber Fever'
         , 'description': 'All songs added to the queue will be replaced with a random Justin Bieber song.'
         , 'isEnabled': false

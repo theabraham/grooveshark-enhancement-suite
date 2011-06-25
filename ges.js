@@ -5,8 +5,9 @@ ges.events.ready(function () {
     placeMenuButton(function() { ges.ui.openLightbox('ges'); });
     $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
 
-    // construct enabled modules
+    // construct modules
     ges.modules.mapModules(function (module, key) { 
+        if (module.setup) { ges.modules.doSetup(key); }
         if (module.isEnabled) { ges.modules.doConstruct(key); }
     });
 });

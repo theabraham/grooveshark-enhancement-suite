@@ -6,7 +6,7 @@
     , "content_scripts": [
         {
               "matches": ["http://*.grooveshark.com/*"]
-            , "js": ["contentscript.js"]
+            , "js": ["jquery.min.js", "contentscript.js"]
         }
     ]
     , "permissions": ["http://lyrics.wikia.com/*", "http://listen.grooveshark.com/*"]

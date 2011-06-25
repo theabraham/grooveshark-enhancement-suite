@@ -6,6 +6,7 @@
         , 'setModuleProperties': setModuleProperties
         , 'toggleModule': toggleModule
         , 'mapModules': mapModules
+        , 'doSetup': doSetup
         , 'doConstruct': doConstruct
         , 'doDestruct': doDestruct
     };
@@ -32,6 +33,11 @@
     function mapModules(mapfn) {
         _.forEach(modules.modules, mapfn); 
     } 
+
+    function doSetup(moduleName) {
+        var module = modules.modules[moduleName];
+        module.setup();
+    }
 
     function doConstruct(moduleName) {
         var module = modules.modules[moduleName];

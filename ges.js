@@ -1,6 +1,7 @@
 ges.events.ready(function () { 
     // setup interface
     ges.styles.load(ges.styles.menu, { 'iconURL': $('#sidebar_footer_new .icon').css('background-image') });
+    ges.styles.load(ges.styles.notices);
     createMenu('Grooveshark Enhancement Suite', menuContent());
     placeMenuButton(function() { ges.ui.openLightbox('ges'); });
     $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);

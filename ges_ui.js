@@ -118,10 +118,18 @@
         options || (options = {});
         options.message = message;
         options.type = (options.type || '');
+        options.styles = (options.styles || false);
         options.displayDuration = (options.displayDuration || 2500);
         options.manualClose = (options.manualClose || false);
 
         GS.notice.displayMessage(options);
+
+        if (options.styles) { styleNotice(options.styles); }
+    }
+
+    function styleNotice(styles) { 
+        styles = styles.join(' ');
+        $('#notifications .notification:first-child').addClass(styles);
     }
 
     window.ges || (window.ges = {});

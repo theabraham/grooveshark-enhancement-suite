@@ -35,12 +35,17 @@
     function requestLyrics() {
         var song = GS.player.getCurrentSong();
         var formTag = $('#requestedLyricsInfo');
+        var message, options;
 
         if (song) { 
             $('input[name="song"]', formTag).val(song.SongName);
             $('input[name="artist"]', formTag).val(song.ArtistName);
-            console.log('SETTING', song.SongName, song.ArtistName);
             document.dispatchEvent(getLyricsEvent);
+        }
+        else {
+            message = 'Play a song before requesting its lyrics';
+            options = { 'type': 'error', 'manualClose': false };
+            ges.ui.notice(message, options);
         }
     }
 
@@ -50,12 +55,13 @@
         var message, options;
 
         if (result.success) {
-            message = '<strong>' + result.song + '<strong><br/>' + result.lyrics + '<p>Lyrics from <a href="' + result.url + '" target="blank">Lyrics Wikia</a>';
-            options = { 'type': 'form', 'manualClose': true };
+            // result.lyrics = cleanLyrics(result.lyrics);
+            message = '<strong>' + result.song + '<strong><br/><p>' + result.lyrics + '</p>';
+            options = { 'type': 'form', 'manualClose': true, 'styles': ['wide'] };
         } 
         else {
-            message = 'Lyrics not available for <strong>' + result.song + '</strong>. If you know the lyrics, why not \
-                       share them at <a href="' + result.url + '" target="blank">Lyrics Wikia</a>?';
+            message = 'Lyrics not available for <strong>' + result.song + '</strong>.<p>If you can find the lyrics, why not \
+                       share them at <a href="' + result.url + '" target="blank">Lyrics Wikia</a>?'</p>';
             options = { 'type': 'error', 'manualClose': false };
         }
 

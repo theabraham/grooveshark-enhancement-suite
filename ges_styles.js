@@ -16,13 +16,17 @@
         #lightbox .mod_last { margin-bottom:0; } \
     \ ';
 
+    var notices = ' \
+        #notifications li.wide { width:400px; margin:0 0 3px -150px; } \
+    \ ';
+
     var styles = {
           'load': load
         , 'menu': menu
+        , 'notices': notices
     };
 
     function load(style, values) {
-        console.log(style);
         style = style.replace(/\{\{.*\}\}/gi, function (match) { 
             match = match.slice(2, -2);
             match = match.trim();  

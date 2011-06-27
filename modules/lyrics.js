@@ -55,17 +55,26 @@
         var message, options;
 
         if (result.success) {
-            // result.lyrics = cleanLyrics(result.lyrics);
-            message = '<strong>' + result.song + '<strong><br/><p>' + result.lyrics + '</p>';
+            result.lyrics = cleanLyrics(result.lyrics);
+            message = '<p><strong>' + result.song + '</strong> - <em>' + result.artist + '</em></p><br/><div class="scrollable"><p>' + result.lyrics + '</p></div>';
             options = { 'type': 'form', 'manualClose': true, 'styles': ['wide'] };
         } 
         else {
-            message = 'Lyrics not available for <strong>' + result.song + '</strong>.<p>If you can find the lyrics, why not \
-                       share them at <a href="' + result.url + '" target="blank">Lyrics Wikia</a>?'</p>';
+            message = '<p>Lyrics not found for <strong>' + result.song + '</strong>. If you can find the lyrics, why not \
+                       share them at <a href="' + result.url + '" target="blank">Lyrics Wikia</a>?</p>';
             options = { 'type': 'error', 'manualClose': false };
         }
 
         ges.ui.notice(message, options);
+    }
+
+    function cleanLyrics(lyrics) {
+        var clean;
+        lyrics = $('<div>' + lyrics + '</div>');
+        clean = $(lyrics[0].outerHTML);
+        $('.rtMatcher', clean).remove();
+        
+        return clean.html();
     }
 
 })(ges.modules.modules);

@@ -3,7 +3,7 @@
     modules['dupeDelete'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Duplicate Song Remover'
-        , 'description': 'Removes duplicate songs from your current queue.'
+        , 'description': 'Remove duplicate songs from your current queue.'
         , 'isEnabled': true
         , 'construct': construct
         , 'destruct': destruct

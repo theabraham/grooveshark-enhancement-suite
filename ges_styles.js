@@ -17,6 +17,7 @@
     \ ';
 
     var notices = ' \
+        #notifications .scrollable { max-height:200px; overflow-y:auto; } \
         #notifications li.wide { width:400px; margin:0 0 3px -150px; } \
     \ ';
 

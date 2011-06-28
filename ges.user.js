@@ -29,6 +29,6 @@ appendScript('ges_events.js');
 appendScript('ges_ui.js');
 appendScript('ges_modules.js');
 appendScript('modules/dupe_delete.js');
-appendScript('modules/bieber_fever.js');
+appendScript('modules/shortcuts.js');
 appendScript('modules/lyrics.js');
 appendScript('ges.js');

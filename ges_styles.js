@@ -21,10 +21,17 @@
         #notifications li.wide { width:400px; margin:0 0 3px -150px; } \
     \ ';
 
+    var shortcuts = ' \
+        #lightbox .sc_name { display:block; color:#333; margin-bottom:8px; } \
+        #lightbox .sc_key { font-weight:bold; } \
+        #lightbox .sc_desc { } \
+    \ ';
+
     var styles = {
           'load': load
         , 'menu': menu
         , 'notices': notices
+        , 'shortcuts': shortcuts
     };
 
     function load(style, values) {

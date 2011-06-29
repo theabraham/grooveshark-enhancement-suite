@@ -3,11 +3,16 @@
     , "description": "Grooveshark Enhancement Suite "
     , "version": "1.0"
     , "background_page": "background.html"
+    , "permissions": ["http://lyrics.wikia.com/*", "http://*.grooveshark.com/*"]
     , "content_scripts": [
         {
               "matches": ["http://*.grooveshark.com/*"]
             , "js": ["jquery.min.js", "contentscript.js"]
         }
     ]
-    , "permissions": ["http://lyrics.wikia.com/*", "http://*.grooveshark.com/*"]
+    , "icons":
+        {
+              "48": "icons/48.png"
+            , "128": "icons/128.png"
+        }
 }

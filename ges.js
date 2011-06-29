@@ -1,15 +1,17 @@
 ges.events.ready(function () { 
+    _.forEach(ges.styles.defaults, function(style, index) {
+        ges.styles.load(style.css, style.getValues());
+    });
+    
     // setup interface
-    // TODO: make style loading more elegant
-    ges.styles.load(ges.styles.menu, { 'iconURL': $('#sidebar_footer_new .icon').css('background-image') });
-    ges.styles.load(ges.styles.notices);
-    ges.styles.load(ges.styles.shortcuts);
     createMenu('Grooveshark Enhancement Suite', menuContent());
     placeMenuButton(function() { ges.ui.openLightbox('ges'); });
     $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
 
     // construct modules
     ges.modules.mapModules(function (module, key) { 
+        module.isEnabled = ges.db.getIsEnabled(key);
+        if (module.style) { ges.styles.load(module.style.css, module.style.getValues()); }
         if (module.setup) { ges.modules.doSetup(key); }
         if (module.isEnabled) { ges.modules.doConstruct(key); }
     });
@@ -71,6 +73,7 @@ function menuContent() {
 
 function toggleModule() { 
     var moduleName = $(this).attr('id').slice(4);
+    var isEnabled = ges.modules.toggleModule(moduleName);
     $(this).toggleClass('enabled'); 
-    ges.modules.toggleModule(moduleName);
+    ges.db.setIsEnabled(moduleName, isEnabled);
 }

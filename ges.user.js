@@ -31,4 +31,5 @@ appendScript('ges_modules.js');
 appendScript('modules/dupe_delete.js');
 appendScript('modules/shortcuts.js');
 appendScript('modules/lyrics.js');
+appendScript('ges_db.js');
 appendScript('ges.js');

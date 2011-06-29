@@ -28,6 +28,7 @@
         var module = modules.modules[moduleName];
         module.isEnabled ? doDestruct(moduleName)
                          : doConstruct(moduleName);
+        return module.isEnabled;
     }
 
     function mapModules(mapfn) {

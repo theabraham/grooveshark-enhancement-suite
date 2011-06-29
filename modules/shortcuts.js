@@ -1,11 +1,17 @@
 ;(function(modules) {
 
+    var css = ' \
+        #lightbox .sc_name { display:block; color:#333; margin-bottom:8px; } \
+        #lightbox .sc_key { font-weight:bold; } \
+        #lightbox .sc_desc { } \
+    \ ';
+
     modules['shortcuts'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Shortcuts'
         , 'description': 'Make Grooveshark more responsive with keyboard shortcuts.'
         , 'isEnabled': true
-        , 'style': false
+        , 'style': { 'css': css, 'getValues': function() { return false; } }
         , 'setup': setup
         , 'construct': construct
         , 'destruct': destruct
@@ -17,7 +23,6 @@
         , 'a': function() { $('#queue_clear_button').click(); }
     };
 
-    // how to open pages pragmatically?
     var navigation = {
           'name': 'Navigation'
         , 'h': function() { console.log('HOME'); }
@@ -26,7 +31,6 @@
         , 'f': function() { console.log('FAVORITES'); }
     };
 
-    // create a lightbox for help
     var shortcuts = {
           'name': 'Global'
         , '?': function() { ges.ui.openLightbox('shortcuts'); console.log('QUESTION'); }

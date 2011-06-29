@@ -86,9 +86,7 @@
     }
     
     function construct() { 
-        $('body').bind('keypress', function() { console.log('HURRNNNNN'); });
         $('body').bind('keypress', route);
-        $('body').bind('keypress', function() { console.log('DERPRERE'); });
     }
 
     function destruct() {

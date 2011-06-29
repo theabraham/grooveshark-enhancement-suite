@@ -25,18 +25,20 @@
 
     var navigation = {
           'name': 'Navigation'
-        , 'h': function() { console.log('HOME'); }
-        , 'p': function() { console.log('PLAYLISTS'); }
-        , 'm': function() { console.log('MUSIC'); }
-        , 'f': function() { console.log('FAVORITES'); }
+        , 'h': function() { follow('#/'); }
+        , 'p': function() { follow($('li.sidebar_playlists a', '#sidebar').attr('href')); }
+        , 'm': function() { follow($('li.sidebar_myMusic a', '#sidebar').attr('href')); }
+        , 'f': function() { follow($('li.sidebar_favorites a', '#sidebar').attr('href')); }
     };
 
     var shortcuts = {
           'name': 'Global'
-        , '?': function() { ges.ui.openLightbox('shortcuts'); console.log('QUESTION'); }
+        , '?': function() { if (GS.lightbox.isOpen) { ges.ui.closeLightbox(); } else { ges.ui.openLightbox('shortcuts'); } }
         , 'p': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_previous').click(); } }
         , 'n': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_next').click(); } }
         , 'v': function() { GS.player.setVolume(this.quantifier); }
+        , '>': function() { GS.player.setVolume(GS.player.getVolume() + 10); }
+        , '<': function() { GS.player.setVolume(GS.player.getVolume() - 10); }
         , 'm': function() { $('#player_volume').click(); }
         , 's': function() { GS.player.saveQueue(); }
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
@@ -45,13 +47,12 @@
         , 'F': function() { $('#player_crossfade').click(); }
         , 'L': function() { $('#player_loop').click(); }
         , 'H': function() { GS.player.toggleQueue(); }
-
         , 'd': deletion
         , 'g': navigation
     };
 
     var descriptions = {
-          '?': 'open help dialogue'
+          '?': 'toggle the help dialogue'
         , 'ds': 'delete current song'
         , 'da': 'delete all songs'
         , 'gh': 'go home'
@@ -61,6 +62,8 @@
         , 'p': 'play previous song (takes quantifier)'
         , 'n': 'play next song (takes quantifier)'
         , 'v': 'set volume (takes quantifier)'
+        , '>': 'increase volume'
+        , '<': 'decrease volume'
         , 'm': 'toggle mute'
         , 's': 'save current queue as a playlist'
         , 'r': 'restore previous queue'
@@ -83,11 +86,17 @@
     }
     
     function construct() { 
+        $('body').bind('keypress', function() { console.log('HURRNNNNN'); });
         $('body').bind('keypress', route);
+        $('body').bind('keypress', function() { console.log('DERPRERE'); });
     }
 
     function destruct() {
         $('body').unbind('keypress', route);
+    }
+
+    function follow(hash) {
+        window.location.hash = hash;
     }
 
     function route(evt) {
@@ -109,6 +118,7 @@
         else {
             reset();
         }
+
         setTimer();
         console.log('char:', router.curChar, 'quantifier:', router.quantifier, 'scope:', router.scope, 'timer:', router.timer);
     } 
@@ -128,7 +138,7 @@
     function callShortcut() {
         var shortcut = router.scope[router.curChar];
         if (typeof shortcut === 'function') {
-            shortcut.call(router, parseInt(router.quantifier));
+            shortcut.call(router);
             reset();
         }
     }
@@ -144,6 +154,30 @@
             clearTimeout(router.timer);
             router.timer = null;
         }
+    }
+
+    function createHelpBox(title, content) {
+        var options = {
+              'title': title
+            , 'content': content
+            , 'buttons': [
+                { 
+                      'label': 'Contribute Code'
+                    , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
+                    , 'pos': 'right'
+                }
+            ]
+            , 'onpopup': function() { }
+        };
+
+        ges.ui.createLightbox('shortcuts', options);              
+    }
+
+    function createHelpContent() {
+        var content = '';
+        var shortcutTemplate = $('<div><span class="sc_key"></span> <span class="sc_desc"></span><br/></div>');
+        content = traverseShortcuts(shortcuts, '', content, shortcutTemplate);
+        return content;
     }
 
     function traverseShortcuts(scope, parentKey, content, template) {
@@ -166,30 +200,6 @@
 
         content += '</p>';
         return content;
-    }
-
-    function createHelpContent() {
-        var content = '';
-        var shortcutTemplate = $('<div><span class="sc_key"></span> <span class="sc_desc"></span><br/></div>');
-        content = traverseShortcuts(shortcuts, '', content, shortcutTemplate);
-        return content;
-    }
-
-    function createHelpBox(title, content) {
-        var options = {
-              'title': title
-            , 'content': content
-            , 'buttons': [
-                { 
-                      'label': 'Contribute Code'
-                    , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
-                    , 'pos': 'right'
-                }
-            ]
-            , 'onpopup': function() { }
-        };
-
-        ges.ui.createLightbox('shortcuts', options);              
     }
 
 })(ges.modules.modules);

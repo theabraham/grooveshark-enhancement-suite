@@ -1,6 +1,5 @@
-function codeForInjection() 
-{
-    // ... the combination of ges files will be placed here ...    
+function codeForInjection() {
+    // CODEGOESHEREOKAY
 }
 
 var returnLyricsEvent = document.createEvent('Events');

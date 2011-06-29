@@ -5,10 +5,10 @@
         , 'name': 'Song Lyrics'
         , 'description': 'Show the lyrics of the currently playing song.'
         , 'isEnabled': true
+        , 'style': false
         , 'setup': setup
         , 'construct': construct
         , 'destruct': destruct
-        , 'style': null
     };
 
     var getLyricsEvent = document.createEvent('Events');

@@ -5,10 +5,10 @@
         , 'name': 'Shortcuts'
         , 'description': 'Make Grooveshark more responsive with keyboard shortcuts.'
         , 'isEnabled': true
+        , 'style': false
         , 'setup': setup
         , 'construct': construct
         , 'destruct': destruct
-        , 'style': false
     };
 
     var deletion = {  

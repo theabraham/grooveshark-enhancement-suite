@@ -7,7 +7,7 @@
         , 'unsubscribe': unsubscribe
     };
 
-    function ready (callback, waitForDOM) { 
+    function ready(callback, waitForDOM) { 
         waitForDOM != null || (waitForDOM = true);
         var wait = function() {
             setTimeout(function() {
@@ -25,21 +25,21 @@
         }
     }
 
-    function subscribe (methodName, callback) {
+    function subscribe(methodName, callback) {
         var listener = getListenerFor(methodName);      
         if (listener) {
             listener.callbacks.push(callback);
         }
     }
 
-    function unsubscribe (methodName, callback) {
+    function unsubscribe(methodName, callback) {
         var listener = getListenerFor(methodName);
         if (listener) {
             removeCallbackFor(methodName, callback, listener);
         }
     }
 
-    function getListenerFor (methodName, createIfUndefined) { 
+    function getListenerFor(methodName, createIfUndefined) { 
         createIfUndefined != null || (createIfUndefined = true);
         var origMethod = GS.player.player[methodName];
         var listener = events.listeners[methodName];
@@ -68,7 +68,7 @@
         return listener;
     }
 
-    function removeCallbackFor (methodName, callback, listener) {
+    function removeCallbackFor(methodName, callback, listener) {
         _.forEach(listener.callbacks, function(fn, index, callbacks) {
             if (fn === callback) { callbacks.splice(index, 1); }
         });

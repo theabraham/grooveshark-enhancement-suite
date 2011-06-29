@@ -1,5 +1,6 @@
 ges.events.ready(function () { 
     // setup interface
+    // TODO: make style loading more elegant
     ges.styles.load(ges.styles.menu, { 'iconURL': $('#sidebar_footer_new .icon').css('background-image') });
     ges.styles.load(ges.styles.notices);
     ges.styles.load(ges.styles.shortcuts);
@@ -14,7 +15,7 @@ ges.events.ready(function () {
     });
 });
 
-function placeMenuButton (onclick) {
+function placeMenuButton(onclick) {
     var html = $('<ul id="ges_nav"><li id="header_nav_ges"><a></a></li></ul>');
     var left = $('#nav').width() + parseInt($('#nav').css('left'));
 
@@ -24,7 +25,7 @@ function placeMenuButton (onclick) {
     $('a', '#header_nav_ges').click(onclick);
 }
 
-function createMenu (title, content) {
+function createMenu(title, content) {
     var options = {
           'title': title
         , 'content': content
@@ -51,7 +52,7 @@ function createMenu (title, content) {
     ges.ui.createLightbox('ges', options);              
 }
 
-function menuContent () {
+function menuContent() {
     var content = '';
     var moduleBlock;
     var moduleTemplate = $('<div><a class="mod_link"><div class="mod_content"><span class="mod_name"></span><span class="mod_desc"></span></div><span class="mod_icon"></span></a></div>');

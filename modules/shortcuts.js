@@ -47,7 +47,7 @@
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
         , 'y': function() { GS.player.showVideoLightbox(); }
         , 'S': function() { $('#player_shuffle').click(); }
-        , 'F': function() { $('#player_crossfade').click(); }
+        , 'F': function() { GS.player.setCrossfadeEnabled(!GS.player.getCrossfadeEnabled()); }
         , 'H': function() { GS.player.toggleQueue(); }
         , 'L': function() { $('#player_loop').click(); }
         , 'd': deletion

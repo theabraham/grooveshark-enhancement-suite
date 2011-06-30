@@ -2,7 +2,9 @@
 
     var css = ' \
         #lightbox .sc_name { display:block; color:#333; margin-bottom:8px; } \
-        #lightbox .sc_key { font-weight:bold; } \
+        #lightbox .sc_wrap { display:inline-block; width:270px; margin-bottom:4px; } \
+        #lightbox .sc_wrap.sc_left { margin-right:15px; } \
+        #lightbox .sc_key { border:1px solid #B3B3B3; -webkit-border-radius:3px; width:2em; display:inline-block; text-align:center; background:white; margin-right:12px; border-bottom:2px solid #B3B3B3; font:normal 12px/20px Arial; } \
         #lightbox .sc_desc { } \
     \ ';
 
@@ -61,17 +63,17 @@
         , 'gp': 'go to my playlists'
         , 'gm': 'go to my music'
         , 'gf': 'go to my favorites'
-        , '<': 'play previous song (takes quantifier)'
-        , '>': 'play next song (takes quantifier)'
+        , '<': 'previous song (takes quantifier)'
+        , '>': 'next song (takes quantifier)'
         , 'v': 'set volume (takes quantifier)'
         , '+': 'increase volume'
         , '-': 'decrease volume'
         , 'm': 'toggle mute'
         , 's': 'save current queue as a playlist'
         , 'r': 'restore previous queue'
-        , 'y': 'open youtube results for current song'
+        , 'y': 'youtube current song'
         , 'S': 'toggle shuffle'
-        , 'F': 'toggle cross-fade (premium users only)'
+        , 'F': 'toggle cross-fade'
         , 'H': 'toggle queue size'
         , 'L': 'cycle loop'
     };
@@ -199,8 +201,8 @@
     }
 
     function createHelpContent() {
-        var content = '';
-        var shortcutTemplate = $('<div><span class="sc_key"></span> <span class="sc_desc"></span><br/></div>');
+        var content = '<p><span class="sc_name">Shortcut Commands</span><p>Certain commands take <em>quantifiers</em>, or numbers typed before a command key is pressed. This will either repeat the command a specified number of times or be used as an argument; for example, typing <em>25v</em> will set the player\'s volume to 25%.</p></p>';
+        var shortcutTemplate = $('<div><div class="sc_wrap"><span class="sc_key"></span> <span class="sc_desc"></span></div></div>');
         content = traverseShortcuts(shortcuts, '', content, shortcutTemplate);
         return content;
     }

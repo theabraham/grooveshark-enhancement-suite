@@ -21,8 +21,6 @@ function placeMenuButton(onclick) {
     var html = $('<ul id="ges_nav"><li id="header_nav_ges"><a></a></li></ul>');
     var left = $('#nav').width() + parseInt($('#nav').css('left'));
 
-    $(html).css({ 'position': 'absolute', 'left': left, 'top': '4px' });
-    $('a', html).css({ 'background': 'url(http://static.a.gs-cdn.net/webincludes/css/images/skeleton/nav.png)', 'display': 'block', 'width': '32px', 'height': '32px', 'position': 'relative' });
     $('#header').append(html);
     $('a', '#header_nav_ges').click(onclick);
 }

@@ -14,6 +14,10 @@
         #lightbox .mod_name { display:block; color:#333; margin-bottom:8px; } \
         #lightbox .mod_desc { color:#666; } \
         #lightbox .mod_last { margin-bottom:0; } \
+        #ges_nav { position:absolute; left:{{ leftPos }}px; top:4px; } \
+        #ges_nav a { background:url(http://static.a.gs-cdn.net/webincludes/css/images/skeleton/nav.png); background-position:0px 128px; display:block; width:32px; height:32px; position:relative; } \
+        #ges_nav a:hover { background-position:64px 128px; } \
+        #ges_nav a:active { background-position:32px 128px; } \
     \ ';
 
     var notices = ' \
@@ -31,7 +35,8 @@
 
     function load(style, values) {
         if (values) {
-            style = style.replace(/\{\{.*\}\}/gi, function (match) { 
+            style = style.replace(/\{\{.*?\}\}/gi, function (match) { 
+                console.log('match', match);
                 match = match.slice(2, -2);
                 match = match.trim();  
                 return values[match];
@@ -43,7 +48,8 @@
 
     function menuValues() { 
         var iconURL = $('#sidebar_footer_new .icon').css('background-image'); 
-        return { 'iconURL': iconURL };
+        var leftPos = $('#nav').width() + parseInt($('#nav').css('left'));
+        return { 'iconURL': iconURL, 'leftPos': leftPos };
     }
 
     window.ges || (window.ges = {});

@@ -3,7 +3,7 @@ ges.events.ready(function () {
         ges.styles.load(style.css, style.getValues());
     });
     
-    // setup the interface
+    // setup interface
     createMenu('Grooveshark Enhancement Suite', menuContent());
     placeMenuButton(function() { ges.ui.openLightbox('ges'); });
     $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);

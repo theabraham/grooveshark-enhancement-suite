@@ -36,7 +36,6 @@
     function load(style, values) {
         if (values) {
             style = style.replace(/\{\{.*?\}\}/gi, function (match) { 
-                console.log('match', match);
                 match = match.slice(2, -2);
                 match = match.trim();  
                 return values[match];

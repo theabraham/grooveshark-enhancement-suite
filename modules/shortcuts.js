@@ -9,7 +9,7 @@
     modules['shortcuts'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Shortcuts'
-        , 'description': 'Make Grooveshark more responsive with keyboard shortcuts.'
+        , 'description': 'Make Grooveshark more responsive with keyboard shortcuts (type ctrl+shift to activate.)'
         , 'isEnabled': true
         , 'style': { 'css': css, 'getValues': function() { return false; } }
         , 'setup': setup
@@ -34,19 +34,19 @@
     var shortcuts = {
           'name': 'Global'
         , '?': function() { if (GS.lightbox.isOpen) { ges.ui.closeLightbox(); } else { ges.ui.openLightbox('shortcuts'); } }
-        , 'p': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_previous').click(); } }
-        , 'n': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_next').click(); } }
+        , '<': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_previous').click(); } }
+        , '>': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_next').click(); } }
         , 'v': function() { GS.player.setVolume(this.quantifier); }
-        , '>': function() { GS.player.setVolume(GS.player.getVolume() + 10); }
-        , '<': function() { GS.player.setVolume(GS.player.getVolume() - 10); }
+        , '+': function() { GS.player.setVolume(GS.player.getVolume() + 10); }
+        , '-': function() { GS.player.setVolume(GS.player.getVolume() - 10); }
         , 'm': function() { $('#player_volume').click(); }
         , 's': function() { GS.player.saveQueue(); }
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
         , 'y': function() { GS.player.showVideoLightbox(); }
         , 'S': function() { $('#player_shuffle').click(); }
         , 'F': function() { $('#player_crossfade').click(); }
-        , 'L': function() { $('#player_loop').click(); }
         , 'H': function() { GS.player.toggleQueue(); }
+        , 'L': function() { $('#player_loop').click(); }
         , 'd': deletion
         , 'g': navigation
     };
@@ -59,19 +59,19 @@
         , 'gp': 'go to playlists'
         , 'gm': 'go to my music'
         , 'gf': 'go to my favorites'
-        , 'p': 'play previous song (takes quantifier)'
-        , 'n': 'play next song (takes quantifier)'
+        , '<': 'play previous song (takes quantifier)'
+        , '>': 'play next song (takes quantifier)'
         , 'v': 'set volume (takes quantifier)'
-        , '>': 'increase volume'
-        , '<': 'decrease volume'
+        , '+': 'increase volume'
+        , '-': 'decrease volume'
         , 'm': 'toggle mute'
         , 's': 'save current queue as a playlist'
         , 'r': 'restore previous queue'
         , 'y': 'open youtube results for current song'
         , 'S': 'toggle shuffle'
         , 'F': 'toggle cross-fade (premium users only)'
-        , 'L': 'cycle loop'
         , 'H': 'toggle queue size'
+        , 'L': 'cycle loop'
     };
 
     var router = { 
@@ -79,6 +79,7 @@
         , 'quantifier': ''
         , 'curChar': ''
         , 'timer': null
+        , 'comMode': false
     };
 
     function setup() {
@@ -87,10 +88,44 @@
     
     function construct() { 
         $('body').bind('keypress', route);
+        $('body').bind('keydown', useComMode);
     }
 
     function destruct() {
         $('body').unbind('keypress', route);
+        $('body').unbind('keydown', useComMode);
+        exitComMode();
+    }
+
+    function useComMode(evt) {
+        if (evt.shiftKey && evt.metaKey) {    
+            toggleComMode();
+        }
+    }
+
+    function toggleComMode() {
+        router.comMode ? exitComMode()
+                       : enterComMode();
+    }
+
+    function enterComMode() {
+        if (!router.comMode) {
+            ges.ui.notice('Using <em>command mode</em><br/>type <strong>?</strong> for help<br/>press <strong>ctrl+shift</strong> to exit', { 'type': 'success', 'displayDuration': 5e3 });
+            router.comMode = true;
+            $('input, textarea').live('focus', preventFocus);        
+        }
+    }
+
+    function exitComMode() {
+        if (router.comMode) {
+            ges.ui.notice('Exited <em>command mode</em>');
+            router.comMode = false;
+            $('input, textarea').die('focus', preventFocus);        
+        }
+    }
+
+    function preventFocus() {
+        $(this).blur();
     }
 
     function follow(hash) {
@@ -135,7 +170,7 @@
 
     function callShortcut() {
         var shortcut = router.scope[router.curChar];
-        if (typeof shortcut === 'function') {
+        if (typeof shortcut === 'function' && (router.comMode || shortcut === toggleComMode)) {
             shortcut.call(router);
             reset();
         }

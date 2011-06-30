@@ -11,7 +11,7 @@
     modules['shortcuts'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Shortcuts'
-        , 'description': 'Make Grooveshark more responsive with keyboard shortcuts; type <strong>`</strong> to activate.'
+        , 'description': 'Make Grooveshark responsive with keyboard shortcuts; type <strong>`</strong> (backtick) to activate.'
         , 'isEnabled': true
         , 'style': { 'css': css, 'getValues': function() { return false; } }
         , 'setup': setup

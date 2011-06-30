@@ -9,7 +9,7 @@
     modules['shortcuts'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Shortcuts'
-        , 'description': 'Make Grooveshark more responsive with keyboard shortcuts (type ctrl+shift to activate.)'
+        , 'description': 'Make Grooveshark more responsive with keyboard shortcuts; type <strong>`</strong> to activate.'
         , 'isEnabled': true
         , 'style': { 'css': css, 'getValues': function() { return false; } }
         , 'setup': setup
@@ -33,6 +33,7 @@
 
     var shortcuts = {
           'name': 'Global'
+        , '`': toggleComMode
         , '?': function() { if (GS.lightbox.isOpen) { ges.ui.closeLightbox(); } else { ges.ui.openLightbox('shortcuts'); } }
         , '<': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_previous').click(); } }
         , '>': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_next').click(); } }
@@ -52,11 +53,12 @@
     };
 
     var descriptions = {
-          '?': 'toggle the help dialogue'
+          '`': 'toggle command mode'
+        , '?': 'toggle the help dialogue'
         , 'ds': 'delete current song'
         , 'da': 'delete all songs'
         , 'gh': 'go home'
-        , 'gp': 'go to playlists'
+        , 'gp': 'go to my playlists'
         , 'gm': 'go to my music'
         , 'gf': 'go to my favorites'
         , '<': 'play previous song (takes quantifier)'
@@ -88,19 +90,11 @@
     
     function construct() { 
         $('body').bind('keypress', route);
-        $('body').bind('keydown', useComMode);
     }
 
     function destruct() {
         $('body').unbind('keypress', route);
-        $('body').unbind('keydown', useComMode);
         exitComMode();
-    }
-
-    function useComMode(evt) {
-        if (evt.shiftKey && evt.metaKey) {    
-            toggleComMode();
-        }
     }
 
     function toggleComMode() {
@@ -110,7 +104,7 @@
 
     function enterComMode() {
         if (!router.comMode) {
-            ges.ui.notice('Using <em>command mode</em><br/>type <strong>?</strong> for help<br/>press <strong>ctrl+shift</strong> to exit', { 'type': 'success', 'displayDuration': 5e3 });
+            ges.ui.notice('Using <em>command mode</em><br/>type <strong>?</strong> for help<br/>press <strong>`</strong> to exit', { 'type': 'success', 'displayDuration': 5e3 });
             router.comMode = true;
             $('input, textarea').live('focus', preventFocus);        
         }
@@ -133,12 +127,10 @@
     }
 
     function route(evt) {
-        if ($('input:focus, textarea:focus').length > 0) { return; }
-
         removeTimer();
         router.curChar = String.fromCharCode(evt.keyCode);
         var isNumber = !isNaN(parseInt(router.curChar));
-
+        
         if (isNumber) {
             router.quantifier += router.curChar;
         } 

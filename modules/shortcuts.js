@@ -35,12 +35,6 @@
         , 'l': openAlbum
     };
 
-    var page = {  
-          'name': 'Page'
-        , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
-        , 'c': cycleSorting
-    };
-
     var shortcuts = {
           'name': 'Global'
         , '`': toggleComMode
@@ -52,15 +46,16 @@
         , '-': function() { GS.player.setVolume(GS.player.getVolume() - 10); }
         , 'm': function() { $('#player_volume').click(); }
         , 's': function() { GS.player.saveQueue(); }
+        , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
+        , 'f': function() { GS.user.addToSongFavorites(GS.player.getCurrentSong().SongID); }
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
         , 'y': function() { GS.player.showVideoLightbox(); }
-        , 'S': function() { $('#player_shuffle').click(); }
-        , 'F': function() { GS.player.setCrossfadeEnabled(!GS.player.getCrossfadeEnabled()); }
+        , 'F': function() { $('#player_shuffle').click(); }
+        , 'C': function() { GS.player.setCrossfadeEnabled(!GS.player.getCrossfadeEnabled()); }
         , 'H': function() { GS.player.toggleQueue(); }
         , 'L': function() { $('#player_loop').click(); }
         , 'd': deletion
         , 'g': navigation
-        , 'p': page
     };
 
     var descriptions = {
@@ -76,8 +71,6 @@
         , 'gf': 'go to my favorites'
         , 'ga': 'open playing song\'s artist'
         , 'gl': 'open playing song\'s album'
-        , 'pa': 'play all songs on page'
-        , 'pc': 'cycle through song sorting'
         , '<': 'previous song (<strong>*</strong> repeat count)'
         , '>': 'next song (<strong>*</strong> repeat count)'
         , 'v': 'set volume (<strong>*</strong> percentage)'
@@ -85,10 +78,12 @@
         , '-': 'decrease volume'
         , 'm': 'toggle mute'
         , 's': 'save current queue as a playlist'
+        , 'a': 'play all songs on page'
+        , 'f': 'add current song to favorites'
         , 'r': 'restore previous queue'
         , 'y': 'youtube current song'
-        , 'S': 'toggle shuffle'
-        , 'F': 'toggle cross-fade'
+        , 'F': 'toggle shuffle'
+        , 'C': 'toggle cross-fade'
         , 'H': 'toggle queue size'
         , 'L': 'cycle loop'
     };
@@ -167,6 +162,8 @@
         }); 
     }
 
+    /*
+     * Has some special cases, so I'll integrate it later
     function cycleSorting() {
         var prevSort = $('#page_header .sort .dropdown li.ges_prev');
         var firstSort = $('#page_header .sort .dropdown li.first + li');
@@ -182,6 +179,7 @@
         $(nextSort).addClass('ges_prev');
         $('a', nextSort).click();
     }
+    */
 
     function route(evt) {
         removeTimer();

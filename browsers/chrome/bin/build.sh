@@ -12,12 +12,15 @@ modules/shortcuts.js
 ges_db.js
 ges.js
 "
+echo "Build Starting."
 
 for file in $FILES 
 do
     cat $PROJ_DIR/$file >> combined.js
+    echo " > ${file}"
 done
 
 sed -e '/CODEGOESHEREOKAY/ r combined.js' < contentscript.temp.js > contentscript.js
 mv contentscript.js ../contentscript.js
 rm combined.js
+echo "Build Complete."

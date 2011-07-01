@@ -4,7 +4,7 @@
         #lightbox .sc_name { display:block; color:#333; margin-bottom:8px; } \
         #lightbox .sc_wrap { display:inline-block; width:270px; margin-bottom:4px; } \
         #lightbox .sc_wrap.sc_left { margin-right:15px; } \
-        #lightbox .sc_key { border:1px solid #B3B3B3; -webkit-border-radius:3px; width:2em; display:inline-block; text-align:center; background:white; margin-right:12px; border-bottom:2px solid #B3B3B3; font:normal 12px/20px Arial; } \
+        #lightbox .sc_key { background:#F6F6F6; box-shadow:inset 0 1px 0 #fff; border:1px solid #B3B3B3; -webkit-border-radius:3px; width:2em; display:inline-block; text-align:center; margin-right:12px; border-bottom:2px solid #B3B3B3; font:normal 12px/20px Arial; } \
         #lightbox .sc_desc { } \
     \ ';
 
@@ -28,9 +28,17 @@
     var navigation = {
           'name': 'Navigation'
         , 'h': function() { follow('#/'); }
-        , 'p': function() { follow($('li.sidebar_playlists a', '#sidebar').attr('href')); }
+        , 'p': openPlaylist
         , 'm': function() { follow($('li.sidebar_myMusic a', '#sidebar').attr('href')); }
         , 'f': function() { follow($('li.sidebar_favorites a', '#sidebar').attr('href')); }
+        , 'a': function() { follow(GS.player.getCurrentSong().toArtistUrl()); }
+        , 'l': openAlbum
+    };
+
+    var page = {  
+          'name': 'Page'
+        , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
+        , 'c': cycleSorting
     };
 
     var shortcuts = {
@@ -52,20 +60,27 @@
         , 'L': function() { $('#player_loop').click(); }
         , 'd': deletion
         , 'g': navigation
+        , 'p': page
     };
 
     var descriptions = {
-          '`': 'toggle command mode'
+          'intro': 'Commands marked with astericks (*) take <em>quantifiers</em>, or numbers typed before the command\'s key is pressed. This will either repeat \
+                    the command a specified number of times or be used as an argument; for example, typing <em>25v</em> will set the player\'s volume to 25%.'
+        , '`': 'toggle command mode'
         , '?': 'toggle the help dialogue'
         , 'ds': 'delete current song'
         , 'da': 'delete all songs'
         , 'gh': 'go home'
-        , 'gp': 'go to my playlists'
+        , 'gp': 'go to playlist (<strong>*</strong> sidebar position)'
         , 'gm': 'go to my music'
         , 'gf': 'go to my favorites'
-        , '<': 'previous song (takes quantifier)'
-        , '>': 'next song (takes quantifier)'
-        , 'v': 'set volume (takes quantifier)'
+        , 'ga': 'open playing song\'s artist'
+        , 'gl': 'open playing song\'s album'
+        , 'pa': 'play all songs on page'
+        , 'pc': 'cycle through song sorting'
+        , '<': 'previous song (<strong>*</strong> repeat count)'
+        , '>': 'next song (<strong>*</strong> repeat count)'
+        , 'v': 'set volume (<strong>*</strong> percentage)'
         , '+': 'increase volume'
         , '-': 'decrease volume'
         , 'm': 'toggle mute'
@@ -126,6 +141,46 @@
 
     function follow(hash) {
         window.location.hash = hash;
+    }
+
+    function openPlaylist() {
+        var playlistUrls = [];
+        var playlistUrl;
+
+        if (this.quantifier) {
+            _.forEach(GS.user.playlists, function(playlist, key) { 
+                playlistUrls[playlist.sidebarSort - 1] = playlist.toUrl(); 
+            });
+            playlistUrl = playlistUrls[this.quantifier - 1];
+        }
+        else { 
+            playlistUrl = $('li.sidebar_playlists a', '#sidebar').attr('href');
+        } 
+
+        follow(playlistUrl);
+    }
+
+    function openAlbum() {
+        var albumID = GS.player.getCurrentSong().AlbumID;
+        GS.Models.Album.getAlbum(albumID, function(album) { 
+            follow(album.toUrl()); 
+        }); 
+    }
+
+    function cycleSorting() {
+        var prevSort = $('#page_header .sort .dropdown li.ges_prev');
+        var firstSort = $('#page_header .sort .dropdown li.first + li');
+        var nextSort;
+
+        if ($(prevSort).length === 0 || $(prevSort).hasClass('last')) {
+            nextSort = firstSort;
+        } else {
+            nextSort = $('#page_header .sort .dropdown li.ges_prev + li');
+        }
+
+        $(prevSort).removeClass('ges_prev');
+        $(nextSort).addClass('ges_prev');
+        $('a', nextSort).click();
     }
 
     function route(evt) {
@@ -201,7 +256,7 @@
     }
 
     function createHelpContent() {
-        var content = '<p><span class="sc_name">Shortcut Commands</span><p>Certain commands take <em>quantifiers</em>, or numbers typed before a command key is pressed. This will either repeat the command a specified number of times or be used as an argument; for example, typing <em>25v</em> will set the player\'s volume to 25%.</p></p>';
+        var content = '<p><span class="sc_name">Shortcut Commands</span><p>' + descriptions['intro'] + '</p></p>';
         var shortcutTemplate = $('<div><div class="sc_wrap"><span class="sc_key"></span> <span class="sc_desc"></span></div></div>');
         content = traverseShortcuts(shortcuts, '', content, shortcutTemplate);
         return content;

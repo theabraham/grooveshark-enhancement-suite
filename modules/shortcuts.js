@@ -6,6 +6,7 @@
         #lightbox .sc_wrap.sc_left { margin-right:15px; } \
         #lightbox .sc_key { background:#F6F6F6; box-shadow:inset 0 1px 0 #fff; border:1px solid #B3B3B3; -webkit-border-radius:3px; width:2em; display:inline-block; text-align:center; margin-right:12px; border-bottom:2px solid #B3B3B3; font:normal 12px/20px Arial; } \
         #lightbox .sc_desc { } \
+        #ges_search_pane { position:absolute; display:none; width:420px; margin-left:-222px; top:0; left:50%; z-index:99999; padding:24px; font:bold 20px/30px "Lucida Grande", Verdana, Arial, sans-serif; background:rgba(0,0,0,0.75); color:#fff; -webkit-border-radius:3px; } \
     \ ';
 
     modules['shortcuts'] = {
@@ -39,13 +40,14 @@
           'name': 'Global'
         , '`': toggleComMode
         , '?': function() { if (GS.lightbox.isOpen) { ges.ui.closeLightbox(); } else { ges.ui.openLightbox('shortcuts'); } }
+        , '/': enterSearchMode
         , '<': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_previous').click(); } }
         , '>': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_next').click(); } }
         , 'v': function() { GS.player.setVolume(this.quantifier); }
         , '+': function() { GS.player.setVolume(GS.player.getVolume() + 10); }
         , '-': function() { GS.player.setVolume(GS.player.getVolume() - 10); }
         , 'm': function() { $('#player_volume').click(); }
-        , 's': function() { GS.player.saveQueue(); }
+        , 's': function() { exitComMode(); GS.player.saveQueue(); }
         , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
         , 'f': function() { GS.user.addToSongFavorites(GS.player.getCurrentSong().SongID); }
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
@@ -63,6 +65,7 @@
                     the command a specified number of times or be used as an argument; for example, typing <em>25v</em> will set the player\'s volume to 25%.'
         , '`': 'toggle command mode'
         , '?': 'toggle the help dialogue'
+        , '/': 'enter into search mode'
         , 'ds': 'delete current song'
         , 'da': 'delete all songs'
         , 'gh': 'go home'
@@ -94,6 +97,8 @@
         , 'curChar': ''
         , 'timer': null
         , 'comMode': false
+        , 'searchMode': false
+        , 'query': ''
     };
 
     function setup() {
@@ -129,9 +134,73 @@
             $('input, textarea').die('focus', preventFocus);        
         }
     }
-
+    
     function preventFocus() {
         $(this).blur();
+    }
+
+    function enterSearchMode() {
+        if (!router.searchMode) {
+            router.searchMode = true;
+            router.query = '';
+            showSearchPane();
+            $('body').bind('keydown', buildSearch);
+        }
+    }
+
+    function exitSearchMode() {
+        if (router.searchMode) {
+            router.searchMode = false;
+            router.query = '';
+            hideSearchPane();
+            $('body').unbind('keydown', buildSearch);
+            reset();
+        }
+    }
+
+    function buildSearch(evt) {
+        var curKey = String.fromCharCode(evt.keyCode);
+        var isEnter = (evt.keyCode === 13);
+        var isSpace = (evt.keyCode === 32);
+        var isBackspace = (evt.keyCode === 8);
+        var isEscape = (evt.keyCode === 27);
+
+        if (isEnter) {
+            GS.router.performSearch('song', router.query);
+            exitSearchMode();
+            return;
+        }
+        else if (isEscape) {
+            exitSearchMode();
+            return;
+        }
+        else if (isSpace) {
+            router.query += ' ';
+        }
+        else if (isBackspace) {
+            router.query = router.query.slice(0, -1);
+        }
+        else {
+            curKey = curKey.toLowerCase();
+            router.query += curKey;
+        }
+
+        updateSearchPane(router.query);
+        return false;
+    }
+
+    function showSearchPane() {
+        var searchTag = '<div id="ges_search_pane">...</div>';
+        $('body').append(searchTag);
+        $('#ges_search_pane').slideDown(250);
+    }
+
+    function hideSearchPane() {
+        $('#ges_search_pane').slideUp(250).delay(250).remove();
+    }
+
+    function updateSearchPane(query) {
+        $('#ges_search_pane').html(query); 
     }
 
     function follow(hash) {
@@ -162,30 +231,13 @@
         }); 
     }
 
-    /*
-     * Has some special cases, so I'll integrate it later
-    function cycleSorting() {
-        var prevSort = $('#page_header .sort .dropdown li.ges_prev');
-        var firstSort = $('#page_header .sort .dropdown li.first + li');
-        var nextSort;
-
-        if ($(prevSort).length === 0 || $(prevSort).hasClass('last')) {
-            nextSort = firstSort;
-        } else {
-            nextSort = $('#page_header .sort .dropdown li.ges_prev + li');
-        }
-
-        $(prevSort).removeClass('ges_prev');
-        $(nextSort).addClass('ges_prev');
-        $('a', nextSort).click();
-    }
-    */
-
     function route(evt) {
         removeTimer();
         router.curChar = String.fromCharCode(evt.keyCode);
         var isNumber = !isNaN(parseInt(router.curChar));
-        
+
+        if (router.searchMode) { return false; }
+
         if (isNumber) {
             router.quantifier += router.curChar;
         } 

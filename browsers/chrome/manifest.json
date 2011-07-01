@@ -3,7 +3,7 @@
     , "description": "Grooveshark Enhancement Suite "
     , "version": "1.0"
     , "background_page": "background.html"
-    , "permissions": ["http://lyrics.wikia.com/*", "http://*.grooveshark.com/*"]
+    , "permissions": ["http://lyrics.wikia.com/*", "http://*.grooveshark.com/*", "tabs"]
     , "content_scripts": [
         {
               "matches": ["http://*.grooveshark.com/*"]

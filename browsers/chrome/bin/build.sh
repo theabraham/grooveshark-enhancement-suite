@@ -1,24 +1,34 @@
 #!/bin/sh
 
 PROJ_DIR='../../..'
-FILES="
+PREFILES="
 ges_styles.js
 ges_events.js
 ges_ui.js
 ges_modules.js
-modules/dupe_delete.js
-modules/lyrics.js
-modules/shortcuts.js
+"
+POSTFILES="
 ges_db.js
 ges.js
 "
-echo "Build Starting."
 
-for file in $FILES 
+for file in $PREFILES 
 do
     cat $PROJ_DIR/$file >> combined.js
     echo " > ${file}"
 done
+
+find ${PROJ_DIR}/modules -name "*.js"  | while read FILENAME;
+do
+    cat $FILENAME >> combined.js
+    echo " > ${FILENAME}"
+done 
+
+for file in $POSTFILES
+do
+    cat $PROJ_DIR/$file >> combined.js
+    echo " > ${file}"
+done 
 
 sed -e '/CODEGOESHEREOKAY/ r combined.js' < contentscript.temp.js > contentscript.js
 mv contentscript.js ../contentscript.js

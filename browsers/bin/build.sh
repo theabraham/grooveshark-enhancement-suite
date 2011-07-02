@@ -1,11 +1,16 @@
 #!/bin/sh
 
-PROJ_DIR='../../..'
+PROJ_DIR='../..'
 PREFILES="
 ges_styles.js
 ges_events.js
 ges_ui.js
 ges_modules.js
+"
+MODULES="
+dupe_delete.js
+lyrics.js
+shortcuts.js
 "
 POSTFILES="
 ges_db.js
@@ -18,11 +23,11 @@ do
     echo " > ${file}"
 done
 
-find ${PROJ_DIR}/modules -name "*.js"  | while read FILENAME;
+for file in $MODULES
 do
-    cat $FILENAME >> combined.js
-    echo " > ${FILENAME}"
-done 
+    cat $PROJ_DIR/modules/$file >> combined.js
+    echo " > ${file}"
+done
 
 for file in $POSTFILES
 do
@@ -31,6 +36,6 @@ do
 done 
 
 sed -e '/CODEGOESHEREOKAY/ r combined.js' < contentscript.temp.js > contentscript.js
-mv contentscript.js ../contentscript.js
+mv contentscript.js ../chrome/contentscript.js
 rm combined.js
 echo "Build Complete."

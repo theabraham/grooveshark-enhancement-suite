@@ -22,7 +22,7 @@
 
     var deletion = {  
           'name': 'Deletion'
-        , 's': function() { GS.player.removeSongs(GS.player.currentSong.queueSongID); }
+        , 's': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { GS.player.removeSongs(GS.player.currentSong.queueSongID); } }
         , 'a': function() { $('#queue_clear_button').click(); }
     };
 
@@ -66,7 +66,7 @@
         , '`': 'toggle command mode'
         , '?': 'toggle the help dialogue'
         , '/': 'enter into search mode'
-        , 'ds': 'delete current song'
+        , 'ds': 'delete current song (<strong>*</strong> repeat count)''
         , 'da': 'delete all songs'
         , 'gh': 'go home'
         , 'gp': 'go to playlist (<strong>*</strong> sidebar position)'
@@ -166,7 +166,7 @@
         var isEscape = (evt.keyCode === 27);
 
         if (isEnter) {
-            GS.router.performSearch('song', router.query);
+            GS.router.performSearch('', router.query);
             exitSearchMode();
             return;
         }
@@ -204,7 +204,7 @@
     }
 
     function follow(hash) {
-        window.location.hash = hash;
+        location.hash = hash;
     }
 
     function openPlaylist() {

@@ -20,6 +20,18 @@
         , 'destruct': destruct
     };
 
+    function setup() {
+        createHelpBox('Keyboard Shortcuts', createHelpContent());        
+    }
+    
+    function construct() { 
+        $('body').bind('keypress', captureKey);
+    }
+
+    function destruct() {
+        $('body').unbind('keypress', captureKey);
+    }
+
     var deletion = {  
           'name': 'Deletion'
         , 's': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { GS.player.removeSongs(GS.player.currentSong.queueSongID); } }
@@ -38,7 +50,6 @@
 
     var shortcuts = {
           'name': 'Global'
-        , '`': toggleComMode
         , '?': function() { if (GS.lightbox.isOpen) { ges.ui.closeLightbox(); } else { ges.ui.openLightbox('shortcuts'); } }
         , '/': enterSearchMode
         , '<': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_previous').click(); } }
@@ -63,10 +74,9 @@
     var descriptions = {
           'intro': 'Commands marked with astericks (*) take <em>quantifiers</em>, or numbers typed before the command\'s key is pressed. This will either repeat \
                     the command a specified number of times or be used as an argument; for example, typing <em>25v</em> will set the player\'s volume to 25%.'
-        , '`': 'toggle command mode'
         , '?': 'toggle the help dialogue'
         , '/': 'enter into search mode'
-        , 'ds': 'delete current song (<strong>*</strong> repeat count)''
+        , 'ds': 'delete current song (<strong>*</strong> repeat count)'
         , 'da': 'delete all songs'
         , 'gh': 'go home'
         , 'gp': 'go to playlist (<strong>*</strong> sidebar position)'
@@ -96,111 +106,72 @@
         , 'quantifier': ''
         , 'curChar': ''
         , 'timer': null
-        , 'comMode': false
-        , 'searchMode': false
-        , 'query': ''
     };
 
-    function setup() {
-        createHelpBox('Keyboard Shortcuts', createHelpContent());        
-    }
-    
-    function construct() { 
-        $('body').bind('keypress', route);
+    function reset() {
+        router.scope = shortcuts;
+        router.quantifier = '';
+        router.timer = null;
     }
 
-    function destruct() {
-        $('body').unbind('keypress', route);
-        exitComMode();
-    }
+    function captureKey(evt) {
+        var isNumber, isInput = $(this).is('input, textarea');
+        if (!isInput) { 
+            removeTimer();
+            router.curChar = String.fromCharCode(evt.keyCode);
+            isNumber = !isNaN(parseInt(router.curChar));
 
-    function toggleComMode() {
-        router.comMode ? exitComMode()
-                       : enterComMode();
-    }
+            isNumber ? router.quantifier += router.curChar
+                     : route();
 
-    function enterComMode() {
-        if (!router.comMode) {
-            ges.ui.notice('Using <em>command mode</em><br/>type <strong>?</strong> for help<br/>press <strong>`</strong> to exit', { 'type': 'success', 'displayDuration': 5e3 });
-            router.comMode = true;
-            $('input, textarea').live('focus', preventFocus);        
+            setTimer();
+            console.log('char:', router.curChar, 'quantifier:', router.quantifier, 'scope:', router.scope, 'timer:', router.timer);
         }
     }
 
-    function exitComMode() {
-        if (router.comMode) {
-            ges.ui.notice('Exited <em>command mode</em>');
-            router.comMode = false;
-            $('input, textarea').die('focus', preventFocus);        
+    function route() {
+        switch (typeof router.scope[router.curChar]) {
+            case 'object':
+                router.scope = router.scope[router.curChar];
+                break;
+            case 'function':
+                callShortcut();
+                break;
+            default:
+                reset();
+                break;
         }
-    }
-    
-    function preventFocus() {
-        $(this).blur();
-    }
+    } 
 
-    function enterSearchMode() {
-        if (!router.searchMode) {
-            router.searchMode = true;
-            router.query = '';
-            showSearchPane();
-            $('body').bind('keydown', buildSearch);
-        }
-    }
-
-    function exitSearchMode() {
-        if (router.searchMode) {
-            router.searchMode = false;
-            router.query = '';
-            hideSearchPane();
-            $('body').unbind('keydown', buildSearch);
+    function callShortcut() {
+        var shortcut = router.scope[router.curChar];
+        if (typeof shortcut === 'function') {
+            shortcut.call(router);
             reset();
         }
     }
 
-    function buildSearch(evt) {
-        var curKey = String.fromCharCode(evt.keyCode);
-        var isEnter = (evt.keyCode === 13);
-        var isSpace = (evt.keyCode === 32);
-        var isBackspace = (evt.keyCode === 8);
-        var isEscape = (evt.keyCode === 27);
-
-        if (isEnter) {
-            GS.router.performSearch('', router.query);
-            exitSearchMode();
-            return;
+    function setTimer() {
+        if (!router.timer) {
+            router.timer = setTimeout(reset, 3e3);
         }
-        else if (isEscape) {
-            exitSearchMode();
-            return;
-        }
-        else if (isSpace) {
-            router.query += ' ';
-        }
-        else if (isBackspace) {
-            router.query = router.query.slice(0, -1);
-        }
-        else {
-            curKey = curKey.toLowerCase();
-            router.query += curKey;
-        }
-
-        updateSearchPane(router.query);
-        return false;
     }
 
-    function showSearchPane() {
-        var searchTag = '<div id="ges_search_pane">...</div>';
-        $('body').append(searchTag);
-        $('#ges_search_pane').slideDown(250);
+    function removeTimer() {
+        if (router.timer) {
+            clearTimeout(router.timer);
+            router.timer = null;
+        }
     }
 
-    function hideSearchPane() {
-        $('#ges_search_pane').slideUp(250).delay(250).remove();
+    function cleanQuant() { 
+        var quantifier = parseInt(router.quantifier);
+        if (isNaN(quantifier)) { return 1; }
+        return quantifier;
     }
 
-    function updateSearchPane(query) {
-        $('#ges_search_pane').html(query); 
+    function preventFocus() {
+        $(this).blur();
     }
 
     function follow(hash) {
@@ -229,63 +200,6 @@
         GS.Models.Album.getAlbum(albumID, function(album) { 
             follow(album.toUrl()); 
         }); 
-    }
-
-    function route(evt) {
-        removeTimer();
-        router.curChar = String.fromCharCode(evt.keyCode);
-        var isNumber = !isNaN(parseInt(router.curChar));
-
-        if (router.searchMode) { return false; }
-
-        if (isNumber) {
-            router.quantifier += router.curChar;
-        } 
-        else if (typeof router.scope[router.curChar] === 'object') {
-            router.scope = router.scope[router.curChar];
-        }
-        else if (typeof router.scope[router.curChar] === 'function') {
-            callShortcut();
-        }
-        else {
-            reset();
-        }
-
-        setTimer();
-        console.log('char:', router.curChar, 'quantifier:', router.quantifier, 'scope:', router.scope, 'timer:', router.timer);
-    } 
-
-    function reset() {
-        router.scope = shortcuts;
-        router.quantifier = '';
-        router.timer = null;
-    }
-
-    function cleanQuant() { 
-        var quantifier = parseInt(router.quantifier);
-        if (isNaN(quantifier)) { return 1; }
-        return quantifier;
-    }
-
-    function callShortcut() {
-        var shortcut = router.scope[router.curChar];
-        if (typeof shortcut === 'function' && (router.comMode || shortcut === toggleComMode)) {
-            shortcut.call(router);
-            reset();
-        }
-    }
-
-    function setTimer() {
-        if (!router.timer) {
-            router.timer = setTimeout(reset, 3e3);
-        }
-    }
-
-    function removeTimer() {
-        if (router.timer) {
-            clearTimeout(router.timer);
-            router.timer = null;
-        }
     }
 
     function createHelpBox(title, content) {

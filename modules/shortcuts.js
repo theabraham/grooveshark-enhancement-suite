@@ -26,39 +26,44 @@
     
     function construct() { 
         $('body').bind('keypress', captureKey);
+        $('body').bind('keydown', function(evt) { if (evt.keyCode === _.keys.ESC) { $('input, textarea').blur(); } });
+        $(document).bind('keydown', preventHomeFocus);
+        $(window).bind('hashchange', preventPageFocus);
     }
 
     function destruct() {
         $('body').unbind('keypress', captureKey);
+        $(document).unbind('keydown', preventHomeFocus);
+        $(window).unbind('hashchange', preventPageFocus);
     }
 
     var deletion = {  
           'name': 'Deletion'
-        , 's': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { GS.player.removeSongs(GS.player.currentSong.queueSongID); } }
+        , 's': function() { multiplier(function() { GS.player.removeSongs(GS.player.currentSong.queueSongID); }); }
         , 'a': function() { $('#queue_clear_button').click(); }
     };
 
     var navigation = {
           'name': 'Navigation'
-        , 'h': function() { follow('#/'); }
         , 'p': openPlaylist
-        , 'm': function() { follow($('li.sidebar_myMusic a', '#sidebar').attr('href')); }
-        , 'f': function() { follow($('li.sidebar_favorites a', '#sidebar').attr('href')); }
+        , 'm': function() { follow($('a', '#sidebar li.sidebar_myMusic').attr('href')); }
+        , 'f': function() { follow($('a', '#sidebar li.sidebar_favorites').attr('href')); }
+        , 'c': function() { follow($('a', '#header_nav_people').attr('href')); }
         , 'a': function() { follow(GS.player.getCurrentSong().toArtistUrl()); }
         , 'l': openAlbum
     };
 
     var shortcuts = {
           'name': 'Global'
-        , '?': function() { if (GS.lightbox.isOpen) { ges.ui.closeLightbox(); } else { ges.ui.openLightbox('shortcuts'); } }
-        , '/': enterSearchMode
-        , '<': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_previous').click(); } }
-        , '>': function() { for (var i = 0, j = cleanQuant(); i < j; i++) { $('#player_next').click(); } }
-        , 'v': function() { GS.player.setVolume(this.quantifier); }
-        , '+': function() { GS.player.setVolume(GS.player.getVolume() + 10); }
-        , '-': function() { GS.player.setVolume(GS.player.getVolume() - 10); }
+        , '?': function() { GS.lightbox.isOpen ? ges.ui.closeLightbox() : ges.ui.openLightbox('shortcuts'); } 
+        , '/': findSearchBar
+        , '<': function() { multiplier(function() { $('#player_previous').click() }); }
+        , '>': function() { multiplier(function() { $('#player_next').click(); }); }
+        , 'v': function() { multiplier(GS.player.setVolume(this.multiplier)); }
+        , '+': function() { multiplier(changeVolume(10)); }
+        , '-': function() { multiplier(changeVolume(-10)); }
         , 'm': function() { $('#player_volume').click(); }
-        , 's': function() { exitComMode(); GS.player.saveQueue(); }
+        , 's': function() { GS.player.saveQueue(); }
         , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
         , 'f': function() { GS.user.addToSongFavorites(GS.player.getCurrentSong().SongID); }
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
@@ -72,16 +77,16 @@
     };
 
     var descriptions = {
-          'intro': 'Commands marked with astericks (*) take <em>quantifiers</em>, or numbers typed before the command\'s key is pressed. This will either repeat \
+          'intro': 'Commands marked with astericks (*) take <em>multipliers</em>, or numbers typed before the command\'s key is pressed. This will either repeat \
                     the command a specified number of times or be used as an argument; for example, typing <em>25v</em> will set the player\'s volume to 25%.'
         , '?': 'toggle the help dialogue'
-        , '/': 'enter into search mode'
+        , '/': 'find a search bar'
         , 'ds': 'delete current song (<strong>*</strong> repeat count)'
         , 'da': 'delete all songs'
-        , 'gh': 'go home'
         , 'gp': 'go to playlist (<strong>*</strong> sidebar position)'
         , 'gm': 'go to my music'
         , 'gf': 'go to my favorites'
+        , 'gc': 'go to community feed'
         , 'ga': 'open playing song\'s artist'
         , 'gl': 'open playing song\'s album'
         , '<': 'previous song (<strong>*</strong> repeat count)'
@@ -103,29 +108,29 @@
 
     var router = { 
           'scope': shortcuts
-        , 'quantifier': ''
+        , 'multiplier': ''
         , 'curChar': ''
         , 'timer': null
     };
 
     function reset() {
         router.scope = shortcuts;
-        router.quantifier = '';
+        router.multiplier = '';
         router.timer = null;
     }
 
     function captureKey(evt) {
-        var isNumber, isInput = $(this).is('input, textarea');
+        var isNumber, isInput = ($('input:focus, textarea:focus', this).length > 0);
         if (!isInput) { 
             removeTimer();
             router.curChar = String.fromCharCode(evt.keyCode);
             isNumber = !isNaN(parseInt(router.curChar));
 
-            isNumber ? router.quantifier += router.curChar
+            isNumber ? router.multiplier += router.curChar
                      : route();
 
             setTimer();
-            console.log('char:', router.curChar, 'quantifier:', router.quantifier, 'scope:', router.scope, 'timer:', router.timer);
+            console.log('char:', router.curChar, 'multiplier:', router.multiplier, 'scope:', router.scope, 'timer:', router.timer);
         }
     }
 
@@ -164,29 +169,51 @@
         }
     }
 
-    function cleanQuant() { 
-        var quantifier = parseInt(router.quantifier);
-        if (isNaN(quantifier)) { return 1; }
-        return quantifier;
+    function cleanMulti() { 
+        var multiplier = parseInt(router.multiplier);
+        if (isNaN(multiplier)) { return 1; }
+        return multiplier;
     }
 
-    function preventFocus() {
-        $(this).blur();
+    function multiplier(fn) {
+        for (var i = 0, j = cleanMulti(); i < j; i++) { 
+            fn();
+        }
+    }
+
+    function preventHomeFocus(evt) {
+        var isHome = $('#page').is('.gs_page_home');
+        var isInput = $(evt.target).is('input');
+
+        if (isHome && !isInput) {
+            $('input.search').blur();
+        }
+    }
+
+    function preventPageFocus() {
+        $('input.search').blur();
     }
 
     function follow(hash) {
         location.hash = hash;
     }
 
+    function changeVolume(amount) {
+        clearTimeout(GS.player.volumeSliderTimeout);
+        $('#volumeControl').show();  
+        GS.player.setVolume(GS.player.getVolume() + amount);
+        GS.player.volumeSliderTimeout = setTimeout(function() { $('#volumeControl').hide(); }, GS.player.volumeSliderDuration);
+    }
+
     function openPlaylist() {
         var playlistUrls = [];
         var playlistUrl;
 
-        if (this.quantifier) {
+        if (this.multiplier) {
             _.forEach(GS.user.playlists, function(playlist, key) { 
                 playlistUrls[playlist.sidebarSort - 1] = playlist.toUrl(); 
             });
-            playlistUrl = playlistUrls[this.quantifier - 1];
+            playlistUrl = playlistUrls[this.multiplier - 1];
         }
         else { 
             playlistUrl = $('li.sidebar_playlists a', '#sidebar').attr('href');
@@ -202,17 +229,19 @@
         }); 
     }
 
+    function findSearchBar() { 
+        if (!$('input.search').length > 0) { 
+            follow('#/'); 
+        }
+
+        $('input.search').focus();
+        $('input.search').val('');
+    }
+
     function createHelpBox(title, content) {
         var options = {
               'title': title
             , 'content': content
-            , 'buttons': [
-                { 
-                      'label': 'Contribute Code'
-                    , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
-                    , 'pos': 'right'
-                }
-            ]
             , 'onpopup': function() { }
         };
 

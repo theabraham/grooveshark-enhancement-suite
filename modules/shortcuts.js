@@ -43,6 +43,11 @@
         , 'a': function() { $('#queue_clear_button').click(); }
     };
 
+    var page = {
+          'name': 'Song List'
+        , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
+    };
+
     var navigation = {
           'name': 'Navigation'
         , 'p': openPlaylist
@@ -59,29 +64,30 @@
         , '/': findSearchBar
         , '<': function() { multiplier(function() { $('#player_previous').click() }); }
         , '>': function() { multiplier(function() { $('#player_next').click(); }); }
-        , '=': function() { multiplier(changeVolume(10)); }
-        , '-': function() { multiplier(changeVolume(-10)); }
-        , 'v': function() { multiplier(GS.player.setVolume(this.multiplier)); }
+        , ',': function() { seekPosition(-3000); }
+        , '.': function() { seekPosition(3000); }
+        , '=': function() { multiplier(changeVolume(5)); }
+        , '-': function() { multiplier(changeVolume(-5)); }
         , 'm': function() { $('#player_volume').click(); }
+        , 'y': function() { GS.player.showVideoLightbox(); }
         , 's': function() { GS.player.saveQueue(); }
         , 'f': toggleFavorite
-        , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
-        , 'y': function() { GS.player.showVideoLightbox(); }
         , 'F': function() { $('#player_shuffle').click(); }
         , 'H': function() { GS.player.toggleQueue(); }
         , 'L': function() { $('#player_loop').click(); }
         , 'd': deletion
+        , 'p': page
         , 'g': navigation
     };
 
     var descriptions = {
-          'intro': 'Commands marked with astericks (*) take <em>multipliers</em>, or numbers typed before the command\'s key is pressed. This will either repeat \
-                    the command a specified number of times or be used as an argument; for example, typing <em>25v</em> will set the player\'s volume to 25%.'
+          'intro': 'hello, world'
         , '?': 'toggle the help dialogue'
         , '/': 'find a search bar'
         , 'ds': 'delete current song (<strong>*</strong> repeat count)'
         , 'da': 'delete all songs'
+        , 'pa': 'play all songs on page'
         , 'gp': 'go to playlist (<strong>*</strong> sidebar position)'
         , 'gm': 'go to my music'
         , 'gf': 'go to my favorites'
@@ -90,12 +96,10 @@
         , 'gl': 'open playing song\'s album'
         , '<': 'previous song (<strong>*</strong> repeat count)'
         , '>': 'next song (<strong>*</strong> repeat count)'
-        , 'v': 'set volume (<strong>*</strong> percentage)'
         , '=': 'increase volume'
         , '-': 'decrease volume'
         , 'm': 'toggle mute'
         , 's': 'save current queue as a playlist'
-        , 'a': 'play all songs on page'
         , 'f': 'add current song to favorites'
         , 'r': 'restore previous queue'
         , 'y': 'youtube current song'
@@ -241,6 +245,21 @@
 
         $('input.search').focus();
         $('input.search').val('');
+    }
+    
+    function convertToMS(timeStr) {
+        var time = timeStr.split(':');
+        var minutes = parseFloat(time[0]);
+        var seconds = parseFloat(time[1]);
+        return (minutes * 60 + seconds) * 1000;
+    }
+
+    function seekPosition(increment) {
+        if (GS.player.isPlaying) {
+            var elapsed = convertToMS($('#player_elapsed').text());
+            var duration = convertToMS($('#player_duration').text());
+            GS.player.seekTo(Math.max(0, Math.min(duration, elapsed + increment)));
+        }
     }
 
     function createHelpBox(title, content) {

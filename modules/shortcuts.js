@@ -22,18 +22,17 @@
 
     function setup() {
         createHelpBox('Keyboard Shortcuts', createHelpContent());        
-        $('body').bind('keydown', escapeField); 
     }
     
     function construct() { 
         $('body').bind('keypress', captureKey);
-        $(document).bind('keydown', preventHomeFocus);
+        $(window).bind('hashchange', rebindHomeFocus);
         $(window).bind('hashchange', preventPageFocus);
     }
 
     function destruct() {
         $('body').unbind('keypress', captureKey);
-        $(document).unbind('keydown', preventHomeFocus);
+        $(window).unbind('hashchange', rebindHomeFocus);
         $(window).unbind('hashchange', preventPageFocus);
     }
 
@@ -63,12 +62,12 @@
           'name': 'Global'
         , '?': function() { GS.lightbox.isOpen ? ges.ui.closeLightbox() : ges.ui.openLightbox('shortcuts'); } 
         , '/': findSearchBar
-        , '<': function() { multiplier(function() { $('#player_previous').click() }); }
-        , '>': function() { multiplier(function() { $('#player_next').click(); }); }
-        , ',': function() { seekPosition(-3000); }
-        , '.': function() { seekPosition(3000); }
-        , '-': function() { multiplier(changeVolume(-5)); }
-        , '=': function() { multiplier(changeVolume(5)); }
+        , '<': function() { multiplyFunc(function() { $('#player_previous').click() }); }
+        , '>': function() { multiplyFunc(function() { $('#player_next').click(); }); }
+        , ',': function() { multiplyFunc(seekPosition, [-3000]); }
+        , '.': function() { multiplyFunc(seekPosition, [3000]); }
+        , '-': function() { multiplyFunc(changeVolume, [-5]); }
+        , '=': function() { multiplyFunc(changeVolume, [5]); }
         , 'm': function() { $('#player_volume').click(); }
         , 's': function() { GS.player.saveQueue(); }
         , 'f': toggleFavorite
@@ -126,17 +125,19 @@
     }
 
     function captureKey(evt) {
-        var isNumber, isInput = ($('input:focus, textarea:focus', this).length > 0);
+        router.curChar = String.fromCharCode(evt.keyCode);
+        var isInput = ($('input:focus, textarea:focus', this).length > 0);
+        var isNumber = !isNaN(parseInt(router.curChar));
+
         if (!isInput) { 
             removeTimer();
-            router.curChar = String.fromCharCode(evt.keyCode);
-            isNumber = !isNaN(parseInt(router.curChar));
-
             isNumber ? router.multiplier += router.curChar
                      : route();
-
             setTimer();
             console.log('char:', router.curChar, 'multiplier:', router.multiplier, 'scope:', router.scope, 'timer:', router.timer);
+        }
+        else if (router.curChar === '/') {
+            route();
         }
     }
 
@@ -181,18 +182,24 @@
         return multiplier;
     }
 
-    function multiplier(fn) {
+    function multiplyFunc(fn, args) {
         for (var i = 0, j = cleanMulti(); i < j; i++) { 
-            fn();
+            fn.call(null, args);
         }
     }
 
-    function preventHomeFocus(evt) {
-        var isHome = $('#page').is('.gs_page_home');
-        var isInput = $(evt.target).is('input');
+    // Events handlers (excluding captureKey)
 
-        if (isHome && !isInput) {
-            $('input.search').blur();
+    function rebindHomeFocus() {
+        GS.page.activePageName === 'home' ? $(document).bind('keydown', preventHomeFocus)
+                                          : $(document).unbind('keydown', preventHomeFocus);
+    }
+
+    function preventHomeFocus(evt) {
+        console.log('preventing');
+        if (!$(evt.target).is('input')) {
+            console.log('prevented');
+            $('input:focus').blur();
         }
     }
 
@@ -207,11 +214,16 @@
     }
 
     function findSearchBar() { 
-        if (!$('input.search').length > 0) { 
+        if ($('input.search').length === 0) { 
             follow('#/'); 
         }
-        $('input.search').focus();
-        $('input.search').val('');
+        else if ($('input:focus, textarea:focus').length > 0) {
+            $('input:focus, textarea:focus').blur().val('');
+        }
+        else {
+            $('input.search').focus();
+            setTimeout(function() { $('input.search').val(''); }, 50);
+        }
     }
     
     function convertToMS(timeStr) {

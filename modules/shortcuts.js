@@ -59,17 +59,16 @@
         , '/': findSearchBar
         , '<': function() { multiplier(function() { $('#player_previous').click() }); }
         , '>': function() { multiplier(function() { $('#player_next').click(); }); }
-        , 'v': function() { multiplier(GS.player.setVolume(this.multiplier)); }
-        , '+': function() { multiplier(changeVolume(10)); }
+        , '=': function() { multiplier(changeVolume(10)); }
         , '-': function() { multiplier(changeVolume(-10)); }
+        , 'v': function() { multiplier(GS.player.setVolume(this.multiplier)); }
         , 'm': function() { $('#player_volume').click(); }
         , 's': function() { GS.player.saveQueue(); }
+        , 'f': toggleFavorite
         , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
-        , 'f': function() { GS.user.addToSongFavorites(GS.player.getCurrentSong().SongID); }
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
         , 'y': function() { GS.player.showVideoLightbox(); }
         , 'F': function() { $('#player_shuffle').click(); }
-        , 'C': function() { GS.player.setCrossfadeEnabled(!GS.player.getCrossfadeEnabled()); }
         , 'H': function() { GS.player.toggleQueue(); }
         , 'L': function() { $('#player_loop').click(); }
         , 'd': deletion
@@ -92,7 +91,7 @@
         , '<': 'previous song (<strong>*</strong> repeat count)'
         , '>': 'next song (<strong>*</strong> repeat count)'
         , 'v': 'set volume (<strong>*</strong> percentage)'
-        , '+': 'increase volume'
+        , '=': 'increase volume'
         , '-': 'decrease volume'
         , 'm': 'toggle mute'
         , 's': 'save current queue as a playlist'
@@ -101,9 +100,8 @@
         , 'r': 'restore previous queue'
         , 'y': 'youtube current song'
         , 'F': 'toggle shuffle'
-        , 'C': 'toggle cross-fade'
         , 'H': 'toggle queue size'
-        , 'L': 'cycle loop'
+        , 'L': 'cycle looping'
     };
 
     var router = { 
@@ -227,6 +225,13 @@
         GS.Models.Album.getAlbum(albumID, function(album) { 
             follow(album.toUrl()); 
         }); 
+    }
+
+    function toggleFavorite() {
+        var songID = GS.player.getCurrentSong().SongID;
+        if (typeof GS.user.removeFromLibrary(songID) === 'undefined') {
+            GS.user.addToSongFavorites(songID); 
+        }
     }
 
     function findSearchBar() { 

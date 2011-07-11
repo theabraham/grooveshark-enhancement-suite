@@ -39,13 +39,14 @@
 
     var deletion = {  
           'name': 'Deletion'
-        , 's': function() { multiplier(function() { GS.player.removeSongs(GS.player.currentSong.queueSongID); }); }
         , 'a': function() { $('#queue_clear_button').click(); }
+        , 's': function() { multiplier(function() { GS.player.removeSongs(GS.player.currentSong.queueSongID); }); }
     };
 
     var page = {
           'name': 'Song List'
-        , 'a': function() { $('.page_controls .play.playTop', '#page_header').click(); }
+        , 'a': function() { $('.play.playTop', '#page_header .page_controls').click(); }
+        , 'd': function() { $('.dropdown a[name="addToQueue"]', '#page_header .page_controls').click(); }
     };
 
     var navigation = {
@@ -66,13 +67,13 @@
         , '>': function() { multiplier(function() { $('#player_next').click(); }); }
         , ',': function() { seekPosition(-3000); }
         , '.': function() { seekPosition(3000); }
-        , '=': function() { multiplier(changeVolume(5)); }
         , '-': function() { multiplier(changeVolume(-5)); }
+        , '=': function() { multiplier(changeVolume(5)); }
         , 'm': function() { $('#player_volume').click(); }
-        , 'y': function() { GS.player.showVideoLightbox(); }
         , 's': function() { GS.player.saveQueue(); }
         , 'f': toggleFavorite
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
+        , 'Y': function() { GS.player.showVideoLightbox(); }
         , 'F': function() { $('#player_shuffle').click(); }
         , 'H': function() { GS.player.toggleQueue(); }
         , 'L': function() { $('#player_loop').click(); }
@@ -82,12 +83,13 @@
     };
 
     var descriptions = {
-          'intro': 'hello, world'
+          'intro': 'Commands marked with an asterisk (*) take <em>multipliers</em>: numbers typed before the command\'s key is pressed that will be used as an argument for the command (always optional.)'
         , '?': 'toggle the help dialogue'
         , '/': 'find a search bar'
         , 'ds': 'delete current song (<strong>*</strong> repeat count)'
         , 'da': 'delete all songs'
         , 'pa': 'play all songs on page'
+        , 'pd': 'add all songs on page'
         , 'gp': 'go to playlist (<strong>*</strong> sidebar position)'
         , 'gm': 'go to my music'
         , 'gf': 'go to my favorites'
@@ -96,13 +98,15 @@
         , 'gl': 'open playing song\'s album'
         , '<': 'previous song (<strong>*</strong> repeat count)'
         , '>': 'next song (<strong>*</strong> repeat count)'
-        , '=': 'increase volume'
+        , ',': 'rewind song (<strong>*</strong> skip size)'
+        , '.': 'fast-forward song (<strong>*</strong> skip size)'
         , '-': 'decrease volume'
+        , '=': 'increase volume'
         , 'm': 'toggle mute'
         , 's': 'save current queue as a playlist'
         , 'f': 'add current song to favorites'
         , 'r': 'restore previous queue'
-        , 'y': 'youtube current song'
+        , 'Y': 'youtube current song'
         , 'F': 'toggle shuffle'
         , 'H': 'toggle queue size'
         , 'L': 'cycle looping'

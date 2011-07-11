@@ -22,11 +22,11 @@
 
     function setup() {
         createHelpBox('Keyboard Shortcuts', createHelpContent());        
+        $('body').bind('keydown', escapeField); 
     }
     
     function construct() { 
         $('body').bind('keypress', captureKey);
-        $('body').bind('keydown', function(evt) { if (evt.keyCode === _.keys.ESC) { $('input, textarea').blur(); } });
         $(document).bind('keydown', preventHomeFocus);
         $(window).bind('hashchange', preventPageFocus);
     }
@@ -86,16 +86,6 @@
           'intro': 'Commands marked with an asterisk (*) take <em>multipliers</em>: numbers typed before the command\'s key is pressed that will be used as an argument for the command (always optional.)'
         , '?': 'toggle the help dialogue'
         , '/': 'find a search bar'
-        , 'ds': 'delete current song (<strong>*</strong> repeat count)'
-        , 'da': 'delete all songs'
-        , 'pa': 'play all songs on page'
-        , 'pd': 'add all songs on page'
-        , 'gp': 'go to playlist (<strong>*</strong> sidebar position)'
-        , 'gm': 'go to my music'
-        , 'gf': 'go to my favorites'
-        , 'gc': 'go to community feed'
-        , 'ga': 'open playing song\'s artist'
-        , 'gl': 'open playing song\'s album'
         , '<': 'previous song (<strong>*</strong> repeat count)'
         , '>': 'next song (<strong>*</strong> repeat count)'
         , ',': 'rewind song (<strong>*</strong> skip size)'
@@ -110,6 +100,16 @@
         , 'F': 'toggle shuffle'
         , 'H': 'toggle queue size'
         , 'L': 'cycle looping'
+        , 'ds': 'delete current song (<strong>*</strong> repeat count)'
+        , 'da': 'delete all songs'
+        , 'pa': 'play all songs on page'
+        , 'pd': 'add all songs on page'
+        , 'gp': 'go to playlist (<strong>*</strong> sidebar position)'
+        , 'gm': 'go to my music'
+        , 'gf': 'go to my favorites'
+        , 'gc': 'go to community feed'
+        , 'ga': 'open playing song\'s artist'
+        , 'gl': 'open playing song\'s album'
     };
 
     var router = { 
@@ -200,8 +200,33 @@
         $('input.search').blur();
     }
 
+    // Command implementations
+
     function follow(hash) {
         location.hash = hash;
+    }
+
+    function findSearchBar() { 
+        if (!$('input.search').length > 0) { 
+            follow('#/'); 
+        }
+        $('input.search').focus();
+        $('input.search').val('');
+    }
+    
+    function convertToMS(timeStr) {
+        var time = timeStr.split(':');
+        var minutes = parseFloat(time[0]);
+        var seconds = parseFloat(time[1]);
+        return (minutes * 60 + seconds) * 1000;
+    }
+
+    function seekPosition(increment) {
+        if (GS.player.isPlaying) {
+            var elapsed = convertToMS($('#player_elapsed').text());
+            var duration = convertToMS($('#player_duration').text());
+            GS.player.seekTo(Math.max(0, Math.min(duration, elapsed + increment)));
+        }
     }
 
     function changeVolume(amount) {
@@ -209,6 +234,13 @@
         $('#volumeControl').show();  
         GS.player.setVolume(GS.player.getVolume() + amount);
         GS.player.volumeSliderTimeout = setTimeout(function() { $('#volumeControl').hide(); }, GS.player.volumeSliderDuration);
+    }
+
+    function toggleFavorite() {
+        var songID = GS.player.getCurrentSong().SongID;
+        if (typeof GS.user.removeFromLibrary(songID) === 'undefined') {
+            GS.user.addToSongFavorites(songID); 
+        }
     }
 
     function openPlaylist() {
@@ -235,36 +267,7 @@
         }); 
     }
 
-    function toggleFavorite() {
-        var songID = GS.player.getCurrentSong().SongID;
-        if (typeof GS.user.removeFromLibrary(songID) === 'undefined') {
-            GS.user.addToSongFavorites(songID); 
-        }
-    }
-
-    function findSearchBar() { 
-        if (!$('input.search').length > 0) { 
-            follow('#/'); 
-        }
-
-        $('input.search').focus();
-        $('input.search').val('');
-    }
-    
-    function convertToMS(timeStr) {
-        var time = timeStr.split(':');
-        var minutes = parseFloat(time[0]);
-        var seconds = parseFloat(time[1]);
-        return (minutes * 60 + seconds) * 1000;
-    }
-
-    function seekPosition(increment) {
-        if (GS.player.isPlaying) {
-            var elapsed = convertToMS($('#player_elapsed').text());
-            var duration = convertToMS($('#player_duration').text());
-            GS.player.seekTo(Math.max(0, Math.min(duration, elapsed + increment)));
-        }
-    }
+    // Help lightbox
 
     function createHelpBox(title, content) {
         var options = {

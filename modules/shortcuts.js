@@ -12,7 +12,7 @@
     modules['shortcuts'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Shortcuts'
-        , 'description': 'Make Grooveshark responsive with keyboard shortcuts; type <strong>`</strong> (backtick) to activate.'
+        , 'description': 'Make Grooveshark responsive with keyboard shortcuts; type <strong>?</strong> to view commands.'
         , 'isEnabled': true
         , 'style': { 'css': css, 'getValues': function() { return false; } }
         , 'setup': setup
@@ -40,7 +40,7 @@
     var deletion = {  
           'name': 'Deletion'
         , 'a': function() { $('#queue_clear_button').click(); }
-        , 's': function() { multiplyFunc(function() { GS.player.removeSongs(GS.player.currentSong.queueSongID); }); }
+        , 's': function() { repeatFunc(function() { GS.player.removeSongs(GS.player.currentSong.queueSongID); }); }
     };
 
     var page = {
@@ -63,12 +63,12 @@
           'name': 'Global'
         , '?': function() { GS.lightbox.isOpen ? ges.ui.closeLightbox() : ges.ui.openLightbox('shortcuts'); } 
         , '/': findSearchBar
-        , '<': function() { multiplyFunc(function() { $('#player_previous').click() }); }
-        , '>': function() { multiplyFunc(function() { $('#player_next').click(); }); }
+        , '<': function() { repeatFunc(function() { $('#player_previous').click() }); }
+        , '>': function() { repeatFunc(function() { $('#player_next').click(); }); }
         , ',': function() { seekPosition(-3000); }
         , '.': function() { seekPosition(3000); }
-        , '-': function() { multiplyFunc(changeVolume, -5); }
-        , '=': function() { multiplyFunc(changeVolume, 5); }
+        , '-': function() { repeatFunc(changeVolume, -5); }
+        , '=': function() { repeatFunc(changeVolume, 5); }
         , 'm': function() { $('#player_volume').click(); }
         , 's': function() { GS.player.saveQueue(); }
         , 'f': toggleFavorite
@@ -114,14 +114,14 @@
 
     var router = { 
           'scope': shortcuts
-        , 'multiplier': ''
+        , 'multiplier': 0
         , 'curChar': ''
         , 'timer': null
     };
 
     function reset() {
         router.scope = shortcuts;
-        router.multiplier = '';
+        router.multiplier = 0;
         router.timer = null;
     }
 
@@ -132,7 +132,7 @@
 
         if (!isInput) { 
             removeTimer();
-            isNumber ? router.multiplier += router.curChar
+            isNumber ? router.multiplier = (router.multiplier * 10) + parseInt(router.curChar)
                      : route();
             setTimer();
             console.log('char:', router.curChar, 'multiplier:', router.multiplier, 'scope:', router.scope, 'timer:', router.timer);
@@ -159,7 +159,7 @@
     function callShortcut() {
         var shortcut = router.scope[router.curChar];
         if (typeof shortcut === 'function') {
-            shortcut.call(router);
+            shortcut();
             reset();
         }
     }
@@ -177,16 +177,15 @@
         }
     }
 
-    function cleanMulti() { 
-        var multiplier = parseInt(router.multiplier);
-        if (isNaN(multiplier)) { return 1; }
-        return multiplier;
+    function minimumMulti(minimum) {
+        minimum || (minimum = 1);
+        return router.multiplier ? router.multiplier : minimum;
     }
 
-    function multiplyFunc(fn, args) {
+    function repeatFunc(fn, args) {
         args instanceof Array || (args = [args]);
 
-        for (var i = 0, j = cleanMulti(); i < j; i++) { 
+        for (var i = 0, j = minimumMulti(); i < j; i++) { 
             fn.apply(null, args);
         }
     }
@@ -203,7 +202,6 @@
             }
         });
 
-        console.log(isBound);
         !isBound ? $(document).bind('keydown', preventHomeFocus)
                  : $(document).unbind('keydown', preventHomeFocus);
     }
@@ -246,7 +244,7 @@
 
     function seekPosition(increment) {
         if (GS.player.isPlaying) { 
-            increment *= cleanMulti();
+            increment *= minimumMulti();
             var elapsed = convertToMS($('#player_elapsed').text());
             var duration = convertToMS($('#player_duration').text());
             GS.player.seekTo(Math.max(0, Math.min(duration, elapsed + increment)));
@@ -271,11 +269,11 @@
         var playlistUrls = [];
         var playlistUrl;
 
-        if (this.multiplier) {
+        if (router.multiplier) {
             _.forEach(GS.user.playlists, function(playlist, key) { 
                 playlistUrls[playlist.sidebarSort - 1] = playlist.toUrl(); 
             });
-            playlistUrl = playlistUrls[this.multiplier - 1];
+            playlistUrl = playlistUrls[router.multiplier - 1];
         }
         else { 
             playlistUrl = $('li.sidebar_playlists a', '#sidebar').attr('href');

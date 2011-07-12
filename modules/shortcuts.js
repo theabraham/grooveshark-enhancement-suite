@@ -40,7 +40,7 @@
     var deletion = {  
           'name': 'Deletion'
         , 'a': function() { $('#queue_clear_button').click(); }
-        , 's': function() { multiplier(function() { GS.player.removeSongs(GS.player.currentSong.queueSongID); }); }
+        , 's': function() { multiplyFunc(function() { GS.player.removeSongs(GS.player.currentSong.queueSongID); }); }
     };
 
     var page = {
@@ -65,10 +65,10 @@
         , '/': findSearchBar
         , '<': function() { multiplyFunc(function() { $('#player_previous').click() }); }
         , '>': function() { multiplyFunc(function() { $('#player_next').click(); }); }
-        , ',': function() { multiplyFunc(seekPosition, [-3000]); }
-        , '.': function() { multiplyFunc(seekPosition, [3000]); }
-        , '-': function() { multiplyFunc(changeVolume, [-5]); }
-        , '=': function() { multiplyFunc(changeVolume, [5]); }
+        , ',': function() { seekPosition(-3000); }
+        , '.': function() { seekPosition(3000); }
+        , '-': function() { multiplyFunc(changeVolume, -5); }
+        , '=': function() { multiplyFunc(changeVolume, 5); }
         , 'm': function() { $('#player_volume').click(); }
         , 's': function() { GS.player.saveQueue(); }
         , 'f': toggleFavorite
@@ -85,13 +85,13 @@
     var descriptions = {
           'intro': 'Commands marked with an asterisk (*) take <em>multipliers</em>: numbers typed before the command\'s key is pressed that will be used as an argument for the command (always optional.)'
         , '?': 'toggle the help dialogue'
-        , '/': 'find a search bar'
+        , '/': 'find/escape a search bar'
         , '<': 'previous song (<strong>*</strong> repeat count)'
         , '>': 'next song (<strong>*</strong> repeat count)'
         , ',': 'rewind song (<strong>*</strong> skip size)'
         , '.': 'fast-forward song (<strong>*</strong> skip size)'
-        , '-': 'decrease volume'
-        , '=': 'increase volume'
+        , '-': 'decrease volume (<strong>*</strong> repeat count)'
+        , '=': 'increase volume (<strong>*</strong> repeat count)'
         , 'm': 'toggle mute'
         , 's': 'save current queue as a playlist'
         , 'f': 'add current song to favorites'
@@ -184,8 +184,10 @@
     }
 
     function multiplyFunc(fn, args) {
+        args instanceof Array || (args = [args]);
+
         for (var i = 0, j = cleanMulti(); i < j; i++) { 
-            fn.call(null, args);
+            fn.apply(null, args);
         }
     }
 
@@ -243,7 +245,8 @@
     }
 
     function seekPosition(increment) {
-        if (GS.player.isPlaying) {
+        if (GS.player.isPlaying) { 
+            increment *= cleanMulti();
             var elapsed = convertToMS($('#player_elapsed').text());
             var duration = convertToMS($('#player_duration').text());
             GS.player.seekTo(Math.max(0, Math.min(duration, elapsed + increment)));

@@ -26,13 +26,14 @@
     
     function construct() { 
         $('body').bind('keypress', captureKey);
-        $(window).bind('hashchange', rebindHomeFocus);
+        $.subscribe('gs.page.home.view', rebindHomeFocus);
         $(window).bind('hashchange', preventPageFocus);
+        rebindHomeFocus();
     }
 
     function destruct() {
         $('body').unbind('keypress', captureKey);
-        $(window).unbind('hashchange', rebindHomeFocus);
+        $.unsubscribe('gs.page.home.view', rebindHomeFocus);
         $(window).unbind('hashchange', preventPageFocus);
     }
 
@@ -191,14 +192,22 @@
     // Events handlers (excluding captureKey)
 
     function rebindHomeFocus() {
-        GS.page.activePageName === 'home' ? $(document).bind('keydown', preventHomeFocus)
-                                          : $(document).unbind('keydown', preventHomeFocus);
+        var keyEvents = $(document).data('events').keydown;
+        var isBound = false;
+
+        _.forEach(keyEvents, function(handler, index) {
+            if (handler.callback === preventHomeFocus) {
+                isBound = true;
+            }
+        });
+
+        console.log(isBound);
+        !isBound ? $(document).bind('keydown', preventHomeFocus)
+                 : $(document).unbind('keydown', preventHomeFocus);
     }
 
     function preventHomeFocus(evt) {
-        console.log('preventing');
         if (!$(evt.target).is('input')) {
-            console.log('prevented');
             $('input:focus').blur();
         }
     }

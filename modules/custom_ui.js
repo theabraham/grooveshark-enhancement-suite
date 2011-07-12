@@ -22,7 +22,8 @@
 
     function construct() {
         $.subscribe('gs.player.queue.change', changeTitle);
-        // hashchange -> remove facebook buttons, add song count
+        $(window).bind('hashchange', removeFB);
+        $(window).bind('hashchange', addSongCount);
         // hide sidebar
         //      on hover -> show sidebar
         //      mouse out -> hide sidebar
@@ -31,6 +32,8 @@
 
     function destruct() {
         $.unsubscribe('gs.player.queue.change', changeTitle);
+        $(window).unbind('hashchange', removeFB);
+        $(window).unbind('hashchange', addSongCount);
     }
 
     function resetMarquee() {

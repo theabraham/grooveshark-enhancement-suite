@@ -30,11 +30,11 @@ function createMenu(title, content) {
           'title': title
         , 'content': content
         , 'buttons': [
-            { 
-                  'label': 'Contribute Code'
-                , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
-                , 'pos': 'right'
-            }
+              { 
+                    'label': 'Add Code'
+                  , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
+                  , 'pos': 'right'
+              }
         ]
         , 'onpopup': function() { 
             var container = '#lightbox_content';

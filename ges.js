@@ -9,11 +9,11 @@ ges.events.ready(function () {
     $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
 
     // construct modules
-    ges.modules.mapModules(function (module, key) { 
-        module.isEnabled = ges.db.getIsEnabled(key);
+    ges.modules.mapModules(function (module, moduleName) { 
+        module.isEnabled = ges.db.getModule(moduleName, 'isEnabled');
         if (module.style) { ges.styles.load(module.style.css, module.style.getValues()); }
-        if (module.setup) { ges.modules.doSetup(key); }
-        if (module.isEnabled) { ges.modules.doConstruct(key); }
+        if (module.setup) { ges.modules.doSetup(moduleName); }
+        if (module.isEnabled) { ges.modules.doConstruct(moduleName); }
     });
 });
 
@@ -26,27 +26,29 @@ function placeMenuButton(onclick) {
 }
 
 function createMenu(title, content) {
+    var onpopup = function() {
+        var container = '#lightbox_content';
+        ges.modules.mapModules(function(module, key, modules) {
+            if (!module.isEnabled) { return; }
+            $('#mod_' + key, container).addClass('enabled'); 
+        });
+        $('.mod_link:last-child', container).addClass('mod_last');
+        $('.mod_link', container).click(function() {  
+            toggleModule.call(this);
+        });
+    };
+
     var options = {
           'title': title
         , 'content': content
         , 'buttons': [
               { 
-                    'label': 'Add Code'
+                    'label': 'Contribute Code'
                   , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
                   , 'pos': 'right'
               }
-        ]
-        , 'onpopup': function() { 
-            var container = '#lightbox_content';
-            ges.modules.mapModules(function(module, key, modules) {
-                if (!module.isEnabled) { return; }
-                $('#mod_' + key, container).addClass('enabled'); 
-            });
-            $('.mod_link:last-child', container).addClass('mod_last');
-            $('.mod_link', container).click(function() {  
-                toggleModule.call(this);
-            });
-        }
+        ] 
+        , 'onpopup': onpopup
     };
 
     ges.ui.createLightbox('ges', options);              
@@ -73,5 +75,5 @@ function toggleModule() {
     var moduleName = $(this).attr('id').slice(4);
     var isEnabled = ges.modules.toggleModule(moduleName);
     $(this).toggleClass('enabled'); 
-    ges.db.setIsEnabled(moduleName, isEnabled);
+    ges.db.setModule(moduleName, { 'isEnabled': isEnabled }); 
 }

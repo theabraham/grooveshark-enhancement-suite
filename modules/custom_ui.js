@@ -9,6 +9,7 @@
         , 'setup': false
         , 'construct': construct
         , 'destruct': destruct
+        , 'options': options
     };
 
     var marquee = {

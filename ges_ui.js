@@ -5,6 +5,7 @@
         , 'addPlayerButton': addPlayerButton
         , 'removePlayerButton': removePlayerButton
         , 'restorePlayerButtons': restorePlayerButtons
+        , 'placePlayerButton': placePlayerButton
         , 'createLightbox': createLightbox
         , 'openLightbox': openLightbox
         , 'closeLightbox': closeLightbox

@@ -5,6 +5,7 @@
         , 'name': 'Duplicate Song Remover'
         , 'description': 'Remove duplicate songs from your current queue.'
         , 'isEnabled': true
+        , 'options': {}
         , 'style': false
         , 'setup': false
         , 'construct': construct

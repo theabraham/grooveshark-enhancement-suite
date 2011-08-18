@@ -7,6 +7,15 @@
         , 'unsubscribe': unsubscribe
     };
 
+    var APP_READY = false;
+
+    // cheap way guess when the app is really ready
+    ready(function() {
+        setTimeout(function() {
+            APP_READY = true;
+        }, 3e3);
+    }, false);
+
     function ready(callback, waitForDOM) { 
         waitForDOM != null || (waitForDOM = true);
         var wait = function() {
@@ -17,7 +26,7 @@
         if (typeof GS === 'undefined' || typeof GS.player.player === 'undefined' || typeof jQuery === 'undefined' || typeof _ === 'undefined') {
             wait();
         } 
-        else if (waitForDOM && GS.user.isLoggedIn && !$('#userOptions').children().hasClass('first surveyLink')) {
+        else if (waitForDOM && !APP_READY) {
             wait();
         } 
         else {

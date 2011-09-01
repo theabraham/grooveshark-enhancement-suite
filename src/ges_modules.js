@@ -1,4 +1,4 @@
-;(function() {
+function modulesClosure() {
 
     var modules = {
           'modules': {}
@@ -55,4 +55,7 @@
     window.ges || (window.ges = {});
     window.ges.modules = modules;
 
-})();
+}
+
+appendExports(modulesClosure);
+

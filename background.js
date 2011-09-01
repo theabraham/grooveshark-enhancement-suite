@@ -19,7 +19,6 @@ function getLyricsFromLink(data) {
         , 'song': data.getElementsByTagName('song')[0].textContent
     };
 
-    console.log('GOT', result);
     if (result.lyrics === 'Not found') { 
         result.success = false; 
         clientCallback(result);

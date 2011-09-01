@@ -1,4 +1,4 @@
-;(function() { 
+function dbClosure() { 
 
     var db = {
           'getModule': getModule
@@ -50,4 +50,7 @@
     window.ges || (window.ges = {});
     window.ges.db = db;
 
-})();
+}
+
+appendExports(dbClosure);
+

@@ -1,6 +1,6 @@
-;(function(modules) {
+function lyricsClosure() {
 
-    modules['lyrics'] = {
+    ges.modules.modules['lyrics'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Song Lyrics'
         , 'description': 'Show the lyrics of the currently playing song.'
@@ -77,4 +77,25 @@
         return clean.html();
     }
 
-})(ges.modules.modules);
+}
+
+appendExports(lyricsClosure);
+
+var returnLyricsEvent = document.createEvent('Events');
+returnLyricsEvent.initEvent('returnLyricsEvent', true, false);
+window.addEventListener('getLyricsEvent', getLyrics);
+
+function getLyrics() {
+    var formTag = $('#requestedLyricsInfo');
+    var song = $('input[name="song"]', formTag).val();
+    var artist = $('input[name="artist"]', formTag).val();
+    chrome.extension.sendRequest({ 'song': song, 'artist': artist }, setLyrics);
+}
+
+function setLyrics(result) {
+    var formTag = $('#requestedLyricsInfo');
+    var result = JSON.stringify(result);
+    $('textarea', formTag).val(result);
+    document.dispatchEvent(returnLyricsEvent);
+}
+

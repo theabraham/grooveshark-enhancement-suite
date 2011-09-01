@@ -1,4 +1,4 @@
-;(function() {
+function eventsClosure() {
 
     var events = {
           'listeners': {}
@@ -86,4 +86,7 @@
     window.ges || (window.ges = {});
     window.ges.events = events;
 
-})();
+}
+
+appendExports(eventsClosure);
+

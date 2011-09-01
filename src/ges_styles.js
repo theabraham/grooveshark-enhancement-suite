@@ -1,4 +1,4 @@
-;(function() { 
+function stylesClosure() { 
 
     var menu = ' \
         #lightbox .mod_link { display:block; margin-bottom:10px; padding:10px; border:1px solid #b2b2b2; -moz-border-radius:3px; -webkit-border-radius:3px; } \
@@ -54,4 +54,7 @@
     window.ges || (window.ges = {});
     window.ges.styles = styles;
 
-})();
+}
+
+appendExports(stylesClosure);
+

@@ -1,4 +1,4 @@
-;(function() {
+function uiClosure() {
 
     var ui = {
           'playerButtons': {}
@@ -136,4 +136,7 @@
     window.ges || (window.ges = {});
     window.ges.ui = ui;
 
-})();
+}
+
+appendExports(uiClosure);
+

@@ -1,4 +1,4 @@
-;(function(modules) {
+function shortcutsClosure() {
 
     var css = ' \
         #lightbox .sc_name { display:block; color:#333; margin-bottom:8px; } \
@@ -9,7 +9,7 @@
         #ges_search_pane { position:absolute; display:none; width:420px; margin-left:-222px; top:0; left:50%; z-index:99999; padding:24px; font:bold 20px/30px "Lucida Grande", Verdana, Arial, sans-serif; background:rgba(0,0,0,0.75); color:#fff; -webkit-border-radius:3px; } \
     \ ';
 
-    modules['shortcuts'] = {
+    ges.modules.modules['shortcuts'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Shortcuts'
         , 'description': 'Make Grooveshark responsive with keyboard shortcuts; type <strong>?</strong> to view commands.'
@@ -330,4 +330,7 @@
         return content;
     }
 
-})(ges.modules.modules);
+}
+
+appendExports(shortcutsClosure);
+

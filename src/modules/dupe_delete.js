@@ -1,6 +1,6 @@
-;(function(modules) {
+function dupeDeleteClosure() {
 
-    modules['dupeDelete'] = {
+    ges.modules.modules['dupeDelete'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Duplicate Song Remover'
         , 'description': 'Remove duplicate songs from your current queue.'
@@ -47,4 +47,7 @@
         ges.ui.notice(message);
     }
 
-})(ges.modules.modules);
+}
+
+appendExports(dupeDeleteClosure);
+

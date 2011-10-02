@@ -57,5 +57,5 @@ function modulesClosure() {
 
 }
 
-appendExports(modulesClosure);
+pack(modulesClosure);
 

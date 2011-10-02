@@ -52,5 +52,5 @@ function dbClosure() {
 
 }
 
-appendExports(dbClosure);
+pack(dbClosure);
 

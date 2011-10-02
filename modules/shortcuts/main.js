@@ -1,20 +1,10 @@
 function shortcutsClosure() {
 
-    var css = ' \
-        #lightbox .sc_name { display:block; color:#333; margin-bottom:8px; } \
-        #lightbox .sc_wrap { display:inline-block; width:270px; margin-bottom:4px; } \
-        #lightbox .sc_wrap.sc_left { margin-right:15px; } \
-        #lightbox .sc_key { background:#F6F6F6; box-shadow:inset 0 1px 0 #fff; border:1px solid #B3B3B3; -webkit-border-radius:3px; width:2em; display:inline-block; text-align:center; margin-right:12px; border-bottom:2px solid #B3B3B3; font:normal 12px/20px Arial; } \
-        #lightbox .sc_desc { } \
-        #ges_search_pane { position:absolute; display:none; width:420px; margin-left:-222px; top:0; left:50%; z-index:99999; padding:24px; font:bold 20px/30px "Lucida Grande", Verdana, Arial, sans-serif; background:rgba(0,0,0,0.75); color:#fff; -webkit-border-radius:3px; } \
-    \ ';
-
     ges.modules.modules['shortcuts'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Shortcuts'
         , 'description': 'Make Grooveshark responsive with keyboard shortcuts; type <strong>?</strong> to view commands.'
         , 'isEnabled': true
-        , 'style': { 'css': css, 'getValues': function() { return false; } }
         , 'setup': setup
         , 'construct': construct
         , 'destruct': destruct
@@ -116,6 +106,7 @@ function shortcutsClosure() {
           'scope': shortcuts
         , 'multiplier': 0
         , 'curChar': ''
+
         , 'timer': null
     };
 
@@ -332,5 +323,5 @@ function shortcutsClosure() {
 
 }
 
-appendExports(shortcutsClosure);
+pack(shortcutsClosure);
 

@@ -6,7 +6,6 @@ function dupeDeleteClosure() {
         , 'description': 'Remove duplicate songs from your current queue.'
         , 'isEnabled': true
         , 'options': {}
-        , 'style': false
         , 'setup': false
         , 'construct': construct
         , 'destruct': destruct
@@ -49,5 +48,5 @@ function dupeDeleteClosure() {
 
 }
 
-appendExports(dupeDeleteClosure);
+pack(dupeDeleteClosure);
 

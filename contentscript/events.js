@@ -88,5 +88,5 @@ function eventsClosure() {
 
 }
 
-appendExports(eventsClosure);
+pack(eventsClosure);
 

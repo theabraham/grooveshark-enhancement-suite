@@ -92,8 +92,6 @@ function uiClosure() {
         button.link = (button.link || false);
         button.pos = (button.pos === 'left' ? true : false);
 
-        // TODO: should check if 'left/right' tag already exists?
-        // TODO: accessing uid for event listeners?
         containerTag = $('<ul class="' + (button.pos ? 'left' : 'right') + '"><li class="last"></li></ul>');
         buttonTag = $('.close', lightbox).clone().removeClass('close').addClass(button.uid);
         $('span', buttonTag).html(button.label);
@@ -138,5 +136,5 @@ function uiClosure() {
 
 }
 
-appendExports(uiClosure);
+pack(uiClosure);
 

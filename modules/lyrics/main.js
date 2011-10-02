@@ -5,15 +5,10 @@ function lyricsClosure() {
         , 'name': 'Song Lyrics'
         , 'description': 'Show the lyrics of the currently playing song.'
         , 'isEnabled': true
-        , 'style': false
         , 'setup': setup
         , 'construct': construct
         , 'destruct': destruct
     };
-
-    var getLyricsEvent = document.createEvent('Events');
-    getLyricsEvent.initEvent('getLyricsEvent', true, false);
-    window.addEventListener('returnLyricsEvent', displayLyrics);
 
     function setup() {
         var formTag = $('<form id="requestedLyricsInfo"><input name="song" type="hidden" value=""/><input name="artist" type="hidden" value=""/><textarea name="result" type="hidden"></textarea></form>');
@@ -79,18 +74,17 @@ function lyricsClosure() {
 
 }
 
-appendExports(lyricsClosure);
+pack(lyricsClosure);
 
 var returnLyricsEvent = document.createEvent('Events');
 returnLyricsEvent.initEvent('returnLyricsEvent', true, false);
-window.addEventListener('getLyricsEvent', getLyrics);
 
-function getLyrics() {
+window.addEventListener('getLyricsEvent', function() {
     var formTag = $('#requestedLyricsInfo');
     var song = $('input[name="song"]', formTag).val();
     var artist = $('input[name="artist"]', formTag).val();
     chrome.extension.sendRequest({ 'song': song, 'artist': artist }, setLyrics);
-}
+});
 
 function setLyrics(result) {
     var formTag = $('#requestedLyricsInfo');

@@ -1,11 +1,8 @@
 function gesClosure() {
 
     ges.events.ready(function () { 
-        _.forEach(ges.styles.defaults, function(style, index) {
-            ges.styles.load(style.css, style.getValues());
-        });
-        
         // setup interface
+        console.log('setting up here', Grooveshark, ges, GS);
         createMenu('Grooveshark Enhancement Suite', menuContent());
         placeMenuButton(function() { ges.ui.openLightbox('ges'); });
         $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
@@ -13,7 +10,6 @@ function gesClosure() {
         // construct modules
         ges.modules.mapModules(function (module, moduleName) { 
             module.isEnabled = ges.db.getModule(moduleName, 'isEnabled');
-            if (module.style) { ges.styles.load(module.style.css, module.style.getValues()); }
             if (module.setup) { ges.modules.doSetup(moduleName); }
             if (module.isEnabled) { ges.modules.doConstruct(moduleName); }
         });
@@ -82,5 +78,5 @@ function gesClosure() {
 
 }
 
-appendExports(gesClosure);
+pack(gesClosure);
 

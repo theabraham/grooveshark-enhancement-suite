@@ -1,17 +1,20 @@
-var clientCallback;
-
-chrome.extension.onRequest.addListener(function(songInfo, sender, callback) { 
-    clientCallback = callback;
-
+chrome.extension.onRequest.addListener(function(request, sender, clientCallback) { 
+    if (request.uid !== 'lyrics') {
+        return;
+    }
+    
+    var songInfo = request.data
     $.ajax({
           'url': 'http://lyrics.wikia.com/api.php'
         , 'data': { 'song': songInfo.song, 'artist': songInfo.artist, 'fmt': 'xml' }
-        , 'success': getLyricsFromLink
+        , 'success': function(data) {
+              getLyricsFromLink(data, clientCallback);
+          }
     });
 });
 
-function getLyricsFromLink(data) {
-    var result = { 
+function getLyricsFromLink(data, clientCallback) {
+    var lyricsInfo = { 
           'success': true
         , 'lyrics': data.getElementsByTagName('lyrics')[0].textContent
         , 'url': data.getElementsByTagName('url')[0].textContent
@@ -19,14 +22,14 @@ function getLyricsFromLink(data) {
         , 'song': data.getElementsByTagName('song')[0].textContent
     };
 
-    if (result.lyrics === 'Not found') { 
-        result.success = false; 
-        clientCallback(result);
+    if (lyricsInfo.lyrics === 'Not found') { 
+        lyricsInfo.success = false; 
+        clientCallback(lyricsInfo);
         return; 
     }
 
-    $.get(result.url, function(html) { 
-        result.lyrics = $('div.lyricbox', html).html(); 
-        clientCallback(result);
+    $.get(lyricsInfo.url, function(html) { 
+        lyricsInfo.lyrics = $('div.lyricbox', html).html(); 
+        clientCallback(lyricsInfo);
     }); 
 }

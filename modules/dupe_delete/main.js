@@ -48,5 +48,3 @@ function dupeDeleteClosure() {
 
 }
 
-pack(dupeDeleteClosure);
-

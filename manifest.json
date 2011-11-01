@@ -11,10 +11,11 @@
         {
               "matches": ["http://*.grooveshark.com/*"]
             , "js": [
-                  "lib/jquery.min.js"
-                , "contentscript/package.js"
+                  "lib/jquery.js"
+                , "contentscript/buffer.js"
                 , "contentscript/events.js"
                 , "contentscript/ui.js"
+                , "contentscript/messages.js"
                 , "contentscript/modules.js"
                 , "modules/shortcuts/main.js"
                 , "modules/dupe_delete/main.js"

@@ -88,5 +88,3 @@ function eventsClosure() {
 
 }
 
-pack(eventsClosure);
-

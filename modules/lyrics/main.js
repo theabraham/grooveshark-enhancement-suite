@@ -5,15 +5,10 @@ function lyricsClosure() {
         , 'name': 'Song Lyrics'
         , 'description': 'Show the lyrics of the currently playing song.'
         , 'isEnabled': true
-        , 'setup': setup
+        , 'setup': false
         , 'construct': construct
         , 'destruct': destruct
     };
-
-    function setup() {
-        var formTag = $('<form id="requestedLyricsInfo"><input name="song" type="hidden" value=""/><input name="artist" type="hidden" value=""/><textarea name="result" type="hidden"></textarea></form>');
-        $('body').append(formTag);
-    }
 
     function construct() { 
         ges.ui.addPlayerButton('#songLyrics', {
@@ -29,13 +24,11 @@ function lyricsClosure() {
 
     function requestLyrics() {
         var song = GS.player.getCurrentSong();
-        var formTag = $('#requestedLyricsInfo');
-        var message, options;
+        var songInfo, message, options;
 
         if (song) { 
-            $('input[name="song"]', formTag).val(song.SongName);
-            $('input[name="artist"]', formTag).val(song.ArtistName);
-            document.dispatchEvent(getLyricsEvent);
+            songInfo = { 'song': song.SongName, 'artist': song.ArtistName };
+            ges.messages.send('lyrics', songInfo, displayLyrics);
         }
         else {
             message = 'Play a song before requesting its lyrics';
@@ -44,19 +37,16 @@ function lyricsClosure() {
         }
     }
 
-    function displayLyrics() {
-        var formTag = $('#requestedLyricsInfo');
-        var result = JSON.parse($('textarea', formTag).val());
+    function displayLyrics(lyricsInfo) {
         var message, options;
 
-        if (result.success) {
-            result.lyrics = cleanLyrics(result.lyrics);
-            message = '<p><strong>' + result.song + '</strong> - <em>' + result.artist + '</em></p><br/><div class="scrollable"><p>' + result.lyrics + '</p></div>';
+        if (lyricsInfo.success) {
+            lyricsInfo.lyrics = cleanLyrics(lyricsInfo.lyrics);
+            message = '<p><strong>' + lyricsInfo.song + '</strong> - <em>' + lyricsInfo.artist + '</em></p><br/><div class="scrollable"><p>' + lyricsInfo.lyrics + '</p></div>';
             options = { 'type': 'form', 'manualClose': true, 'styles': ['wide'] };
         } 
         else {
-            message = '<p>Lyrics not found for <strong>' + result.song + '</strong>. If you can find the lyrics, why not \
-                       share them at <a href="' + result.url + '" target="blank">Lyrics Wikia</a>?</p>';
+            message = '<p>Lyrics not found for <strong>' + lyricsInfo.song + '</strong>. If you can find the lyrics, why not share them at <a href="' + lyricsInfo.url + '" target="blank">Lyrics Wikia</a>?</p>';
             options = { 'type': 'error', 'manualClose': false };
         }
 
@@ -72,24 +62,5 @@ function lyricsClosure() {
         return clean.html();
     }
 
-}
-
-pack(lyricsClosure);
-
-var returnLyricsEvent = document.createEvent('Events');
-returnLyricsEvent.initEvent('returnLyricsEvent', true, false);
-
-window.addEventListener('getLyricsEvent', function() {
-    var formTag = $('#requestedLyricsInfo');
-    var song = $('input[name="song"]', formTag).val();
-    var artist = $('input[name="artist"]', formTag).val();
-    chrome.extension.sendRequest({ 'song': song, 'artist': artist }, setLyrics);
-});
-
-function setLyrics(result) {
-    var formTag = $('#requestedLyricsInfo');
-    var result = JSON.stringify(result);
-    $('textarea', formTag).val(result);
-    document.dispatchEvent(returnLyricsEvent);
 }
 

@@ -57,5 +57,3 @@ function modulesClosure() {
 
 }
 
-pack(modulesClosure);
-

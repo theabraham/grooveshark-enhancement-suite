@@ -323,5 +323,3 @@ function shortcutsClosure() {
 
 }
 
-pack(shortcutsClosure);
-

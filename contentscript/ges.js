@@ -2,7 +2,6 @@ function gesClosure() {
 
     ges.events.ready(function () { 
         // setup interface
-        console.log('setting up here', Grooveshark, ges, GS);
         createMenu('Grooveshark Enhancement Suite', menuContent());
         placeMenuButton(function() { ges.ui.openLightbox('ges'); });
         $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
@@ -77,6 +76,4 @@ function gesClosure() {
     }
 
 }
-
-pack(gesClosure);
 

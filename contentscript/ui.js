@@ -136,5 +136,3 @@ function uiClosure() {
 
 }
 
-pack(uiClosure);
-

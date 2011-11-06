@@ -1,5 +1,6 @@
 function uiClosure() {
 
+    console.log('--> ui loaded');
     var ui = {
           'playerButtons': {}
         , 'addPlayerButton': addPlayerButton
@@ -7,6 +8,7 @@ function uiClosure() {
         , 'restorePlayerButtons': restorePlayerButtons
         , 'placePlayerButton': placePlayerButton
         , 'createLightbox': createLightbox
+        , 'toggleLightbox': toggleLightbox
         , 'openLightbox': openLightbox
         , 'closeLightbox': closeLightbox
         , 'notice': notice
@@ -68,7 +70,8 @@ function uiClosure() {
         GS.lightbox.close();
 
         $('#lightbox_header h3', clone).html(options.title);
-        $('#lightbox_content .lightbox_content_block', clone).html(options.content);
+        $('#lightbox_content .lightbox_content_block', clone).first().html(options.content);
+        $('#lightbox_content .lightbox_content_block.separatedContent', clone).remove();
         _.forEach(options.buttons, function(button, index) {
             addLightboxButton(clone, button);
         });
@@ -103,6 +106,11 @@ function uiClosure() {
 
         $('li', containerTag).append(buttonTag);
         $('#lightbox_footer .left', lightbox).before(containerTag);
+    }
+
+    function toggleLightbox(uid) {
+        GS.lightbox.isOpen ? closeLightbox()
+                           : openLightbox(uid);
     }
 
     function openLightbox(uid) {

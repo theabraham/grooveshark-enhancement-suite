@@ -1,9 +1,9 @@
 function gesClosure() {
 
-    ges.events.ready(function () { 
+    ges.events.ready(function() { 
         // setup interface
+        console.log('--> GES is ready');
         createMenu('Grooveshark Enhancement Suite', menuContent());
-        placeMenuButton(function() { ges.ui.openLightbox('ges'); });
         $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
 
         // construct modules
@@ -13,14 +13,6 @@ function gesClosure() {
             if (module.isEnabled) { ges.modules.doConstruct(moduleName); }
         });
     });
-
-    function placeMenuButton(onclick) {
-        var html = $('<ul id="ges_nav"><li id="header_nav_ges"><a></a></li></ul>');
-        var left = $('#nav').width() + parseInt($('#nav').css('left'));
-
-        $('#header').append(html);
-        $('a', '#header_nav_ges').click(onclick);
-    }
 
     function createMenu(title, content) {
         var onpopup = function() {

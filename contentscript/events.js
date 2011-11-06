@@ -1,5 +1,6 @@
 function eventsClosure() {
 
+    console.log('--> events loaded');
     var events = {
           'listeners': {}
         , 'ready': ready 
@@ -7,31 +8,28 @@ function eventsClosure() {
         , 'unsubscribe': unsubscribe
     };
 
-    var APP_READY = false;
-
-    // cheap way guess when the app is really ready
-    ready(function() {
-        setTimeout(function() {
-            APP_READY = true;
-        }, 3e3);
-    }, false);
-
-    function ready(callback, waitForDOM) { 
-        waitForDOM != null || (waitForDOM = true);
+    function ready(callback) { 
         var wait = function() {
             setTimeout(function() {
-                ready.call(null, callback, waitForDOM); 
+                ready.call(null, callback); 
             }, 200); 
-        }
-        if (typeof GS === 'undefined' || typeof GS.player.player === 'undefined' || typeof jQuery === 'undefined' || typeof _ === 'undefined') {
-            wait();
-        } 
-        else if (waitForDOM && !APP_READY) {
-            wait();
-        } 
-        else {
-            callback();
-        }
+        };
+
+        (  // epic ternary
+           isUndefined(jQuery)         
+        || isUndefined(_)              
+        || isUndefined(GS)             
+        || isUndefined(GS.Models)      
+        || isUndefined(GS.Controllers) 
+        || isUndefined(GS.lightbox)
+        || isUndefined(GS.player)
+        || isUndefined(GS.notice)
+        || isUndefined(GS.notice)
+        ) ? wait() : callback();
+    }
+
+    function isUndefined(value) {
+        return typeof value === 'undefined';
     }
 
     function subscribe(methodName, callback) {

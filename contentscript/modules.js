@@ -1,5 +1,6 @@
 function modulesClosure() {
 
+    console.log('--> modules loaded');
     var modules = {
           'modules': {}
         , 'getModuleCount': getModuleCount

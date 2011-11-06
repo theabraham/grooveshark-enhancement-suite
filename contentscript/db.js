@@ -1,5 +1,6 @@
 function dbClosure() { 
 
+    console.log('--> db loaded');
     var db = {
           'getModule': getModule
         , 'setModule': setModule

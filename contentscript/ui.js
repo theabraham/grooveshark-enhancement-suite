@@ -1,8 +1,11 @@
 function uiClosure() {
 
     console.log('--> ui loaded');
+    var PLAYER_DIV = '#playerDetails_queue';
+    var playerButtons = {};
+
     var ui = {
-          'playerButtons': {}
+          'playerButtons': playerButtons
         , 'addPlayerButton': addPlayerButton
         , 'removePlayerButton': removePlayerButton
         , 'restorePlayerButtons': restorePlayerButtons
@@ -14,19 +17,18 @@ function uiClosure() {
         , 'notice': notice
     };
 
-    var PLAYER_DIV = '#playerDetails_queue';
-
     function addPlayerButton(uid, options) {
-        var buttonTag;
+        var $buttonTag;
         options.label = (options.label || '');
         options.pos = (options.pos === 'left');
         options.onclick = (options.onclick || function() {});
 
-        if (this.playerButtons[uid]) { 
+        if (playerButtons[uid]) { 
             return false; 
         } else {
-            buttonTag = $('#queue_songs_button', PLAYER_DIV).clone().attr('id', uid.slice(1)).html('<span>' + options.label + '</span>');
-            this.playerButtons[uid] = { 'buttonTag': buttonTag, 'options': options };
+            $buttonTag = $('#queue_songs_button', PLAYER_DIV).clone();
+            $buttonTag.attr('id', uid.slice(1)).html('<span>' + options.label + '</span>');
+            playerButtons[uid] = { '$buttonTag': $buttonTag, 'options': options };
             placePlayerButton(uid);
         }
     }
@@ -43,9 +45,9 @@ function uiClosure() {
     }
 
     function removePlayerButton(uid) { 
-        if (this.playerButtons[uid]) {
+        if (playerButtons[uid]) {
             $(uid, PLAYER_DIV).remove();
-            delete this.playerButtons[uid];
+            delete playerButtons[uid];
         }
     }
 

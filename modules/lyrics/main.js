@@ -13,7 +13,6 @@ function lyricsClosure() {
     function construct() { 
         ges.ui.addPlayerButton('#songLyrics', {
               'label': 'Show Lyrics'
-            , 'pos': 'right'
             , 'onclick': requestLyrics
         });
     }

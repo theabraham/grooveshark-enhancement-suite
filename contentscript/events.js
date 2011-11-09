@@ -15,8 +15,8 @@ function eventsClosure() {
             }, 200); 
         };
 
-        (  // epic ternary
-           isUndefined(jQuery)         
+        // epic ternary
+        (  isUndefined(jQuery)         
         || isUndefined(_)              
         || isUndefined(GS)             
         || isUndefined(GS.Models)      
@@ -24,8 +24,7 @@ function eventsClosure() {
         || isUndefined(GS.lightbox)
         || isUndefined(GS.player)
         || isUndefined(GS.notice)
-        || isUndefined(GS.notice)
-        ) ? wait() : callback();
+        ) ? wait() : setTimeout(function() { callback(); }, 3e3);
     }
 
     function isUndefined(value) {

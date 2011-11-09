@@ -36,6 +36,11 @@ function gesClosure() {
                       , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
                       , 'pos': 'right'
                   }
+                , { 
+                        'label': 'Settings'
+                      , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
+                      , 'pos': 'right'
+                  }
             ] 
             , 'onpopup': onpopup
         };

@@ -14,7 +14,6 @@ function dupeDeleteClosure() {
     function construct() { 
         ges.ui.addPlayerButton('#dupeDelete', {
               'label': 'Remove Duplicates'
-            , 'pos': 'right'
             , 'onclick': removeDuplicates
         });
     }

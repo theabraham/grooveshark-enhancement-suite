@@ -1,5 +1,5 @@
 /*
- * GES Lightbox
+ * GES Menu Lightbox
  */
 
 #lightbox .mod_link { display:block; margin-bottom:10px; padding:10px; border:1px solid #b2b2b2; -moz-border-radius:3px; -webkit-border-radius:3px; }
@@ -17,9 +17,11 @@
 #lightbox .mod_last { margin-bottom:0; }
 
 /*
- * Notifications
+ * Tweaks for UI
  */
 
 #notifications .scrollable { max-height:200px; overflow-y:auto; }
 #notifications li.wide { width:400px; margin:0 0 3px -150px; }
+span.ges_cloned_button { display:block; float:left; line-height:30px; font-size:11px; font-weight:bold; float:left; margin:0 10px; }
+span.ges_cloned_button a { color:#fff; }
 

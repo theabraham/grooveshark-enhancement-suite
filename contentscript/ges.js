@@ -32,14 +32,12 @@ function gesClosure() {
             , 'content': content
             , 'buttons': [
                   { 
-                        'label': 'Contribute Code'
-                      , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
-                      , 'pos': 'right'
-                  }
-                , { 
                         'label': 'Settings'
                       , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
-                      , 'pos': 'right'
+                  }
+                , { 
+                        'label': 'Contribute Code'
+                      , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
                   }
             ] 
             , 'onpopup': onpopup

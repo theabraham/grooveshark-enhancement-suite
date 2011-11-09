@@ -96,33 +96,41 @@ function uiClosure() {
     }
 
     function addLightboxButton($lightbox, options) {
-        var $button, $container, linkText;
+        var $closeBtn, $newBtn, $ulContainer, $liContainer, linkText;
         options.label = (options.label || '');
         options.uid = (options.uid || options.label.trim().toLowerCase().replace(' ', '_'));
-        options.link = (options.link || false);
-        options.pos = (options.pos || 'left');
+        options.link = (options.link || '');
+        options.onclick = (options.onclick || false);
 
-        $button = $('.close', $lightbox).clone()
+        $closeBtn = $('.close', $lightbox);
+        $newBtn = $('<a></a>').attr({
+                  'href': options.link
+                , 'target': 'blank'
+                , 'class': $closeBtn.attr('class')
+            })
             .removeClass('close')
-            .addClass(options.uid);
-        $('span', $button).html(options.label);
-        
-        // wrap the button with a link tag
-        if (options.link) {
-            linkText = '<a href="' + options.link + '" target="blank" class="' + $button.attr('class') + '">' + $button.html() + '</a>';
-            $button = $button.replaceWith(linkText);
+            .addClass(options.uid)
+            .html($closeBtn.html());
+        $('span', $newBtn).text(options.label);
+
+        if (options.onclick) {
+            $newBtn.click(function() {
+                options.onclick();
+                return false;
+            });
         }
 
-        // get (or create) the right or left button container list
-        $container = $('ul.' + options.pos, $lightbox);
-        if ($container.length === 0) {
-            $container = $('<ul class="' + options.pos + '"></ul>');
+        // find (or create) the right ul container
+        $ulContainer = $('ul.right', $lightbox);
+        if (!$ulContainer.length) {
+            $ulContainer = $('<ul class="right"></ul>');
+            $('#lightbox_footer .left', $lightbox).before($ulContainer);
         }
 
-        if ($('li.first').length) {
-            $j
-        $('li', $container).append($button);
-        $('#lightbox_footer .left', $lightbox).before($container);
+        // place the li container, with the button inside; label as first or last (always last if not first)
+        $liContainer = $('<li></li>').append($newBtn);
+        $liContainer.attr('class', ($('li.first', $ulContainer).length ? 'last' : 'first'));
+        $ulContainer.append($liContainer);
     }
 
     function toggleLightbox(uid) {

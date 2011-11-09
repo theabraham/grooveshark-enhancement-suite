@@ -12,7 +12,7 @@ function uiClosure() {
         , 'notice': notice
     };
 
-    // some css-selector constants
+    // commonly used CSS selectors
     var PLAYER_DIV = 'div#playerDetails_queue';
     var ORIGINAL_BTN = 'span#queue_songCount';
     var CLONED_BTN = 'span.ges_cloned_button';

@@ -10,12 +10,6 @@ function shortcutsClosure() {
         , 'destruct': destruct
     };
 
-    // Constant strings for certain useful Url's.
-    var myMusicUrl = $('a#header_music_btn', '#header_mainNavigation').attr('href');
-    var myFavoritesUrl = myMusicUrl + '/favorites';
-    var myPlaylistsUrl = myMusicUrl + '/playlists';
-    var myCommunityUrl = $('a#header_community_btn', '#header_mainNavigation').attr('href')
-
     var deletion = {  
           'name': 'Deletion'
         , 'a': function() { $('#queue_clear_button').click(); }
@@ -54,7 +48,7 @@ function shortcutsClosure() {
         , 'r': function() { if (GS.player.player.getQueueIsRestorable()) { GS.player.restoreQueue(); } }
         , 'Y': function() { GS.player.showVideoLightbox(); }
         , 'F': function() { $('#player_shuffle').click(); }
-        , 'H': function() { GS.player.toggleQueue(); }
+        , 'Q': cycleQueueSize
         , 'L': function() { $('#player_loop').click(); }
         , 'd': deletion
         , 'p': page
@@ -77,7 +71,7 @@ function shortcutsClosure() {
         , 'r': 'restore previous queue'
         , 'Y': 'youtube current song'
         , 'F': 'toggle shuffle'
-        , 'H': 'toggle queue size'
+        , 'Q': 'cycle through queue sizes'
         , 'L': 'cycle looping'
         , 'ds': 'delete current song (<strong>*</strong> repeat count)'
         , 'da': 'delete all songs'
@@ -91,7 +85,13 @@ function shortcutsClosure() {
         , 'gl': 'open playing song\'s album'
     };
 
+    var myMusicUrl, myFavoritesUrl, myPlaylistsUrl, myCommunityUrl;
+
     function setup() {
+        myMusicUrl = $('a#header_music_btn', '#header_mainNavigation').attr('href');
+        myFavoritesUrl = myMusicUrl + '/favorites';
+        myPlaylistsUrl = myMusicUrl + '/playlists';
+        myCommunityUrl = $('a#header_community_btn', '#header_mainNavigation').attr('href')
         createHelpBox('Keyboard Shortcuts');        
     }
     
@@ -114,9 +114,9 @@ function shortcutsClosure() {
 
     // When a key is pressed, 'keydown' is the first of three events
     // triggered, and it's the only one that will tell us the original target
-    // of the key press; used to determine if the target was an input or not.
+    // of the key event; used to determine if the target was an input or not.
     function keyDownTarget(evt) {
-        targetIsInput = $(evt.target).is('input');
+        targetIsInput = $(evt.target).is('input, textarea');
     }
 
     // When a key is pressed, 'keypress' is the second of three events
@@ -124,9 +124,11 @@ function shortcutsClosure() {
     // values; used to determine if we should act on the key character or not.
     function keyPressCapture(evt) {
         var character = String.fromCharCode(evt.keyCode);
-        if ((targetIsInput && character === '/') || !targetIsInput) {
+        if (targetIsInput && character === '/') {
             route(character);
-            $('input:focus').blur();
+        } else if (!targetIsInput) {
+            $('input:focus, textarea:focus').blur();
+            route(character);
         }
     }
 
@@ -285,6 +287,13 @@ function shortcutsClosure() {
         if (typeof GS.user.removeFromLibrary(songID) === 'undefined') {
             GS.user.addToSongFavorites(songID); 
         }
+    }
+
+    // Cycles through queue sizes (large, medium, small, and hidden.)
+    function cycleQueueSize() {
+        var sizes = ['l', 'm', 's', 'off'];
+        var nextSize = sizes.indexOf(GS.player.queueSize) + 1;
+        GS.player.setQueue(GS.player.queueClosed ? 'l' : sizes[nextSize]);
     }
 
     // Open the playlist identified by the multiplier. If no multiplier is set

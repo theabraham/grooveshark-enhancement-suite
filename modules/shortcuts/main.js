@@ -10,6 +10,7 @@ function shortcutsClosure() {
         , 'destruct': destruct
     };
 
+    // Constant strings for certain useful Url's.
     var myMusicUrl = $('a#header_music_btn', '#header_mainNavigation').attr('href');
     var myFavoritesUrl = myMusicUrl + '/favorites';
     var myPlaylistsUrl = myMusicUrl + '/playlists';
@@ -91,13 +92,13 @@ function shortcutsClosure() {
     };
 
     function setup() {
-        createHelpBox('Keyboard Shortcuts', createHelpContent());        
+        createHelpBox('Keyboard Shortcuts');        
     }
     
     function construct() { 
         $('body').bind('keypress', captureKey);
         $.subscribe('gs.page.home.view', rebindPreventHomeFocus);
-        $(window).bind('hashchange', rebindPreventPageFocus);
+        $(window).bind('hashchange', preventPageFocus);
         //rebindPreventHomeFocus();
     }
 
@@ -110,6 +111,8 @@ function shortcutsClosure() {
     // Key Router
     // ----------
 
+    // Object which will keep track of the current shortcut scope (for shortcut
+    // chains like 'da'), multiplier, and a reset timer.
     var router = { 
           'scope': shortcuts
         , 'multiplier': 0
@@ -199,22 +202,22 @@ function shortcutsClosure() {
 
     // Prevents search bars on individual pages from stealing focus.
     function preventPageFocus() {
-        console.log('PAGE BLOCKED!');
         $('input.search').blur();
     }
 
     // Help Lightbox
     // -------------
 
-    function createHelpBox(title, content) {
-        var options = {
+    // Create the help lightbox.
+    function createHelpBox(title) {
+        ges.ui.createLightbox('shortcuts', {
               'title': title
-            , 'content': content
-        };
-
-        ges.ui.createLightbox('shortcuts', options);              
+            , 'content': createHelpContent()
+        });
     }
 
+    // The content for our help lightbox that describes how to call the shortcuts
+    // and a list of available shortcuts with their descriptions.
     function createHelpContent() {
         var content = '<p><span class="sc_name">Shortcut Commands</span><p>' + descriptions['intro'] + '</p></p>';
         var shortcutTemplate = $('<div><div class="sc_wrap"><span class="sc_key"></span> <span class="sc_desc"></span></div></div>');
@@ -222,24 +225,22 @@ function shortcutsClosure() {
         return content;
     }
 
+    // Recursive function that goes through the shortcuts and their descriptions
+    // to fill out the help lightbox.
     function traverseShortcuts(scope, parentKey, content, template) {
         var shortcutTag;
-
         _.forEach(scope, function(shortcut, key) {
             if (typeof shortcut === 'object') { 
                 content = traverseShortcuts(scope[key], parentKey + key, content, template); 
-            }
-            else if (typeof shortcut === 'string') {
+            } else if (typeof shortcut === 'string') {
                 content += '</p><p><span class="sc_name">' + shortcut + '</span>';
-            }
-            else {
+            } else {
                 shortcutTag = $(template).clone();
                 $('.sc_key', shortcutTag).html(parentKey + key);
                 $('.sc_desc', shortcutTag).html(descriptions[parentKey + key]);
                 content += $(shortcutTag).html();
             }
         });
-
         content += '</p>';
         return content;
     }
@@ -247,30 +248,25 @@ function shortcutsClosure() {
     // Shortcut Implementations
     // ------------------------
 
+    // Grooveshark uses hashes for navigation.
     function follow(hash) {
         location.hash = hash;
     }
 
+    // Finds and focuses on the current page's search bar or navigates to the
+    // home page's search bar.
     function findSearchBar() { 
         if ($('input.search').length === 0) { 
             follow('#/'); 
-        }
-        else if ($('input:focus, textarea:focus').length > 0) {
+        } else if ($('input:focus, textarea:focus').length > 0) {
             $('input:focus, textarea:focus').blur().val('');
-        }
-        else {
+        } else {
             $('input.search').focus();
             setTimeout(function() { $('input.search').val(''); }, 50);
         }
     }
-    
-    function convertToMS(timeStr) {
-        var time = timeStr.split(':');
-        var minutes = parseFloat(time[0]);
-        var seconds = parseFloat(time[1]);
-        return (minutes * 60 + seconds) * 1000;
-    }
 
+    // Used to fast-forward or rewind a song; multiplier makes each step larger.
     function seekPosition(increment) {
         if (GS.player.isPlaying) { 
             increment *= getMultiplier();
@@ -279,14 +275,29 @@ function shortcutsClosure() {
             GS.player.seekTo(Math.max(0, Math.min(duration, elapsed + increment)));
         }
     }
+    
+    // Takes a time string formatted in MM:SS (e.g. 1:36), and returns the
+    // length in milliseconds (e.g. 96000.)
+    function convertToMS(timeStr) {
+        var time = timeStr.split(':');
+        var minutes = parseFloat(time[0]);
+        var seconds = parseFloat(time[1]);
+        return (minutes * 60 + seconds) * 1000;
+    }
 
+    // Changes the volume by a given amount. Slider timers are manually created
+    // to mimick a user hovering over the volume slider (to show the volume bar.)
     function changeVolume(amount) {
         clearTimeout(GS.player.volumeSliderTimeout);
         $('#volumeControl').show();  
         GS.player.setVolume(GS.player.getVolume() + amount);
-        GS.player.volumeSliderTimeout = setTimeout(function() { $('#volumeControl').hide(); }, GS.player.volumeSliderDuration);
+        GS.player.volumeSliderTimeout = setTimeout(function() { 
+            $('#volumeControl').hide();
+        }, GS.player.volumeSliderDuration);
     }
 
+    // Add the current song to the user's favorites, only if your unable to
+    // remove the song from their favorites.
     function toggleFavorite() {
         var songID = GS.player.getCurrentSong().SongID;
         if (typeof GS.user.removeFromLibrary(songID) === 'undefined') {
@@ -294,23 +305,23 @@ function shortcutsClosure() {
         }
     }
 
+    // Open the playlist identified by the multiplier. If no multiplier is set
+    // just open the user's playlist page.
     function openPlaylist() {
         var playlistUrls = [];
         var playlistUrl;
-
         if (router.multiplier) {
-            _.forEach(GS.user.playlists, function(playlist, key) { 
+            _.forEach(GS.user.playlists, function(playlist) { 
                 playlistUrls[playlist.sidebarSort - 1] = playlist.toUrl(); 
             });
             playlistUrl = playlistUrls[router.multiplier - 1];
-        }
-        else { 
+        } else { 
             playlistUrl = myPlaylistsUrl;
         } 
-
         follow(playlistUrl);
     }
 
+    // Open the currently playing song's album page.
     function openAlbum() {
         var albumID = GS.player.getCurrentSong().AlbumID;
         GS.Models.Album.getAlbum(albumID, function(album) { 

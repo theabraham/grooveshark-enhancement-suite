@@ -96,16 +96,38 @@ function shortcutsClosure() {
     }
     
     function construct() { 
-        $('body').bind('keypress', captureKey);
-        $.subscribe('gs.page.home.view', rebindPreventHomeFocus);
-        $(window).bind('hashchange', preventPageFocus);
-        //rebindPreventHomeFocus();
+        $('body').bind('keydown', keyDownTarget);
+        $('body').bind('keypress', keyPressCapture);
     }
 
     function destruct() {
-        $('body').unbind('keypress', captureKey);
-        $.unsubscribe('gs.page.home.view', rebindPreventHomeFocus);
-        $(window).unbind('hashchange', preventPageFocus);
+        $('body').unbind('keydown', keyDownTarget);
+        $('body').unbind('keypress', keyPressCapture);
+    }
+
+    // Key Events Handlers
+    // -------------------
+
+    // Was the key pressed while focused on an input? If so, we shouldn't
+    // act on it, otherwise prevent any other input from stealing focus.
+    var targetIsInput = false;
+
+    // When a key is pressed, 'keydown' is the first of three events
+    // triggered, and it's the only one that will tell us the original target
+    // of the key press; used to determine if the target was an input or not.
+    function keyDownTarget(evt) {
+        targetIsInput = $(evt.target).is('input');
+    }
+
+    // When a key is pressed, 'keypress' is the second of three events
+    // triggered, and it's the only one that will give us reliable 'keyCode'
+    // values; used to determine if we should act on the key character or not.
+    function keyPressCapture(evt) {
+        var character = String.fromCharCode(evt.keyCode);
+        if ((targetIsInput && character === '/') || !targetIsInput) {
+            route(character);
+            $('input:focus').blur();
+        }
     }
 
     // Key Router
@@ -163,46 +185,6 @@ function shortcutsClosure() {
     function getMultiplier() {
         var min = 1;
         return router.multiplier > min ? router.multiplier : min;
-    }
-
-    // Events Handlers
-    // ---------------
-
-    // Pass the character from the keypress event to the router if it wasn't
-    // triggered inside of an input or textarea (except for the '/' character.)
-    function captureKey(evt) {
-        var character = String.fromCharCode(evt.keyCode);
-        var focused = $('input:focus, textarea:focus').length;
-        if ((focused && character === '/') || !focused) {
-            route(character);
-        }
-    }
-
-    // Rebinds the 'preventHomeFocus' function when returning to the homepage.
-    function rebindPreventHomeFocus() {
-        var keyEvents = $(document).data('events').keydown;
-        var isBound = false;
-        _.forEach(keyEvents, function(handler) {
-            if (handler.callback === preventHomeFocus) isBound = true;
-        });
-        if (!isBound) $(document).bind('keydown', preventHomeFocus);
-    }
-    
-    // Prevents the home page search bar from stealing focus.
-    function preventHomeFocus(evt) {
-        if (!$(evt.target).is('input')) {
-            console.log('HOME BLOCKED!');
-            $('input:focus').blur();
-        }
-    }
-
-    function rebindPreventPageFocus() {
-        $('input.search').blur();
-    }
-
-    // Prevents search bars on individual pages from stealing focus.
-    function preventPageFocus() {
-        $('input.search').blur();
     }
 
     // Help Lightbox

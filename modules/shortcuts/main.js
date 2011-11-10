@@ -18,9 +18,18 @@ function shortcutsClosure() {
 
     var page = {
           'name': 'Song List'
-        , 'a': function() { $('.play.playTop', '#page_header .page_controls').click(); }
-        , 'd': function() { $('.dropdown a[name="addToQueue"]', '#page_header .page_controls').click(); }
+        , 'a': playAllSongs
+        , 'd': addAllSongs
     };
+
+    function playAllSongs() {
+        addAllSongs(true);
+    }
+
+    function addAllSongs(autoplay) {
+        var songIDs = GS.page.prototype.getSongsIDsFromSelectedGridRows();
+        GS.player.addSongsToQueueAt(songIDs, GS.player.INDEX_DEFAULT, autoplay);
+    }
 
     var navigation = {
           'name': 'Navigation'

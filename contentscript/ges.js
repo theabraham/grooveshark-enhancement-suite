@@ -31,10 +31,10 @@ function gesClosure() {
               'title': title
             , 'content': content
             , 'buttons': [
-                  { 
-                        'label': 'Settings'
-                      , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
-                  }
+                  //{ 
+                  //      'label': 'Settings'
+                  //    , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'
+                  //}
                 , { 
                         'label': 'Contribute Code'
                       , 'link': 'http://github.com/theabraham/Grooveshark-Enhancement-Suite/'

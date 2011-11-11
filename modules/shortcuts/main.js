@@ -10,6 +10,9 @@ function shortcutsClosure() {
         , 'destruct': destruct
     };
 
+    // Map Shortcuts to Functions
+    // --------------------------
+
     var deletion = {  
           'name': 'Deletion'
         , 'a': function() { $('#queue_clear_button').click(); }
@@ -21,15 +24,6 @@ function shortcutsClosure() {
         , 'a': playAllSongs
         , 'd': addAllSongs
     };
-
-    function playAllSongs() {
-        addAllSongs(true);
-    }
-
-    function addAllSongs(autoplay) {
-        var songIDs = GS.page.prototype.getSongsIDsFromSelectedGridRows();
-        GS.player.addSongsToQueueAt(songIDs, GS.player.INDEX_DEFAULT, autoplay);
-    }
 
     var navigation = {
           'name': 'Navigation'
@@ -93,6 +87,9 @@ function shortcutsClosure() {
         , 'ga': 'open playing song\'s artist'
         , 'gl': 'open playing song\'s album'
     };
+
+    // Setup, Construct, and Destruct
+    // ------------------------------
 
     var myMusicUrl, myFavoritesUrl, myPlaylistsUrl, myCommunityUrl;
 
@@ -303,6 +300,17 @@ function shortcutsClosure() {
         var sizes = ['l', 'm', 's', 'off'];
         var nextSize = sizes.indexOf(GS.player.queueSize) + 1;
         GS.player.setQueue(GS.player.queueClosed ? 'l' : sizes[nextSize]);
+    }
+
+    // Add to queue and play all songs listed on the current page.
+    function playAllSongs() {
+        addAllSongs(true);
+    }
+
+    // Add to queue all songs listed on the current page.
+    function addAllSongs(autoplay) {
+        var songIDs = GS.page.prototype.getSongsIDsFromSelectedGridRows();
+        GS.player.addSongsToQueueAt(songIDs, GS.player.INDEX_DEFAULT, autoplay);
     }
 
     // Open the playlist identified by the multiplier. If no multiplier is set

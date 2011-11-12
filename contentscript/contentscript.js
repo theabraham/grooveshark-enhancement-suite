@@ -1,10 +1,10 @@
-function premiumClosure() {
-    setTimeout(function() {
-        GS.user.IsPremium = 1;
-        GS.lightbox.close();
-        console.log('--> upgraded');
-    }, 3e3);
-}
+//function premiumClosure() {
+//    setTimeout(function() {
+//        GS.user.IsPremium = 1;
+//        GS.getLightbox().close();
+//        console.log('--> upgraded');
+//    }, 3e3);
+//}
 
 /*
  * inject closure functions that make up GES
@@ -13,7 +13,7 @@ function premiumClosure() {
 var script = document.createElement('script');
 var closures = [
       bufferClosure
-    , premiumClosure
+    //, premiumClosure
     , eventsClosure
     , uiClosure
     , messagesClosure

@@ -71,9 +71,9 @@ function uiClosure() {
         options.onpopup = (options.onpopup || function() {});
 
         // clone another lightbox
-        GS.lightbox.open('locale');
+        GS.getLightbox().open('locale');
         $lightbox = $('#lightbox .locale').clone();
-        GS.lightbox.close();
+        GS.getLightbox().close();
 
         // replace it's content, and add buttons
         $('#lightbox_header h3', $lightbox).html(options.title);
@@ -134,16 +134,16 @@ function uiClosure() {
     }
 
     function toggleLightbox(uid) {
-        GS.lightbox.isOpen ? closeLightbox()
+        GS.getLightbox().isOpen ? closeLightbox()
                            : openLightbox(uid);
     }
 
     function openLightbox(uid) {
-        GS.lightbox.open(uid); 
+        GS.getLightbox().open(uid); 
      }
 
     function closeLightbox() {
-        GS.lightbox.close(); 
+        GS.getLightbox().close(); 
     }
 
     function notice(message, options) {
@@ -154,7 +154,7 @@ function uiClosure() {
         options.displayDuration = (options.displayDuration || 2500);
         options.manualClose = (options.manualClose || false);
 
-        GS.notice.displayMessage(options);
+        GS.getNotice().displayMessage(options);
 
         if (options.styles) {
             options.styles = options.styles.join(' ');

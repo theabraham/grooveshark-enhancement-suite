@@ -21,9 +21,9 @@ function eventsClosure() {
         || isUndefined(GS)             
         || isUndefined(GS.Models)      
         || isUndefined(GS.Controllers) 
-        || isUndefined(GS.lightbox)
+        || isUndefined(GS.getLightbox)
+        || isUndefined(GS.getNotice)
         || isUndefined(GS.player)
-        || isUndefined(GS.notice)
         ) ? wait() : setTimeout(function() { callback(); }, 3e3);
     }
 

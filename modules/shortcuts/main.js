@@ -37,7 +37,7 @@ function shortcutsClosure() {
 
     var shortcuts = {
           'name': 'Global'
-        , '?': function() { GS.lightbox.isOpen ? ges.ui.closeLightbox() : ges.ui.openLightbox('shortcuts'); } 
+        , '?': function() { GS.getLightbox().isOpen ? ges.ui.closeLightbox() : ges.ui.openLightbox('shortcuts'); } 
         , '/': findSearchBar
         , '<': function() { multiplyFn(function() { $('#player_previous').click() }); }
         , '>': function() { multiplyFn(function() { $('#player_next').click(); }); }

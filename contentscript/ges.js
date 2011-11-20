@@ -1,12 +1,15 @@
 function gesClosure() {
 
+    // When Grooveshark is ready, setup our menu and buttons, and call
+    // the "construct" function for each enabled module.
     ges.events.ready(function() { 
-        // setup interface
-        console.log('--> GES is ready');
         createMenu('Grooveshark Enhancement Suite', menuContent());
         $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
+        $menuOption = $('<li class="option"><a href="#"><span>GES Menu</span></a></li>').click(function() {
+            ges.ui.toggleLightbox('ges');
+        });
+        $($('#header_userSelectOptions ul li')[1]).after($menuOption);
 
-        // construct modules
         ges.modules.mapModules(function (module, moduleName) { 
             module.isEnabled = ges.db.getModule(moduleName, 'isEnabled');
             if (module.setup) { ges.modules.doSetup(moduleName); }

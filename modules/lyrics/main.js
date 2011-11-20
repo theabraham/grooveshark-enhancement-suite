@@ -21,6 +21,8 @@ function lyricsClosure() {
         ges.ui.removePlayerButton('#songLyrics');
     }
 
+    // Using the current song's information, send a request to lyric's background
+    // script to fetch it's lyrics.
     function requestLyrics() {
         var song = GS.player.getCurrentSong();
         var songInfo, message, options;
@@ -28,14 +30,14 @@ function lyricsClosure() {
         if (song) { 
             songInfo = { 'song': song.SongName, 'artist': song.ArtistName };
             ges.messages.send('lyrics', songInfo, displayLyrics);
-        }
-        else {
+        } else {
             message = 'Play a song before requesting its lyrics';
             options = { 'type': 'error', 'manualClose': false };
             ges.ui.notice(message, options);
         }
     }
 
+    // Callback from requesting lyrics; display the lyrics if given, or display an error.
     function displayLyrics(lyricsInfo) {
         var message, options;
 
@@ -43,8 +45,7 @@ function lyricsClosure() {
             lyricsInfo.lyrics = cleanLyrics(lyricsInfo.lyrics);
             message = '<p><strong>' + lyricsInfo.song + '</strong> - <em>' + lyricsInfo.artist + '</em></p><br/><div class="scrollable"><p>' + lyricsInfo.lyrics + '</p></div>';
             options = { 'type': 'form', 'manualClose': true, 'styles': ['wide'] };
-        } 
-        else {
+        } else {
             message = '<p>Lyrics not found for <strong>' + lyricsInfo.song + '</strong>. If you can find the lyrics, why not share them at <a href="' + lyricsInfo.url + '" target="blank">Lyrics Wikia</a>?</p>';
             options = { 'type': 'error', 'manualClose': false };
         }

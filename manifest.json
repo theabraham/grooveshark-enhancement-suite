@@ -1,7 +1,7 @@
 {
       "name": "Grooveshark Enhancement Suite"
     , "description": "A suite of handy modules that improve the Grooveshark experience"
-    , "version": "1.3"
+    , "version": "1.4"
     , "background_page": "background/background.html"
     , "permissions": [
               "tabs"

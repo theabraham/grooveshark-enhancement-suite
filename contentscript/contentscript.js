@@ -1,11 +1,3 @@
-//function premiumClosure() {
-//    setTimeout(function() {
-//        GS.user.IsPremium = 1;
-//        GS.getLightbox().close();
-//        console.log('--> upgraded');
-//    }, 3e3);
-//}
-
 /*
  * inject closure functions that make up GES
  */
@@ -13,7 +5,6 @@
 var script = document.createElement('script');
 var closures = [
       bufferClosure
-    //, premiumClosure
     , eventsClosure
     , uiClosure
     , messagesClosure

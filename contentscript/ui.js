@@ -30,8 +30,8 @@ function uiClosure() {
             .addClass(CLONED_BTN.slice(5))
             .html('<a href="#">' + options.label + '</a>');
 
+        console.log('BUTTON', $buttonTag);
         playerButtons[uid] = { '$buttonTag': $buttonTag, 'options': options };
-        me = playerButtons;
         placePlayerButton(uid);
     }
 
@@ -73,6 +73,7 @@ function uiClosure() {
         // clone another lightbox
         GS.getLightbox().open('locale');
         $lightbox = $('#lightbox .locale').clone();
+        console.log('lightbox', $lightbox);
         GS.getLightbox().close();
 
         // replace it's content, and add buttons

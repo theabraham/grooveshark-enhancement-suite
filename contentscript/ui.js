@@ -30,7 +30,6 @@ function uiClosure() {
             .addClass(CLONED_BTN.slice(5))
             .html('<a href="#">' + options.label + '</a>');
 
-        console.log('BUTTON', $buttonTag);
         playerButtons[uid] = { '$buttonTag': $buttonTag, 'options': options };
         placePlayerButton(uid);
     }
@@ -63,37 +62,38 @@ function uiClosure() {
     }    
 
     function createLightbox(uid, options) { 
-        var $lightbox, controller = {};
+        var content, name, opt, proto;
         options = (options || {});
         options.title = (options.title || '');
         options.content = (options.content || '');
         options.buttons = (options.buttons || null);
         options.onpopup = (options.onpopup || function() {});
 
-        // clone another lightbox
-        GS.getLightbox().open('locale');
-        $lightbox = $('#lightbox .locale').clone();
-        console.log('lightbox', $lightbox);
-        GS.getLightbox().close();
-
-        // replace it's content, and add buttons
-        $('#lightbox_header h3', $lightbox).html(options.title);
-        $('#lightbox_content .lightbox_content_block', $lightbox).first().html(options.content);
-        $('#lightbox_content .lightbox_content_block.separatedContent', $lightbox).remove();
-        _.forEach(options.buttons, function(button) {
-            addLightboxButton($lightbox, button);
-        });
-
         // fill in and create the controller
-        controller.name = 'GS.Controllers.Lightbox.' + uid + 'Controller';
-        controller.proto = { 'onDocument': false };
-        controller.init = function() {
-            this.element.html($lightbox.html());
-            options.onpopup.call(this);
+        content = createLightboxContent(options.title, options.content, options.buttons);
+        name = 'GS.Controllers.Lightbox.' + uid + 'Controller';
+        opt = { 'onDocument': false };
+        proto = {
+            'init': function() {
+                this.update();
+            },
+            'update': function() {
+                $(this.element).html(content);
+                options.onpopup.call(this);
+            }
         };
 
-        GS.Controllers.BaseController.extend(controller.name, controller.proto, { 'init': controller.init });
-        $('#lightbox').prepend('<div class="lbcontainer ' + uid + '"></div>');
+        GS.Controllers.BaseController.extend(name, opt, proto);
+    }
+
+    function createLightboxContent(title, content, buttons) {
+        var $template = $('<div><div id="lightbox_header"> <div class="cap right"><div class="cap left"><div class="inner"> <h3 data-translate-text="LANGUAGE"></h3> </div></div></div> </div> <div id="lightbox_content"> <div class="lightbox_content_block"> <div class="clear noHeight"></div> </div> </div> <div id="lightbox_footer"> <div class="shadow"></div> <div class="highlight"></div> <ul class="left"> <li class="first last"> <button class="btn btn_style4 close" type="button"> <div> <span data-translate-text="CLOSE">Close</span> </div> </button> </li> </ul> <div class="clear"></div> </div> <div class="clear"></div></div>');
+        $('#lightbox_header h3', $template).html(title);
+        $('#lightbox_content .lightbox_content_block', $template).first().html(content);
+        _.forEach(buttons, function(button) {
+            addLightboxButton($template, button);
+        });
+        return $template.html();
     }
 
     function addLightboxButton($lightbox, options) {
@@ -136,7 +136,7 @@ function uiClosure() {
 
     function toggleLightbox(uid) {
         GS.getLightbox().isOpen ? closeLightbox()
-                           : openLightbox(uid);
+                                : openLightbox(uid);
     }
 
     function openLightbox(uid) {

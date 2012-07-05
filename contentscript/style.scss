@@ -1,0 +1,168 @@
+@mixin linear-gradient($from, $to) {
+    background:$to -moz-linear-gradient(bottom , $from, $to); 
+    background:$to -webkit-gradient(linear, left bottom, left top, from($from), to($to));
+}
+
+@mixin box-shadow($first) {
+    -moz-box-shadow:$first;
+    -webkit-box-shadow:$first;
+}
+
+@mixin box-shadow-2($first, $second) {
+    -moz-box-shadow:$first, $second;
+    -webkit-box-shadow:$first, $second;
+}
+
+/* GES Menu */
+
+#lightbox {
+    .mod_link { 
+        display:block;
+        margin-bottom:10px;
+        padding:10px;
+        border:1px solid #b2b2b2;
+        border-radius:3px;
+
+        .mod_icon { 
+            background-position:-4px -308px; 
+            float:right; 
+            display:inline-block; 
+            margin:12px 4px 0 0; 
+            height:8px; 
+            width:8px; 
+        }
+
+        &:hover { 
+            background-color:#dedede; 
+            padding:9px; 
+            border-width:2px; 
+
+            .mod_icon { 
+                background-position:-20px -308px;
+            }
+        }
+
+        &:active { 
+            background:none !important; 
+            border-color:#f77f00 !important; 
+            border-width:2px !important; 
+            
+            .mod_icon { 
+                background-position:12px -308px; 
+            }
+        }
+
+        &.enabled { 
+            background-color:#edd8c3; 
+            border:1px solid #f77f00; 
+            padding:10px; 
+
+            .mod_icon { 
+                background-position:-36px 268px !important; 
+            }
+        }
+
+        &.enabled:hover { 
+            border-width:2px; 
+            padding:9px; 
+        }
+    }
+
+    .mod_content { 
+        display:inline-block;
+        width:520px;
+    }
+
+    .mod_name { 
+        display:block;
+        color:#333;
+        margin-bottom:8px;
+    }
+
+    .mod_desc { 
+        color:#746453; 
+    }
+
+    .mod_last { 
+        margin-bottom:0; 
+    }
+}
+
+
+/* UI Tweaks */
+
+#notifications {
+    .scrollable { 
+        max-height:200px;
+        overflow-y:auto;
+    }
+
+    li.wide { 
+        width:400px; 
+        margin:0 0 3px -150px;
+    }
+}
+
+span {
+    &.ges_cloned_button { 
+        display:block; 
+        float:left;
+        line-height:30px;
+        font-size:11px;
+        font-weight:bold;
+        float:left;
+        margin:0 10px;
+    }
+
+    &.ges_cloned_button a { 
+        color:#fff;
+    }
+}
+
+/* Shortcuts */
+
+#lightbox {
+    .sc_name { 
+        display:block;
+        color:#333;
+        margin-bottom:8px;
+    }
+
+    .sc_wrap { 
+        display:inline-block;
+        width:270px;
+        margin-bottom:4px;
+
+        &.sc_left { 
+            margin-right:15px;
+        }
+    }
+
+    .sc_key { 
+        background:#F6F6F6;
+        box-shadow:inset 0 1px 0 #fff;
+        border:1px solid #B3B3B3;
+        border-radius:3px;
+        width:2em;
+        display:inline-block;
+        text-align:center;
+        margin-right:12px;
+        border-bottom:2px solid #B3B3B3;
+        font:normal 12px/20px Arial;
+    }
+}
+
+#ges_search_pane { 
+    position:absolute;
+    display:none;
+    width:420px;
+    margin-left:-222px;
+    top:0;
+    left:50%;
+    z-index:99999;
+    padding:24px;
+    font:bold 20px/30px "Lucida Grande", Verdana, Arial, sans-serif;
+    background:rgba(0,0,0,0.75);
+    color:#fff;
+    border-radius:3px;
+}

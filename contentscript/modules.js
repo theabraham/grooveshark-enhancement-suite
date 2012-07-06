@@ -1,6 +1,7 @@
 function modulesClosure() {
 
     console.log('--> modules loaded');
+
     var modules = {
           'modules': {}
         , 'getModuleCount': getModuleCount
@@ -38,7 +39,9 @@ function modulesClosure() {
 
     function doSetup(moduleName) {
         var module = modules.modules[moduleName];
-        module.setup();
+        if (module.setup) {
+            module.setup();
+        }
     }
 
     function doConstruct(moduleName) {

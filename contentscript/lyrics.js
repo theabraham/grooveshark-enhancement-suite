@@ -1,5 +1,7 @@
 function lyricsClosure() {
 
+    console.log('--> lyrics loaded');
+
     ges.modules.modules['lyrics'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Song Lyrics'
@@ -8,6 +10,7 @@ function lyricsClosure() {
         , 'setup': false
         , 'construct': construct
         , 'destruct': destruct
+        , 'requestLyrics': requestLyrics 
     };
 
     function construct() { 
@@ -21,8 +24,8 @@ function lyricsClosure() {
         ges.ui.removePlayerButton('#songLyrics');
     }
 
-    // Using the current song's information, send a request to lyric's background
-    // script to fetch it's lyrics.
+    /* Using the current song's information, send a request to lyric's background
+       script to fetch it's lyrics. */
     function requestLyrics() {
         var song = GS.player.getCurrentSong();
         var songInfo, message, options;
@@ -37,7 +40,7 @@ function lyricsClosure() {
         }
     }
 
-    // Callback from requesting lyrics; display the lyrics if given, or display an error.
+    /* Callback from requesting lyrics; display the lyrics if given, or display an error. */
     function displayLyrics(lyricsInfo) {
         var message, options;
 

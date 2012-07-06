@@ -1,5 +1,7 @@
 function uiClosure() {
 
+    console.log('--> ui loaded');
+
     var ui = {
           'addPlayerButton': addPlayerButton
         , 'removePlayerButton': removePlayerButton

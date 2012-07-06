@@ -1,5 +1,7 @@
 function dupeDeleteClosure() {
 
+    console.log('--> dupedelete loaded');
+
     ges.modules.modules['dupeDelete'] = {
           'author': 'Ibrahim Al-Rajhi'
         , 'name': 'Duplicate Song Remover'
@@ -9,6 +11,7 @@ function dupeDeleteClosure() {
         , 'setup': false
         , 'construct': construct
         , 'destruct': destruct
+        , 'removeDuplicates': removeDuplicates
     };
 
     function construct() { 

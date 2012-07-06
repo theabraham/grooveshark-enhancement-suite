@@ -19,7 +19,6 @@
             , "js": [
                   "lib/jquery.js"
                 , "contentscript/buffer.js"
-                , "contentscript/events.js"
                 , "contentscript/ui.js"
                 , "contentscript/messages.js"
                 , "contentscript/modules.js"

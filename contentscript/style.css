@@ -86,17 +86,3 @@ span.ges_cloned_button a {
   margin-right: 12px;
   border-bottom: 2px solid #B3B3B3;
   font: normal 12px/20px Arial; }
-
-#ges_search_pane {
-  position: absolute;
-  display: none;
-  width: 420px;
-  margin-left: -222px;
-  top: 0;
-  left: 50%;
-  z-index: 99999;
-  padding: 24px;
-  font: bold 20px/30px "Lucida Grande", Verdana, Arial, sans-serif;
-  background: rgba(0, 0, 0, 0.75);
-  color: #fff;
-  border-radius: 3px; }

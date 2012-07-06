@@ -5,14 +5,12 @@
 var script = document.createElement('script');
 var closures = [
       bufferClosure
-    , eventsClosure
     , uiClosure
     , messagesClosure
     , modulesClosure
     , dupeDeleteClosure
-    , shortcutsClosure
     , lyricsClosure
-    , dbClosure
+    , shortcutsClosure
     , gesClosure
 ];
 
@@ -42,4 +40,3 @@ window.addEventListener('clientRequestEvent', function() {
 
 clientResponseEvent = document.createEvent('Events'); 
 clientResponseEvent.initEvent('clientResponseEvent', true, false);
-

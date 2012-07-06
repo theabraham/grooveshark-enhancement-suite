@@ -1,5 +1,7 @@
 function messagesClosure() {
 
+    console.log('--> messages loaded');
+
     var messages = {
           'send': send
     };
@@ -28,4 +30,3 @@ function messagesClosure() {
     window.ges.messages = messages;
 
 }
-

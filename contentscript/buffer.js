@@ -1,6 +1,7 @@
 function bufferClosure() {
 
     console.log('--> buffer loaded');
+
     function Buffer(uid) {
         this.uid = '#' + uid;
         this.tag = '<textarea id="' + uid + '"></textarea>';

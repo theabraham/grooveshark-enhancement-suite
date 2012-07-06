@@ -23,16 +23,14 @@
                 , "contentscript/ui.js"
                 , "contentscript/messages.js"
                 , "contentscript/modules.js"
-                , "modules/shortcuts/main.js"
-                , "modules/dupe_delete/main.js"
-                , "modules/lyrics/main.js"
-                , "contentscript/db.js"
+                , "contentscript/shortcuts.js"
+                , "contentscript/dupe_delete.js"
+                , "contentscript/lyrics.js"
                 , "contentscript/ges.js"
                 , "contentscript/contentscript.js"
             ]
             , "css": [
                   "contentscript/style.css"
-                , "modules/shortcuts/style.css"
             ]
         }
     ]

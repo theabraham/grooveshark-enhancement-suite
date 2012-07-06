@@ -1,6 +1,5 @@
 function dbClosure() { 
 
-    console.log('--> db loaded');
     var db = {
           'getModule': getModule
         , 'setModule': setModule
@@ -52,4 +51,3 @@ function dbClosure() {
     window.ges.db = db;
 
 }
-

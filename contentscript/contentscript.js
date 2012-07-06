@@ -23,7 +23,7 @@ closures.map(function(closure) {
 document.body.appendChild(script);
 
 /*
- * listeners for requests from the injected GES and passes them on to background scripts
+ * listen for requests from the injected GES and pass them on to background scripts
  * allowing the client GES to interact with background scripts 
  */
 

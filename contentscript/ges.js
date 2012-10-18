@@ -11,15 +11,21 @@ function gesClosure() {
         };
 
         /* Epic ternary. */
-        (  isUndefined(jQuery)         
-        || isUndefined(_)              
-        || isUndefined(GS)             
-        || isUndefined(GS.Models)      
-        || isUndefined(GS.Controllers) 
-        || isUndefined(GS.getLightbox)
-        || isUndefined(GS.getNotice)
-        || isUndefined(GS.player)
-        ) ? wait() : setTimeout(function() { callback(); }, 3e3);
+        try {
+            (  isUndefined(Grooveshark)         
+            //|| isUndefined(Grooveshark)              
+            //|| isUndefined(_)              
+            //|| isUndefined(GS)             
+            //|| isUndefined(GS.Models)      
+            //|| isUndefined(GS.Controllers) 
+            //|| isUndefined(GS.getLightbox)
+            //|| isUndefined(GS.getNotice)
+            //|| isUndefined(GS.player)
+            ) ? wait() : setTimeout(function() { callback(); }, 3e3);
+        } catch (err) {
+            console.log('WAITING');
+            wait(); 
+        }
     }
 
     function isUndefined(value) {
@@ -28,6 +34,8 @@ function gesClosure() {
 
     /* Load each GES module. */
     ready(function() { 
+        console.log('###################################### READY');
+        console.log('Grooveshark\'s ready, GES now running...');
         $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
 
         ges.modules.mapModules(function (module, moduleName) { 

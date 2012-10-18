@@ -6,18 +6,20 @@ function messagesClosure() {
           'send': send
     };
 
-    var buffer = new Buffer('gesMessageBuffer');
+    //var buffer = new Buffer('gesMessageBuffer');
     var listeners = {};
     var clientRequestEvent; 
 
     function send(uid, data, callback) {
-        buffer.setValue({ 'uid': uid, 'data': data });
+        //buffer.setValue({ 'uid': uid, 'data': data });
+        return;
         listeners[uid] = callback;
         document.dispatchEvent(clientRequestEvent);
     }
 
     window.addEventListener('clientResponseEvent', function() {
-        var response = buffer.getValue();
+        return;
+        //var response = buffer.getValue();
         listeners[response.uid](response.data);
         delete listeners[uid];
     });

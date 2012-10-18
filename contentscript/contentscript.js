@@ -4,8 +4,8 @@
 
 var script = document.createElement('script');
 var closures = [
-      bufferClosure
-    , uiClosure
+    //  bufferClosure
+      uiClosure
     , messagesClosure
     , modulesClosure
     , dupeDeleteClosure

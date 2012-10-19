@@ -2,6 +2,6 @@
    open the shortcuts help menu. */
 
 var script = document.createElement('script');
-script.textContent = '(function() {  GS.getLightbox().isOpen ? ges.ui.closeLightbox() : ges.ui.openLightbox(\'shortcuts\'); })();';
+script.textContent = '(function() { ges.modules.modules.shortcuts.toggleLightbox(); })();';
 document.body.appendChild(script);
 

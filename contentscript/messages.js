@@ -3,28 +3,31 @@ function messagesClosure() {
     console.log('--> messages loaded');
 
     var messages = {
-          'send': send
+          'setup': setup
+        , 'send': send
     };
 
-    //var buffer = new Buffer('gesMessageBuffer');
-    var listeners = {};
-    var clientRequestEvent; 
+    var buffer, listeners, clientRequestEvent;
+
+    function setup() {
+        buffer = new Buffer('gesMessageBuffer');
+        listeners = {};
+        clientRequestEvent; 
+    }
 
     function send(uid, data, callback) {
-        //buffer.setValue({ 'uid': uid, 'data': data });
-        return;
+        buffer.setValue({ 'uid': uid, 'data': data });
         listeners[uid] = callback;
         document.dispatchEvent(clientRequestEvent);
     }
 
     window.addEventListener('clientResponseEvent', function() {
-        return;
-        //var response = buffer.getValue();
+        var response = buffer.getValue();
         listeners[response.uid](response.data);
         delete listeners[uid];
     });
 
-    // create the request event
+    /* Create the request event. */
     clientRequestEvent = document.createEvent('Events');
     clientRequestEvent.initEvent('clientRequestEvent', true, false);
 

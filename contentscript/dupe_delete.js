@@ -15,14 +15,9 @@ function dupeDeleteClosure() {
     };
 
     function construct() { 
-        ges.ui.addPlayerButton('#dupeDelete', {
-              'label': 'Remove Duplicates'
-            , 'onclick': removeDuplicates
-        });
     }
 
     function destruct() {
-        ges.ui.removePlayerButton('#dupeDelete');
     }
 
     function pluralize (count, single, plural) {
@@ -30,13 +25,13 @@ function dupeDeleteClosure() {
     }
 
     function removeDuplicates() {
-        var player = GS.player;
+        var player = GS.Services.SWF;
         var queue = player.getCurrentQueue().songs;
         var uniqueNames = {};
         var duplicateIds = [];
         var cleanName, length, message;
 
-        _.forEach(queue, function(song, index) {
+        _.forEach(queue, function(song) {
             cleanName = song.SongName.toLowerCase();
             uniqueNames[cleanName] ? duplicateIds.push(song.queueSongID)
                                    : uniqueNames[cleanName] = true;

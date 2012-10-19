@@ -14,29 +14,22 @@ function lyricsClosure() {
     };
 
     function construct() { 
-        ges.ui.addPlayerButton('#songLyrics', {
-              'label': 'Show Lyrics'
-            , 'onclick': requestLyrics
-        });
     }
 
     function destruct() {
-        ges.ui.removePlayerButton('#songLyrics');
     }
 
     /* Using the current song's information, send a request to lyric's background
        script to fetch it's lyrics. */
     function requestLyrics() {
-        var song = GS.player.getCurrentSong();
-        var songInfo, message, options;
+        var song = GS.Services.SWF.getCurrentQueue().activeSong;
+        var songInfo;
 
         if (song) { 
             songInfo = { 'song': song.SongName, 'artist': song.ArtistName };
             ges.messages.send('lyrics', songInfo, displayLyrics);
         } else {
-            message = 'Play a song before requesting its lyrics';
-            options = { 'type': 'error', 'manualClose': false };
-            ges.ui.notice(message, options);
+            ges.ui.notice('Play a song before requesting its lyrics.', { title: 'No active song', type: 'error' });
         }
     }
 
@@ -46,16 +39,17 @@ function lyricsClosure() {
 
         if (lyricsInfo.success) {
             lyricsInfo.lyrics = cleanLyrics(lyricsInfo.lyrics);
-            message = '<p><strong>' + lyricsInfo.song + '</strong> - <em>' + lyricsInfo.artist + '</em></p><br/><div class="scrollable"><p>' + lyricsInfo.lyrics + '</p></div>';
-            options = { 'type': 'form', 'manualClose': true, 'styles': ['wide'] };
+            message = '<div class="scrollable">' + lyricsInfo.lyrics + '</div>';
+            options = { title: lyricsInfo.song, type: 'success', duration: 0 };
         } else {
-            message = '<p>Lyrics not found for <strong>' + lyricsInfo.song + '</strong>. If you can find the lyrics, why not share them at <a href="' + lyricsInfo.url + '" target="blank">Lyrics Wikia</a>?</p>';
-            options = { 'type': 'error', 'manualClose': false };
+            message = 'Lyrics not found for <strong>' + lyricsInfo.song + '</strong>. If you can find the lyrics, click this notice to post them to Lyrics Wikia.';
+            options = { title: 'Lyrics not found', type: 'error', url: lyricsInfo.url };
         }
 
         ges.ui.notice(message, options);
     }
 
+    /* Wrap the raw `lyrics` html in a div and remove unnecessary elements. */
     function cleanLyrics(lyrics) {
         var clean;
         lyrics = $('<div>' + lyrics + '</div>');

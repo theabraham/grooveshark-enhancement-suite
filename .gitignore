@@ -1,3 +1,5 @@
+*.swo
 *.swp
 notes.txt
 misc/*
+.sass-cache*

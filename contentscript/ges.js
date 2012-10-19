@@ -7,20 +7,17 @@ function gesClosure() {
         var wait = function() {
             setTimeout(function() {
                 ready.call(null, callback); 
-            }, 200); 
+            }, 500); 
         };
 
         /* Epic ternary. */
         try {
             (  isUndefined(Grooveshark)         
-            //|| isUndefined(Grooveshark)              
-            //|| isUndefined(_)              
-            //|| isUndefined(GS)             
-            //|| isUndefined(GS.Models)      
-            //|| isUndefined(GS.Controllers) 
-            //|| isUndefined(GS.getLightbox)
-            //|| isUndefined(GS.getNotice)
-            //|| isUndefined(GS.player)
+            || isUndefined(GS.Models)      
+            || isUndefined(GS.Views)      
+            || isUndefined(GS.Services)      
+            || isUndefined(GS.Views.Lightboxes)      
+            || isUndefined(GS.Views.Lightbox)      
             ) ? wait() : setTimeout(function() { callback(); }, 3e3);
         } catch (err) {
             console.log('WAITING');
@@ -34,9 +31,9 @@ function gesClosure() {
 
     /* Load each GES module. */
     ready(function() { 
-        console.log('###################################### READY');
         console.log('Grooveshark\'s ready, GES now running...');
-        $.subscribe('gs.player.queue.change', ges.ui.restorePlayerButtons);
+
+        ges.messages.setup();
 
         ges.modules.mapModules(function (module, moduleName) { 
             ges.modules.doSetup(moduleName);

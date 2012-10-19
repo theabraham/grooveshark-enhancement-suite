@@ -51,7 +51,7 @@ function shortcutsClosure() {
         , '&nbsp;': function() {}
         , 'm': function() { $('#volume').click(); }
         , 'l': toggleLibrary
-        , 'f': toggleLibrary
+        , 'f': toggleFavorite
         , 'r': function() { GS.Services.SWF.restoreQueue(); }
         , 'q': toggleQueueDisplay
         , 'D': ges.modules.modules.dupeDelete.removeDuplicates
@@ -318,6 +318,19 @@ function shortcutsClosure() {
             user.removeSongsFromLibrary([song.get('SongID')]);
         } else {
             user.addSongsToLibrary([song.get('SongID')]);
+        }
+    }
+
+    /* Add the current song to or remove from the user's favorites. */
+    function toggleFavorite() {
+        var song = new GS.Models.Song({ SongID: GS.Services.SWF.getCurrentQueue().activeSong.SongID });
+        var user = new GS.Models.User({ UserID: GS.getLoggedInUserID() });
+        var type = 'Songs';
+        
+        if (song.get('isFavorite')) {
+            user.unfavorite(type, song.get('SongID'));
+        } else {
+            user.favorite(type, song.get('SongID'));
         }
     }
 

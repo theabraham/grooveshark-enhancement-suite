@@ -48,8 +48,10 @@ function shortcutsClosure() {
         , '.': function() { seekPosition(3000); }
         , '-': function() { multiplyFn(changeVolume, -5); }
         , '=': function() { multiplyFn(changeVolume, 5); }
+        , '&nbsp;': function() {}
         , 'm': function() { $('#volume').click(); }
-        , 'f': toggleFavorite // TODO
+        , 'l': toggleLibrary
+        , 'f': toggleLibrary
         , 'r': function() { GS.Services.SWF.restoreQueue(); }
         , 'q': toggleQueueDisplay
         , 'D': ges.modules.modules.dupeDelete.removeDuplicates
@@ -69,10 +71,12 @@ function shortcutsClosure() {
         , '.': 'fast-forward song (<strong>*</strong> skip size)'
         , '-': 'decrease volume (<strong>*</strong> repeat count)'
         , '=': 'increase volume (<strong>*</strong> repeat count)'
+        , '&nbsp;': 'spacebar to play/pause'
         , 'm': 'toggle mute'
-        , 'f': 'add current song to favorites'
+        , 'l': 'add song to library'
+        , 'f': 'add song to favorites'
         , 'r': 'restore previous queue'
-        , 'q': 'cycle through queue sizes'
+        , 'q': 'toggle queue display'
         , 'D': 'remove duplicate songs in queue'
         , 'L': 'show lyrics for the currently playing song'
         , 'ds': 'delete current song (<strong>*</strong> repeat count)'
@@ -137,7 +141,7 @@ function shortcutsClosure() {
         var shortcutTemplate = $('<div><div class="sc_wrap"><span class="sc_key"></span><span class="sc_desc"></span></div></div>');
         content = traverseShortcuts(shortcuts, '', content, shortcutTemplate);
 
-        return '<div id="choose-locale">' +
+        return '<div>' +
                    '<div id="lightbox-header">' + header + '</div>' +
                    '<div id="lightbox-content"><div class="lightbox-content-block">' + content + '</div></div>' +
                    '<div id="lightbox-footer">' + footer + '</div>' +
@@ -164,9 +168,10 @@ function shortcutsClosure() {
         return content;
     }
 
+    /* Open the shortcuts lightbox if none other is open. */
     function toggleLightbox() {
-        GS.trigger('lightbox:close');
-        GS.trigger('lightbox:open', 'shortcuts');
+        $('#lightbox').html() ? GS.trigger('lightbox:close')
+                              : GS.trigger('lightbox:open', 'shortcuts');
     }
 
     /* 
@@ -304,12 +309,15 @@ function shortcutsClosure() {
         }, 500);
     }
 
-    /* Add the current song to the user's favorites, only if your unable to
-       remove the song from their favorites. */
-    function toggleFavorite() {
-        var songID = GS.player.getCurrentSong().SongID;
-        if (typeof GS.user.removeFromLibrary(songID) === 'undefined') {
-            GS.user.addToSongFavorites(songID); 
+    /* Add the current song to or remove from the user's library. */
+    function toggleLibrary() {
+        var song = new GS.Models.Song({ SongID: GS.Services.SWF.getCurrentQueue().activeSong.SongID });
+        var user = new GS.Models.User({ UserID: GS.getLoggedInUserID() });
+        
+        if (song.get('fromLibrary')) {
+            user.removeSongsFromLibrary([song.get('SongID')]);
+        } else {
+            user.addSongsToLibrary([song.get('SongID')]);
         }
     }
 

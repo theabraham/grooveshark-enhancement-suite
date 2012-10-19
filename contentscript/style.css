@@ -67,6 +67,7 @@ span.ges_cloned_button a {
 /* Shortcuts */
 #lightbox .sc_name {
   display: block;
+  font-weight: bold;
   color: #333;
   margin-bottom: 8px; }
 #lightbox .sc_wrap {

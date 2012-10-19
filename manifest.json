@@ -1,7 +1,7 @@
 {
       "manifest_version": 2
     , "name": "Grooveshark Enhancement Suite"
-    , "description": "A suite of handy modules that improve the Grooveshark experience"
+    , "description": "Handy extensions and shortcuts that improve the Grooveshark experience"
     , "version": "1.7"
     , "background": 
         {

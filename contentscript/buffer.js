@@ -4,7 +4,7 @@ function bufferClosure() {
 
     function Buffer(uid) {
         this.uid = '#' + uid;
-        this.tag = '<textarea id="' + uid + '"></textarea>';
+        this.tag = '<textarea id="' + uid + '" style="display:none;"></textarea>';
         this.$buffer = $(this.uid);
     }
 

@@ -31,7 +31,7 @@ var clientResponseEvent;
 
 window.addEventListener('clientRequestEvent', function() {
     var request = buffer.getValue();
-    chrome.extension.sendRequest(request, function(data) {
+    chrome.extension.sendMessage(request, function(data) {
         var response = { 'uid': request.uid, 'data': data };
         buffer.setValue(response);
         document.dispatchEvent(clientResponseEvent);

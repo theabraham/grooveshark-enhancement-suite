@@ -1,4 +1,4 @@
-chrome.extension.onRequest.addListener(function(request, sender, clientCallback) { 
+chrome.extension.onMessage.addListener(function(request, sender, clientCallback) { 
     if (request.uid !== 'lyrics') {
         return;
     }
@@ -11,6 +11,8 @@ chrome.extension.onRequest.addListener(function(request, sender, clientCallback)
               getLyricsFromLink(data, clientCallback);
           }
     });
+
+    return true;
 });
 
 function getLyricsFromLink(data, clientCallback) {

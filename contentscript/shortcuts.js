@@ -18,7 +18,7 @@ function shortcutsClosure() {
 
     var deletion = {  
           'name': 'Deletion'
-        , 'a': function() { GS.Services.SWF.clearQueue(); }
+        , 'a': deleteAllSongs
         , 's': function() { multiplyFn(function() { deleteCurrentSong(); }); }
     };
 
@@ -337,6 +337,12 @@ function shortcutsClosure() {
     /* Toggle the queue display's visibility. */
     function toggleQueueDisplay() {
         $('#queue-toggle').click();
+    }
+
+    /* Clear the current queue. */
+    function deleteAllSongs() { 
+        $('#queue-menu-btn').click();
+        $('.jj_menu_item_clear_queue').click();
     }
 
     /* Remove the currently active song from the queue. */

@@ -42,8 +42,8 @@ function lyricsClosure() {
             message = '<div class="scrollable">' + lyricsInfo.lyrics + '</div>';
             options = { title: lyricsInfo.song, type: 'success', duration: 0 };
         } else {
-            message = 'Lyrics not found for <strong>' + lyricsInfo.song + '</strong>. If you can find the lyrics, click this notice to post them to Lyrics Wikia.';
-            options = { title: 'Lyrics not found', type: 'error', url: lyricsInfo.url };
+            message = 'Lyrics not found for <strong>' + lyricsInfo.song + '</strong>. If you know the lyrics to this song, <a target="_blank" href="' + lyricsInfo.url +'">share them here</a>.';
+            options = { title: 'Lyrics not found', type: 'error' };
         }
 
         ges.ui.notice(message, options);

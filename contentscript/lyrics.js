@@ -40,7 +40,7 @@ function lyricsClosure() {
         if (lyricsInfo.success) {
             lyricsInfo.lyrics = cleanLyrics(lyricsInfo.lyrics);
             message = '<div class="scrollable">' + lyricsInfo.lyrics + '</div>';
-            options = { title: lyricsInfo.song, type: 'success', duration: 0 };
+            options = { title: lyricsInfo.song, duration: 0 };
         } else {
             message = 'Lyrics not found for <strong>' + lyricsInfo.song + '</strong>. If you know the lyrics to this song, <a target="_blank" href="' + lyricsInfo.url +'">share them here</a>.';
             options = { title: 'Lyrics not found', type: 'error' };

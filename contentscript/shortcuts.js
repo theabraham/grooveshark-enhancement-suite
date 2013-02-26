@@ -59,6 +59,7 @@ function shortcutsClosure() {
         , 'd': deletion
         , 'p': page
         , 'g': navigation
+				, 's': toggleSidebar
     };
 
     var descriptions = {
@@ -89,6 +90,7 @@ function shortcutsClosure() {
         , 'gc': 'go to community feed'
         , 'ga': 'open playing song\'s artist'
         , 'gl': 'open playing song\'s album'
+				, 's' : 'toggle sidebar'
     };
 
     /* 
@@ -268,6 +270,17 @@ function shortcutsClosure() {
     function follow(hash) {
         location.hash = hash;
     }
+
+		function toggleSidebar() {
+			if ($("body").hasClass("sidebar-open")) {
+				$("body").removeClass("sidebar-open"); 
+				$("body").addClass("sidebar-closed"); 
+			}
+			else { 
+				$("body").removeClass("sidebar-closed"); 
+				$("body").addClass("sidebar-open"); 
+			}
+		}
 
     /* Finds and focuses on the current page's search bar or navigates to the
        home page's search bar. */

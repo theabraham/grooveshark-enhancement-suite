@@ -271,15 +271,9 @@ function shortcutsClosure() {
         location.hash = hash;
     }
 
+    /* Toggle sidebar display. */
 		function toggleSidebar() {
-			if ($("body").hasClass("sidebar-open")) {
-				$("body").removeClass("sidebar-open"); 
-				$("body").addClass("sidebar-closed"); 
-			}
-			else { 
-				$("body").removeClass("sidebar-closed"); 
-				$("body").addClass("sidebar-open"); 
-			}
+      $('#sidebar-utility a#toggle-sidebar').click();
 		}
 
     /* Finds and focuses on the current page's search bar or navigates to the

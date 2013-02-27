@@ -59,7 +59,8 @@ function shortcutsClosure() {
         , 'd': deletion
         , 'p': page
         , 'g': navigation
-				, 's': toggleSidebar
+        , 's': toggleSidebar
+        , 'h': shareCurrentSong
     };
 
     var descriptions = {
@@ -90,7 +91,8 @@ function shortcutsClosure() {
         , 'gc': 'go to community feed'
         , 'ga': 'open playing song\'s artist'
         , 'gl': 'open playing song\'s album'
-				, 's' : 'toggle sidebar'
+        , 's' : 'toggle sidebar'
+        , 'h' : 'share current song'
     };
 
     /* 
@@ -272,9 +274,14 @@ function shortcutsClosure() {
     }
 
     /* Toggle sidebar display. */
-		function toggleSidebar() {
-      $('#sidebar-utility a#toggle-sidebar').click();
-		}
+    function toggleSidebar() {
+        $('#sidebar-utility a#toggle-sidebar').click();
+    }
+
+    /* Share the currently playing song. */
+    function shareCurrentSong() {
+        $("#np-share").click();
+    }
 
     /* Finds and focuses on the current page's search bar or navigates to the
        home page's search bar. */

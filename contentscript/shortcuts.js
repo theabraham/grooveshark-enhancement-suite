@@ -54,13 +54,13 @@ function shortcutsClosure() {
         , 'f': toggleFavorite
         , 'r': function() { GS.Services.SWF.restoreQueue(); }
         , 'q': toggleQueueDisplay
+        , 's': toggleSidebar
+        , 'h': shareCurrentSong
         , 'D': ges.modules.modules.dupeDelete.removeDuplicates
         , 'L': ges.modules.modules.lyrics.requestLyrics
         , 'd': deletion
         , 'p': page
         , 'g': navigation
-        , 's': toggleSidebar
-        , 'h': shareCurrentSong
     };
 
     var descriptions = {
@@ -79,6 +79,8 @@ function shortcutsClosure() {
         , 'f': 'add song to favorites'
         , 'r': 'restore previous queue'
         , 'q': 'toggle queue display'
+        , 's': 'toggle sidebar'
+        , 'h': 'share current song'
         , 'D': 'remove duplicate songs in queue'
         , 'L': 'show lyrics for the currently playing song'
         , 'ds': 'delete current song (<strong>*</strong> repeat count)'
@@ -91,8 +93,6 @@ function shortcutsClosure() {
         , 'gc': 'go to community feed'
         , 'ga': 'open playing song\'s artist'
         , 'gl': 'open playing song\'s album'
-        , 's' : 'toggle sidebar'
-        , 'h' : 'share current song'
     };
 
     /* 

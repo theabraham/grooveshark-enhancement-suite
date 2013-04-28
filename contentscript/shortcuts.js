@@ -174,8 +174,7 @@ function shortcutsClosure() {
 
     /* Open the shortcuts lightbox if none other is open. */
     function toggleLightbox() {
-        $('#lightbox').html() ? GS.trigger('lightbox:close')
-                              : GS.trigger('lightbox:open', 'shortcuts');
+      $('#lightbox').is(":visible") ? GS.trigger('lightbox:close') : GS.trigger('lightbox:open', 'shortcuts');
     }
 
     /* 

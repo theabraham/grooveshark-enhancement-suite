@@ -117,6 +117,7 @@ function shortcutsClosure() {
                 this._super('render'); 
                 this.$el.html(this.renderTemplate(createHelpContent()));
                 this._super('onTemplate'); 
+                GS.trigger('lightbox:rendered');
             }
         });
     }
@@ -174,8 +175,11 @@ function shortcutsClosure() {
 
     /* Open the shortcuts lightbox if none other is open. */
     function toggleLightbox() {
-        $('#lightbox').is(':visible') ? GS.trigger('lightbox:close') 
-                                      : GS.trigger('lightbox:open', 'shortcuts');
+        if ($('#lightbox-outer').hasClass('hide-lb')) {
+            GS.trigger('lightbox:open', 'shortcuts');
+        } else {
+            GS.trigger('lightbox:close') 
+        }
     }
 
     /* 

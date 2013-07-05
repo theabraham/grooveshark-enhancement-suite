@@ -19,7 +19,7 @@ function shortcutsClosure() {
     var deletion = {  
           'name': 'Deletion'
         , 'a': deleteAllSongs
-        , 's': function() { multiplyFn(function() { deleteCurrentSong(); }); }
+        , 's': function() { multiplyFn(deleteCurrentSong); }
     };
 
     var page = {
@@ -42,8 +42,8 @@ function shortcutsClosure() {
           'name': 'Global'
         , '?': function() { toggleLightbox(); }
         , '/': findSearchBar
-        , '<': function() { multiplyFn(function() { GS.Services.SWF.previousSong(); }); }
-        , '>': function() { multiplyFn(function() { GS.Services.SWF.nextSong(); }); }
+        , '<': function() { multiplyFn(Grooveshark.previous); }
+        , '>': function() { multiplyFn(Grooveshark.next); }
         , ',': function() { seekPosition(-3000); }
         , '.': function() { seekPosition(3000); }
         , '-': function() { multiplyFn(changeVolume, -5); }

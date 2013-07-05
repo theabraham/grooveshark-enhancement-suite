@@ -354,13 +354,12 @@ function shortcutsClosure() {
 
     /* Toggle the queue display's visibility. */
     function toggleQueueDisplay() {
-        $('#queue-toggle').click();
+        $("#player-bg").click();
     }
 
     /* Clear the current queue. */
     function deleteAllSongs() { 
-        $('#queue-menu-btn').click();
-        $('.jj_menu_item_clear_queue').click();
+        $('#trash').click();
     }
 
     /* Remove the currently active song from the queue. */

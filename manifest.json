@@ -2,7 +2,7 @@
       "manifest_version": 2
     , "name": "Grooveshark Enhancement Suite"
     , "description": "Handy extensions and shortcuts that improve the Grooveshark experience"
-    , "version": "1.8.3"
+    , "version": "1.8.4"
     , "background": 
         {
               "page": "background/background.html"

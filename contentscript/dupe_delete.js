@@ -30,10 +30,11 @@ function dupeDeleteClosure() {
         var uniqueNames = {};
         var duplicateIds = [];
         var cleanName, length, message;
+        var activeSong = player.getCurrentQueue().activeSong;
 
         _.forEach(queue, function(song) {
             cleanName = song.SongName.toLowerCase();
-            uniqueNames[cleanName] ? duplicateIds.push(song.queueSongID)
+            uniqueNames[cleanName] && activeSong.queueSongID != song.queueSongID ? duplicateIds.push(song.queueSongID)
                                    : uniqueNames[cleanName] = true;
         });
         player.removeSongs(duplicateIds);

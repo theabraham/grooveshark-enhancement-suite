@@ -22,11 +22,11 @@ function lyricsClosure() {
     /* Using the current song's information, send a request to lyric's background
        script to fetch it's lyrics. */
     function requestLyrics() {
-        var song = GS.Services.SWF.getCurrentQueue().activeSong;
+        var song = Grooveshark.getCurrentSongStatus().song;
         var songInfo;
 
         if (song) { 
-            songInfo = { 'song': song.SongName, 'artist': song.ArtistName };
+            songInfo = { 'song': song.songName, 'artist': song.artistName };
             ges.messages.send('lyrics', songInfo, displayLyrics);
         } else {
             ges.ui.notice('Play a song before requesting its lyrics.', { title: 'No active song', type: 'error' });
@@ -40,7 +40,7 @@ function lyricsClosure() {
         if (lyricsInfo.success) {
             lyricsInfo.lyrics = cleanLyrics(lyricsInfo.lyrics);
             message = '<div class="scrollable">' + lyricsInfo.lyrics + '</div>';
-            options = { title: lyricsInfo.song, duration: 0 };
+            options = { title: lyricsInfo.song, duration: 0, type: 'musicnote' };
         } else {
             message = 'Lyrics not found for <strong>' + lyricsInfo.song + '</strong>. If you know the lyrics to this song, <a target="_blank" href="' + lyricsInfo.url +'">share them here</a>.';
             options = { title: 'Lyrics not found', type: 'error' };

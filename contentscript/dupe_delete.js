@@ -25,22 +25,29 @@ function dupeDeleteClosure() {
     }
 
     function removeDuplicates() {
-        var player = GS.Services.SWF;
-        var queue = player.getCurrentQueue().songs;
+        var $module = $('#sidebar .queue-item').first();
+        var collection = $module.length && $module.data().module.grid.collection;
         var uniqueNames = {};
-        var duplicateIds = [];
+        var duplicateSongs = [];
         var cleanName, length, message;
 
-        _.forEach(queue, function(song) {
-            cleanName = song.SongName.toLowerCase();
-            uniqueNames[cleanName] ? duplicateIds.push(song.queueSongID)
-                                   : uniqueNames[cleanName] = true;
-        });
-        player.removeSongs(duplicateIds);
+        if (!collection) {
+            return;
+        }
 
-        length = duplicateIds.length;
+        collection.each(function(song) {
+            cleanName = song.get('SongName').toLowerCase();
+            if (uniqueNames[cleanName]) {
+                duplicateSongs.push(song);
+            } else {
+                uniqueNames[cleanName] = true;
+            }
+        });
+        GS.trigger('player:removeSongs', duplicateSongs);
+
+        length = duplicateSongs.length;
         message = length + ' duplicate' + pluralize(length, '', 's') + ' ' + pluralize(length, 'has', 'have') + ' been removed';
-        ges.ui.notice(message);
+        ges.ui.notice(message, {type: 'success'});
     }
 
 }

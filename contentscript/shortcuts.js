@@ -30,10 +30,11 @@ function shortcutsClosure() {
 
     var navigation = {
           'name': 'Navigation'
+        , 'h': function() { follow('!/'); }
         , 'p': function() { follow(profileUrl); }
-        , 'm': function() { follow(musicUrl); }
+        , 'c': function() { follow(collectionUrl); }
         , 'f': function() { follow(favoritesUrl); }
-        , 'c': function() { follow(communityUrl); }
+        , 'q': function() { follow('!/queue'); }
         , 'a': gotoCurrentArtist
         , 'l': gotoCurrentAlbum 
     };
@@ -41,7 +42,6 @@ function shortcutsClosure() {
     var shortcuts = {
           'name': 'Global'
         , '?': function() { toggleLightbox(); }
-        , '/': findSearchBar
         , '<': function() { multiplyFn(Grooveshark.previous); }
         , '>': function() { multiplyFn(Grooveshark.next); }
         , ',': function() { seekPosition(-3000); }
@@ -52,9 +52,7 @@ function shortcutsClosure() {
         , 'm': function() { $('#volume').click(); }
         , 'l': toggleLibrary
         , 'f': toggleFavorite
-        , 'r': function() { GS.Services.SWF.restoreQueue(); }
-        , 'q': toggleQueueDisplay
-        , 's': toggleSidebar
+        , 'r': function() { GS.trigger('player:restore'); }
         , 'h': shareCurrentSong
         , 'D': ges.modules.modules.dupeDelete.removeDuplicates
         , 'L': ges.modules.modules.lyrics.requestLyrics
@@ -66,11 +64,10 @@ function shortcutsClosure() {
     var descriptions = {
           'intro': 'Commands marked with an asterisk (*) take <em>multipliers</em>: numbers typed before the command\'s key is pressed that will be used as an argument for the command (always optional.)'
         , '?': 'toggle the help dialogue'
-        , '/': 'find/escape a search bar'
         , '<': 'previous song (<strong>*</strong> repeat count)'
         , '>': 'next song (<strong>*</strong> repeat count)'
-        , ',': 'rewind song (<strong>*</strong> skip size)'
-        , '.': 'fast-forward song (<strong>*</strong> skip size)'
+        , ',': 'rewind song (<strong>*</strong> skip length)'
+        , '.': 'fast-forward song (<strong>*</strong> skip length)'
         , '-': 'decrease volume (<strong>*</strong> repeat count)'
         , '=': 'increase volume (<strong>*</strong> repeat count)'
         , '&nbsp;': 'spacebar to play/pause'
@@ -78,8 +75,6 @@ function shortcutsClosure() {
         , 'l': 'add song to library'
         , 'f': 'add song to favorites'
         , 'r': 'restore previous queue'
-        , 'q': 'toggle queue display'
-        , 's': 'toggle sidebar'
         , 'h': 'share current song'
         , 'D': 'remove duplicate songs in queue'
         , 'L': 'show lyrics for the currently playing song'
@@ -87,10 +82,11 @@ function shortcutsClosure() {
         , 'da': 'delete all songs'
         , 'pa': 'play all songs on page'
         , 'pd': 'add all songs on page'
+        , 'gh': 'go home'
         , 'gp': 'go to my profile'
-        , 'gm': 'go to my music'
+        , 'gc': 'go to my collection'
         , 'gf': 'go to my favorites'
-        , 'gc': 'go to community feed'
+        , 'gq': 'go to queue'
         , 'ga': 'open playing song\'s artist'
         , 'gl': 'open playing song\'s album'
     };
@@ -99,13 +95,17 @@ function shortcutsClosure() {
      * Setup, Construct, and Destruct 
      */
 
-    var profileUrl, musicUrl, favoritesUrl, communityUrl;
+    var profileUrl, collectionUrl, favoritesUrl;
+
+    function updateUserUrls() {
+        var authUser = GS.Models.AuthUser.newOrUpdate({ UserID: GS.getLoggedInUserID() });
+        profileUrl = authUser.toUrl();
+        collectionUrl = authUser.toUrl('collection');
+        favoritesUrl = authUser.toUrl('collection/favorites');
+    }
 
     function setup() {
-        profileUrl = $('a#profile-button').attr('href');
-        musicUrl = profileUrl + '/collection';
-        favoritesUrl = profileUrl + '/collection/favorites';
-        communityUrl = '/community';
+        updateUserUrls();
 
         /* Create the shortcut's lightbox view. */
         GS.Views.Lightboxes.Shortcuts = GS.Views.Lightboxes.Base.extend({
@@ -123,13 +123,15 @@ function shortcutsClosure() {
     }
     
     function construct() { 
-        $('body').bind('keydown', keyDownTarget);
-        $('body').bind('keypress', keyPressCapture);
+        GS.on('switchUser', updateUserUrls);
+        $('body').bind('keydown.ges', keyDownTarget);
+        $('body').bind('keypress.ges', keyPressCapture);
     }
 
     function destruct() {
-        $('body').unbind('keydown', keyDownTarget);
-        $('body').unbind('keypress', keyPressCapture);
+        GS.off('switchUser', updateUserUrls);
+        $('body').unbind('keydown.ges', keyDownTarget);
+        $('body').unbind('keypress.ges', keyPressCapture);
     }
 
     /* 
@@ -139,17 +141,17 @@ function shortcutsClosure() {
     /* The content for our help lightbox that describes how to call the shortcuts
        and a list of available shortcuts with their descriptions. */
     function createHelpContent() {
-        var header = '<h2 class="title">Shortcuts</h2><a id="lightbox-close" class="hide close btn btn-rounded btn-icon-only btn-dark"><i class="icon icon-ex-white-outline"></i></a>';
-        var footer = '<div id="lightbox-footer-right" class="right"></div><div id="lightbox-footer-left" class="left"><a class="btn btn-large close" data-translate-text="CLOSE">Close</a></div>';
+        var header = '<h2 class="title">Shortcuts</h2>';
+        var footer = '<a class="btn btn-full btn-success close">Got it!</a>';
 
         var content = '<p><span class="sc_name">Shortcut Commands</span><p>' + descriptions['intro'] + '</p></p>';
         var shortcutTemplate = $('<div><div class="sc_wrap"><span class="sc_key"></span><span class="sc_desc"></span></div></div>');
         content = traverseShortcuts(shortcuts, '', content, shortcutTemplate);
 
         return '<div>' +
-                   '<div id="lightbox-header">' + header + '</div>' +
-                   '<div id="lightbox-content"><div class="lightbox-content-block">' + content + '</div></div>' +
-                   '<div id="lightbox-footer">' + footer + '</div>' +
+                   '<div class="lightbox-header">' + header + '</div>' +
+                   '<div class="lightbox-content"><div class="lightbox-content-block">' + content + '</div></div>' +
+                   '<div class="lightbox-footer">' + footer + '</div>' +
                '</div>';
     }
 
@@ -178,7 +180,7 @@ function shortcutsClosure() {
         if ($('#lightbox-outer').hasClass('hide-lb')) {
             GS.trigger('lightbox:open', 'shortcuts');
         } else {
-            GS.trigger('lightbox:close') 
+            GS.trigger('lightbox:close');
         }
     }
 
@@ -194,7 +196,7 @@ function shortcutsClosure() {
        triggered, and it's the only one that will tell us the original target
        of the key event; used to determine if the target was an input or not. */
     function keyDownTarget(evt) {
-        targetIsInput = $(evt.target).is('input, textarea');
+        targetIsInput = $(evt.target).is('input, textarea, select, [contenteditable]');
     }
 
     /* When a key is pressed, 'keypress' is the second of three events
@@ -202,11 +204,10 @@ function shortcutsClosure() {
        values; used to determine if we should act on the key character or not. */
     function keyPressCapture(evt) {
         var character = String.fromCharCode(evt.keyCode);
-        if (targetIsInput && character === '/') {
+        if (!targetIsInput) {
+            $('input:focus, textarea:focus, select:focus, [contenteditable]:focus').blur();
             route(character);
-        } else if (!targetIsInput) {
-            $('input:focus, textarea:focus').blur();
-            route(character);
+            return false;
         }
     }
 
@@ -277,26 +278,11 @@ function shortcutsClosure() {
         location.hash = hash;
     }
 
-    /* Toggle sidebar display. */
-    function toggleSidebar() {
-        $('#sidebar-utility a#toggle-sidebar').click();
-    }
-
     /* Share the currently playing song. */
     function shareCurrentSong() {
-        $("#np-share").click();
-    }
-
-    /* Finds and focuses on the current page's search bar or navigates to the
-       home page's search bar. */
-    function findSearchBar() { 
-        if ($('input.search').length === 0) { 
-            follow('#/'); 
-        } else if ($('input:focus, textarea:focus').length > 0) {
-            $('input:focus, textarea:focus').blur().val('');
-        } else {
-            $('input.search').focus();
-            setTimeout(function() { $('input.search').val(''); }, 50);
+        var song = Grooveshark.getCurrentSongStatus().song;
+        if (song) {
+            GS.trigger('lightbox:open', 'share', { item: GS.Models.Song.newOrUpdate({ SongID: song.songID }) });
         }
     }
 
@@ -319,76 +305,96 @@ function shortcutsClosure() {
 
     /* Changes the volume by a given amount. Mimick a user hovering over the 
        volume slider (to show the volume bar.) */
+    var volumeMouseOutTimer;
     function changeVolume(amount) {
-        Grooveshark.setVolume(Grooveshark.getVolume() + amount);
-        $('#volume').trigger('mouseenter');  
-        setTimeout(function() { 
+        var current = Grooveshark.getVolume() * 100;
+        var updated = Math.max(0, Math.min(100, current + amount));
+        Grooveshark.setVolume(updated);
+        $('#volume').trigger('mouseenter');
+        clearTimeout(volumeMouseOutTimer);
+        volumeMouseOutTimer = setTimeout(function() { 
             $('#volume').trigger('mouseleave');
-        }, 500);
+        }, 2000);
     }
 
     /* Add the current song to or remove from the user's library. */
     function toggleLibrary() {
-        var song = new GS.Models.Song({ SongID: GS.Services.SWF.getCurrentQueue().activeSong.SongID });
-        var user = new GS.Models.User({ UserID: GS.getLoggedInUserID() });
+        var song = Grooveshark.getCurrentSongStatus().song;
+        var user = GS.Models.AuthUser.newOrUpdate({ UserID: GS.getLoggedInUserID() });
+        var songModel;
         
-        if (song.get('fromLibrary')) {
-            user.removeSongsFromLibrary([song.get('SongID')]);
+        if (!song) {
+            return;
+        }
+        songModel = GS.Models.Song.newOrUpdate({ SongID: song.songID });
+        if (song.isInLibrary) {
+            user.removeSongsFromLibrary([songModel]);
         } else {
-            user.addSongsToLibrary([song.get('SongID')]);
+            user.addSongsToLibrary([songModel]);
         }
     }
 
     /* Add the current song to or remove from the user's favorites. */
     function toggleFavorite() {
-        var song = new GS.Models.Song({ SongID: GS.Services.SWF.getCurrentQueue().activeSong.SongID });
-        var user = new GS.Models.User({ UserID: GS.getLoggedInUserID() });
+        var song = Grooveshark.getCurrentSongStatus().song;
+        var user = GS.Models.AuthUser.newOrUpdate({ UserID: GS.getLoggedInUserID() });
         var type = 'Songs';
+        var songModel;
         
-        if (song.get('isFavorite')) {
-            user.unfavorite(type, song.get('SongID'));
-        } else {
-            user.favorite(type, song.get('SongID'));
+        if (!song) {
+            return;
         }
-    }
-
-    /* Toggle the queue display's visibility. */
-    function toggleQueueDisplay() {
-        $("#player-bg").click();
+        songModel = GS.Models.Song.newOrUpdate({ SongID: song.songID });
+        if (song.isFavorite) {
+            user.unfavorite(type, songModel);
+        } else {
+            user.favorite(type, songModel);
+        }
     }
 
     /* Clear the current queue. */
     function deleteAllSongs() { 
-        $('#trash').click();
+        $('.queue-trash').click();
     }
 
     /* Remove the currently active song from the queue. */
     function deleteCurrentSong() { 
-        var song = GS.Services.SWF.getCurrentQueue().activeSong;
-        GS.Services.SWF.removeSongs([song.queueSongID]);
+        Grooveshark.removeCurrentSongFromQueue();
     }
 
     /* Play all songs listed on the current page. */
     function playAllSongs() {
-        $('a.play-button').first().click();
+        var data = $('#page-content .module.song').first().data(); 
+        var collection = data && data.module.grid && data.module.grid.collection;
+        var playContext = new GS.Models.PlayContext();
+        
+        if (collection) {
+            GS.trigger('player:addSongs', collection.models, GS.Models.Player.playSpecialIndexes.DEFAULT, true, playContext);
+        }
     }
 
     /* Add all songs listed on the current page. */
-    function addAllSongs(autoplay) {
-        $('a.add-button').first().click();
+    function addAllSongs() {
+        var data = $('#page-content .module.song').first().data(); 
+        var collection = data && data.module.grid && data.module.grid.collection;
+        var playContext = new GS.Models.PlayContext();
+        
+        if (collection) {
+            GS.trigger('player:addSongs', collection.models, GS.Models.Player.playSpecialIndexes.LAST, false, playContext);
+        }
     }
 
     /* Open the currently playing song artist's page. */
     function gotoCurrentArtist() {
-        var song = GS.Services.SWF.getCurrentQueue().activeSong;
-        var artist = new GS.Models.Artist({ ArtistID: song.ArtistID });
+        var song = Grooveshark.getCurrentSongStatus().song;
+        var artist = GS.Models.Artist.newOrUpdate({ ArtistID: song.artistID });
         follow(artist.toUrl());
     }
 
     /* Open the currently playing song's album page. */
     function gotoCurrentAlbum() {
-        var song = GS.Services.SWF.getCurrentQueue().activeSong;
-        var album = new GS.Models.Album({ AlbumID: song.AlbumID });
+        var song = Grooveshark.getCurrentSongStatus().song;
+        var album = GS.Models.Album.newOrUpdate({ AlbumID: song.albumID });
         follow(album.toUrl());
     }
 
